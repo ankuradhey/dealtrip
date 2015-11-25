@@ -1,0 +1,397 @@
+<script>
+var SITEURL="<?=APPLICATION_URL;?>";
+</script>
+
+<script type="text/javascript" src="<?=JS_URL?>img_upload1.js"></script>
+	<script type="text/javascript" src="<?=APPLICATION_URL?>fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+	<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL?>fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+    
+<script type="text/javascript">
+$(document).ready(function(e) {
+
+//adding method for validation of minimum 5 images
+
+
+jQuery.validator.addMethod("minImages", function(value, element) { 
+    if($("#order_image").val() != "")
+	var count = ($("#order_image").val()).match(/img/g).length;
+	//alert(count);
+	
+	if($("#order_image").val() == "")
+	{
+		for(var i=0;i<5;i++)	
+		{
+			$("#img_blck"+i).css("border","1px dashed rgba(255, 0, 0, 1)");			
+		}
+		return false;
+	}
+	else
+	{
+		for(var i=0;i<count;i++)	
+		{
+			$("#img_blck"+i).css("border","1px dashed rgba(0, 0, 0, 0.2)");			
+		}	
+	}
+	
+	if(($("#order_image").val()).match(/img/g).length < 5)
+	{	
+		$("#img_blck"+count).css("border","1px dashed rgba(255, 0, 0, 1)");	
+		$('#mws-validate-error').text("Upload atleast 5 images");
+		//alert("1");
+		return false;
+	}
+	else
+	{
+		$("#img_blck"+count).css("border","1px dashed rgba(0, 0, 0, 0.2)");	
+		return true;
+	}
+	
+//	return value.indexOf(" ") < 0 && value != ""; 
+
+  }, "Space are not allowed");
+
+$("#order_image").removeClass('error');
+
+var tmp = [];
+$.ajax({
+		type: 'GET',
+		url: '<?=APPLICATION_URL?>myaccount/uploaded',
+		async:false,
+		success: function(data){
+			
+			data = $.trim(data);
+			tmp = data.split(",");
+			
+		
+		}
+	});
+
+	if($.trim(tmp) != "")
+	{	
+
+		//$('#uploaded-files div').each(function(index) {
+			
+			for(var i=0;i<tmp.length;i++)
+			{
+				var tmp1 = tmp[i].split("|");
+				
+				if($.trim(tmp1[2]) == "")
+				{	
+					var title = "No Caption Set -- To set <a href='<?=APPLICATION_URL?>myaccount/setcaption/id/"+tmp1[0]+"' id = 'email_link"+i+"' >Click here</a>";
+					$("#img_blck"+i).removeClass("cancel");
+				}
+				else if(i == 0)
+				var title = tmp1[2];
+				else
+				{	
+					var title = tmp1[2]+"<br><a href='<?=APPLICATION_URL?>myaccount/setcaption/id/"+tmp1[0]+"' id = 'email_link"+i+"' >Click here to change</a>";
+					$("#img_blck"+i).removeClass("cancel");
+				}
+				
+				$("#img_blck"+i).html("<ul id='mws-gallery' class='clearfix'><li style = 'margin:0;width:100%;' onmouseover = 'image_caption("+i+");' onmouseout ='image_caption_remove("+i+");' ><div id = 'img_caption"+i+"' class = 'img_caption' align = 'center'>"+title+"</div><a href='javascript:void(0);' ><img id = 'img_ups' src = '<?=APPLICATION_URL?>image.php?image=<?=IMAGES_URL?>property/"+tmp1[1]+"&width=150&height=150'></a><div class = 'cone_ryt' id = 'cone_ryt"+i+"' onclick = 'deleteimage("+tmp1[0]+","+i+");' ><img src='<?=IMAGES_URL?>TRASH - EMPTY.png'></div></li></ul>");		//});
+				
+				//inserting in text box the order of images
+				if(i == 0)
+				{	
+					$("#order_image").val($("#order_image").val()+"&img[]=blck"+i);
+					$("#img_blck0").css("border","1px dashed rgba(0, 0, 0, 0.2)");
+				}
+				else
+				{	
+					$("#order_image").val("img[]=blck0");
+					$("#img_blck"+i).css("border","1px dashed rgba(0, 0, 0, 0.2)");
+				}
+				// insertion on loading ends	
+					
+				$("#email_link"+i).fancybox({
+				'width'				: 470,
+				'height'			: 360,
+				'autoScale'			: true,
+				'transitionIn'		: 'none',
+				'transitionOut'		: 'none',
+				'type'				: 'iframe'
+				});
+			
+			}
+	}	
+	
+	//$("#img_caption").css("opacity",0);
+	//alert($("#order_image").val());
+	
+	
+		
+
+	$("#uploaded-files .cancel").sortable({items:'div :not(.cancel)'});
+  $("#uploaded-files").sortable({revert:true,
+  									zIndex:999,
+									serialize:({key:"sort"}),
+									cancel:'.cancel',
+									disable:'.cancel',
+									stop:function(event,ui){
+											
+											for(var i = 0;i<$('#uploaded-files div').length;i++)
+											{
+												if( !$('#img_blck'+i).hasClass('cancel') && $('#img_blck'+i).prev().hasClass('cancel') )
+												{	$("#uploaded-files").find('div.cancel:eq(1)').before($('#img_blck'+i));
+												}
+												
+												if($('#img_blck0').prev('div'))
+												$("#img_blck0").after($('#img_blck0').prev('div'));			
+											}
+											
+											
+											$("#order_image").val($(this).data().sortable.serialize());
+									
+											for(var i = 1;i<$('#uploaded-files div').length;i++)
+											{
+												if($('#img_blck'+i).hasClass('cancel'))
+												{
+													$("#order_image").val($("#order_image").val().replace('&img[]=blck'+i,''));
+												}
+											}
+											
+									}
+  });
+  
+  var sorted = $( ".selector" ).sortable( "serialize", { key: "sort" } );
+
+});
+
+
+function image_caption(id)
+{
+		$("#img_caption"+id).animate({
+		'opacity': 0.8,'width':'97%','margin':0,'font-size':'12px','paddingRight':'2px'
+		});	
+}
+
+function image_caption_remove(id)
+{
+		$("#img_caption"+id).animate({
+		'opacity': 0,'width':'97%','margin':0,'font-size':'12px','paddingRight':'2px'
+		});	
+}
+
+function deleteimage(id,index)
+{
+	$("#img_blck"+index).html("<img src = '<?=IMAGES_URL?>black-001-loading.gif' width = '20' height = '20' style = 'margin-top:40px;' >");
+	var status = "f";
+	$.ajax({
+		type: 'POST',
+		url: '<?=APPLICATION_URL?>myaccount/deleteimg',
+		async:false,
+		data: ({Id:id}),
+		success: function(data){
+			
+			data = $.trim(data);
+			status = data;
+		
+		}
+	});
+	
+	$.ajax({
+		type: 'GET',
+		url: '<?=APPLICATION_URL?>myaccount/uploaded',
+		async:false,
+		success: function(data){
+			
+			data = $.trim(data);
+			tmp = data.split(",");
+			
+		
+		}
+	});
+
+	if($.trim(tmp) != "")
+	{	
+
+			
+
+		//$('#uploaded-files div').each(function(index) {
+			
+			for(var i=0;i<tmp.length;i++)
+			{
+				var tmp1 = tmp[i].split("|");
+				
+				if($.trim(tmp1[2]) == "")
+				{	
+					var title = "No Caption Set -- To set <a href='<?=APPLICATION_URL?>myaccount/setcaption/id/"+tmp1[0]+"' id = 'email_link"+i+"' >Click here</a>";
+					$("#img_blck"+i).removeClass("cancel");
+				}
+				else if(i == 0)
+				var title = tmp1[2];
+				else
+				{	
+					var title = tmp1[2]+"<br><a href='<?=APPLICATION_URL?>myaccount/setcaption/id/"+tmp1[0]+"' id = 'email_link"+i+"' >Click here to change</a>";
+					$("#img_blck"+i).removeClass("cancel");
+				}
+				
+				$("#img_blck"+i).html("<ul id='mws-gallery' class='clearfix'><li style = 'margin:0;width:100%;' onmouseover = 'image_caption("+i+");' onmouseout ='image_caption_remove("+i+");' ><div id = 'img_caption"+i+"' class = 'img_caption' align = 'center'>"+title+"</div><a href='javascript:void(0);' ><img id = 'img_ups' src = '<?=APPLICATION_URL?>image.php?image=<?=IMAGES_URL?>property/"+tmp1[1]+"&width=150&height=150'></a><div class = 'cone_ryt' id = 'cone_ryt"+i+"' onclick = 'deleteimage("+tmp1[0]+","+i+");' ><img src='<?=IMAGES_URL?>TRASH - EMPTY.png'></div></li></ul>");		//});
+				
+				//inserting in text box the order of images
+				if(i != 0)
+				$("#order_image").val($("#order_image").val()+"&img[]=blck"+i);
+				else
+				$("#order_image").val("img[]=blck0");
+				// insertion on loading ends	
+					
+				$("#email_link"+i).fancybox({
+				'width'				: 470,
+				'height'			: 360,
+				'autoScale'			: true,
+				'transitionIn'		: 'none',
+				'transitionOut'		: 'none',
+				'type'				: 'iframe'
+			});
+			
+			}
+		}	
+
+	
+	$("#img_blck"+index).text("");
+	$("#img_blck"+index).addClass("cancel");  // cancel class added (classes which are not sortable)
+	
+	
+	if(status == 's')
+	alert("sucessfully deleted");
+	else
+	alert("Please select any image");
+}
+
+
+
+        
+
+
+
+
+
+</script>
+
+<link href="<?=CSS_URL?>img_upload.css" rel="stylesheet" />
+
+
+<div class = 'step2_tab'>
+	<h2>Photo Gallery</h2>		
+    
+    <form name="myform" id="mws-validate" method="post"  novalidate="novalidate" class="mws-form" enctype="multipart/form-data">
+	<!-- image upload -->
+	
+	
+<div class="content">
+	
+    <div id="drop-files" ondragover="return false">
+            Browse Images
+    </div>
+    <input type="file" name="photo_res" id = "photo_res"  class = "mws-textinput"/>
+
+	<br />
+	
+	<div id="uploaded-holder">
+		<div id="dropped-files">
+			<div id="upload-button">
+				<a href="#" class="upload">Upload!</a>
+				<a href="#" class="delete">delete</a>
+				<span>0 Files</span>
+			</div>
+		</div>
+		<div id="extra-files">
+			<div class="number">
+				0
+			</div>
+			<div id="file-list">
+				<ul></ul>
+			</div>
+		</div>
+	</div>
+	
+	<div id="loading">
+		<div id="loading-bar">
+			<div class="loading-color"> </div>
+		</div>
+		<div id="loading-content">Uploading file.jpg</div>
+	</div>
+	
+	<div id="file-name-holder">
+		<div id="uploaded-files" >
+        	
+            <div id = 'img_blck0' class='cancel' align="center"> 
+            
+            </div>
+            
+            <div id = 'img_blck1' class='cancel' align="center"> 
+            
+            </div>
+            
+            <div id = 'img_blck2' class='cancel' align="center"> 
+            
+            </div>
+            
+            <div id = 'img_blck3' class='cancel' align="center"> 
+            
+            </div>
+			
+            <!-- 4 blocks -->
+            
+            <div id = 'img_blck4' class='cancel' align="center"> 
+            
+            </div>
+            
+            <div id = 'img_blck5' class='cancel' align="center"> 
+            
+            </div>
+            
+            <div id = 'img_blck6' class='cancel' align="center"> 
+            
+            </div>
+            
+            <div id = 'img_blck7' class='cancel' align="center"> 
+            
+            </div>
+            
+            <!-- 8 blocks -->
+            
+            <div id = 'img_blck8' class= 'cancel' align="center"> 
+            
+            </div>
+            
+            <div id = 'img_blck9' class= 'cancel' align="center"> 
+            
+            </div>
+            
+            <div id = 'img_blck10' class= 'cancel' align="center"> 
+            
+            </div>
+            
+            <div id = 'img_blck11' class= 'cancel' align="center"> 
+            
+            </div>
+            
+            <!-- 12 blocks -->
+            
+            <div id = 'img_blck12' class= 'cancel' align="center"> 
+            
+            </div>
+            
+            <div id = 'img_blck13' class= 'cancel' align="center"> 
+            
+            </div>
+            
+            <div id = 'img_blck14' class= 'cancel' align="center"> 
+            
+            </div>
+            
+            <div id = 'img_blck15' class= 'cancel' align="center"> 
+            
+            </div>
+            
+            <!-- 16 blocks -->
+		</div>	
+	</div>
+</div>
+	
+	<input type="text" name = 'order_image' id = 'order_image' class = 'minImages'/>
+    
+    <div class="mws-button-row1"><input type="submit" value="Sign In" class="mws-button red" /></div>
+            
+    </form>  

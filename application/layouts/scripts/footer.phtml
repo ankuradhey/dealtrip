@@ -1,0 +1,46 @@
+<?php
+    $new_array = array();
+    $db = new Db();
+    $sql = "select synonyms,page_key from " . PAGES1;
+    $records = $db->runQuery($sql);
+
+    foreach ($records as $key => $value)
+    {
+        $new_array[$value["page_key"]] = $value["synonyms"];
+    }
+?> 
+
+<div class="footer_text">
+    <h6 class="seo-header-tag">Deal A Trip is a Holiday Rentals website</h6> offering self-catering accommodation including Homes, Villas, Beach Homes, Homes with Private Pool, Apartments, Condos and Townhouses for rent, ‘acting as agent only’ to Property Owners, Property Management Agents and other Suppliers. Use of this website constitutes acceptance of the Terms and Conditions and Privacy Policy.
+    <div style="display:inline-block;vertical-align:middle;">
+        <img class="floatL" style="width:15px;height:auto;" src="<?php echo IMAGES_URL ?>deal sm logo small.jpg">&nbsp;<a class="link floatL" href="<?php echo APPLICATION_URL ?>page/owner-information">&nbsp;Property Owners - list your property FREE</a>
+    </div>    
+
+</div>
+
+<div class="footer_links_main">
+    <div class="footer_links_left">
+        <a href="<?= APPLICATION_URL ?>">Home</a> | 
+        <a href="<?= APPLICATION_URL ?>page/<?php echo $new_array["booking_info"]; ?>">Booking Information</a> |    
+        <a href="<?= APPLICATION_URL ?>page/<?php echo $new_array["owner_info"]; ?>">Owner Information</a> |    
+        <a href="<?= APPLICATION_URL ?>page/<?php echo $new_array["privacy_policy"]; ?>">Privacy Policy </a>|
+        <a href="<?= APPLICATION_URL ?>page/<?php echo $new_array["our_use"]; ?>">Our use of Cookies</a> | 
+        <a href="<?= APPLICATION_URL ?>page/<?php echo $new_array["about_us"]; ?>">About Us</a> |    
+        <a href="<?= APPLICATION_URL ?>page/<?php echo $new_array["contact_us"]; ?>">Contact Us</a> |
+        <a href="<?= APPLICATION_URL ?>page/<?php echo $new_array["blog"]; ?>">Deal A Trip Blog</a> | 
+        <a href="<?= APPLICATION_URL ?>page/<?php echo $new_array["site_map"]; ?>">Site Map</a> |
+        <a href="<?= APPLICATION_URL ?>page/<?php echo $new_array["website_terms_and_conditions"]; ?>">Website Terms And Condition</a> 
+
+        <!--
+       <a href="<?= APPLICATION_URL ?>page/flight">Flight</a> |  
+       <a href="<?= APPLICATION_URL ?>page/hotels">Hotels</a> | 
+       <a href="<?= APPLICATION_URL ?>page/vactions">Vactions</a> |  
+       <a href="<?= APPLICATION_URL ?>page/coprporate">Coprporate</a> | 
+   
+   
+       <a href="<?= APPLICATION_URL ?>page/careers">Careers</a> | 
+    
+       <a href="<?= APPLICATION_URL ?>page/terms">Terms</a>-->
+    </div>
+    <div class="footer_links_right" > &copy; <?php echo date('Y'); ?> Deal A Trip.  All Rights Reserved.</div>
+</div>

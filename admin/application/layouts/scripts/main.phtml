@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <!-- Apple iOS and Android stuff (do not remove) -->
+        <meta name="apple-mobile-web-app-capable" content="no" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1" />
+
+        <meta name="robots" content="noindex,nofollow" />
+
+        <!-- Required Stylesheets -->
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>css/reset.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>css/text.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>css/fonts/ptsans/stylesheet.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>css/fluid.css" media="screen" />
+
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>css/mws.style.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>css/icons/16x16.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>css/icons/24x24.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>css/icons/32x32.css" media="screen" />
+
+        <!-- Demo and Plugin Stylesheets -->
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>css/demo.css" media="screen" />
+
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>plugins/colorpicker/colorpicker.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>plugins/imgareaselect/css/imgareaselect-default.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>plugins/fullcalendar/fullcalendar.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>plugins/fullcalendar/fullcalendar.print.css" media="print" />
+        <link rel="stylesheet" type="text/css" href="<?= JS_URL_ADMIN; ?>chosen/chosen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>plugins/prettyphoto/css/prettyPhoto.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>plugins/tipsy/tipsy.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>plugins/sourcerer/Sourcerer-1.2.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>plugins/jgrowl/jquery.jgrowl.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>plugins/fileinput/css/fileinput.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>plugins/spinner/ui.spinner.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>plugins/timepicker/timepicker.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>css/jui/jquery.ui.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>css/core/misc.css" media="screen" />
+
+        <!-- Theme Stylesheet -->
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>css/mws.theme.css" media="screen" />
+
+        <script type="text/javascript">
+            var SITEURLADMIN = "<?= APPLICATION_URL_ADMIN ?>";
+        </script>
+
+
+        <!-- JavaScript Plugins -->
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>js/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>js/jquery.mousewheel-min.js"></script>
+        <script type="text/javascript">var SITEURLADMIN = "<?= APPLICATION_URL_ADMIN ?>"</script>
+        <script type="text/javascript" src="<?= JS_URL ?>ajaxfileupload.js"></script>
+        <!-- jQuery-UI Dependent Scripts -->
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>js/jquery-ui.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/spinner/ui.spinner.min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/timepicker/timepicker-min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>js/jquery.ui.touch-punch.min.js"></script>
+
+        <!-- Plugin Scripts -->
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/imgareaselect/jquery.imgareaselect.min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/duallistbox/jQuery.dualListBox-1.3.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/jgrowl/jquery.jgrowl-min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/fileinput/js/jQuery.fileinput.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/fullcalendar/fullcalendar.min.js"></script>
+        <!--<script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/datatables/jquery.dataTables.js"></script>-->
+        <script type='text/javascript' src='//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js'></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/datatables/jquery.dataTables.rowReordering.js"></script>
+        <script type="text/javascript" src="<?= JS_URL_ADMIN; ?>chosen/chosen.jquery.min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/prettyphoto/js/jquery.prettyPhoto-min.js"></script>
+        <!--[if lt IE 9]>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/flot/excanvas.min.js"></script>
+        <![endif]-->
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/flot/jquery.flot.min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/flot/jquery.flot.pie.min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/flot/jquery.flot.stack.min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/flot/jquery.flot.resize.min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/colorpicker/colorpicker-min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/tipsy/jquery.tipsy-min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/sourcerer/Sourcerer-1.2-min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/placeholder/jquery.placeholder-min.js"></script>
+        <!--<script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/validate/jquery.validate-min.js"></script>-->
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/validate/jquery.validate.js"></script>
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>css/jui/styles/jquery.ui.button.css" media="screen" />
+        <!--<script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/validate/jquery.validate"></script>-->
+
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/elrte/js/elrte.min.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>plugins/elfinder/js/elfinder.min.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>plugins/elrte/css/elrte.full.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL_ADMIN; ?>plugins/elfinder/css/elfinder.css" media="screen" />
+
+        <!-- Core Script -->
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>js/mws.wizard.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>js/mws.js"></script>
+
+        <!-- Themer Script (Remove if not needed) -->
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>js/themer.js"></script>
+
+        <!-- Demo Scripts (remove if not needed) -->
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>js/demo.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>js/demo.formelements.js"></script>
+
+        <!-- rating -->
+        <link type="text/css" rel="stylesheet" href="<?= CSS_URL ?>jquery.rating.css" />
+        <script type="text/javascript" src="<?= APPLICATION_URL ?>js/jquery.rating.js"></script>
+        <!-- rating ends -->
+
+
+        <link type="text/css" rel="stylesheet" href="<?= APPLICATION_URL_ADMIN ?>plugins/httpadder/css/httpadder.css" />
+        <script src="<?= APPLICATION_URL_ADMIN ?>plugins/httpadder/js/jQuery.Httpadder.js" type="text/javascript"></script>
+
+        <script src="<?= JS_URL ?>general.js" type="text/javascript"></script>
+
+
+
+        <title><?= SITE_NAME ?></title>
+        <link href="<?= IMAGES_URL; ?>favicon.ico" type="image/x-icon" rel="icon" />
+    </head>
+    <body>'
+
+
+        <div id="mws-header" class="clearfix">
+
+
+            <div id="mws-logo-container">
+
+                <!-- Logo Wrapper, images put within this wrapper will always be vertically centered -->
+                <div id="mws-logo-wrap">
+                    <a href="<?= APPLICATION_URL_ADMIN ?>dashboard"  >
+                        <img src="<?= APPLICATION_URL; ?>images/logo.png" alt="mws admin" />
+                    </a>
+                </div>
+            </div>
+
+            <!-- User Tools (notifications, logout, profile, change password) -->
+            <div id="mws-user-tools" class="clearfix">
+
+                <div class="mws-dropdown-menu" id="mws-user-notif">
+                    <a class="mws-i-24 i-alert-2 mws-dropdown-trigger" href="#">Notifications</a>
+
+                    <!-- Unread notification count -->
+                    <?
+                        if (count($this->notifyArr) > 0):
+                            ?>
+                            <span class="mws-dropdown-notif"><?= count($this->notifyArr) ?></span>
+                            <?
+                        endif;
+                    ?>
+                    <!-- Notifications dropdown -->
+                    <div class="mws-dropdown-box">
+                        <div class="mws-dropdown-content">
+                            <ul class="mws-notifications">
+                                <?
+                                    foreach ($this->notifyArr as $val):
+                                        ?>
+
+                                        <li class="unread">
+                                            <a onclick="window.location.href = '<?= APPLICATION_URL_ADMIN ?>booking/viewbooking/bookingId/<?= $val['booking_id'] ?>'" href="<?= APPLICATION_URL_ADMIN ?>booking/viewbooking/bookingId/<?= $val['booking_id'] ?>">
+                                                <span class="message">
+                                                    <strong><?= $val['first_name'] . " " . $val['last_name'] ?></strong> booked <br />
+                                                    property with property no. <strong><?= $val['propertycode'] ?></strong>
+                                                </span>
+                                                <span class="time">
+                                                    <strong><?= date('F j, Y', strtotime($val['booking_date'])) ?></strong>
+                                                </span>
+                                            </a>
+                                        </li>
+
+                                        <?
+                                    endforeach;
+                                ?>
+                            </ul>
+                            <div class="mws-dropdown-viewall">
+                                <a href="<?= APPLICATION_URL_ADMIN ?>booking" onclick="window.location.href = '<?= APPLICATION_URL_ADMIN ?>booking'">View All Booking List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="mws-dropdown-menu" id="mws-user-message">
+                    <a class="mws-i-24 i-message mws-dropdown-trigger" href="#">Messages</a>
+
+                    <!-- Unred messages count -->
+                    <?
+                        if (count($this->latestMsg) > 0):
+                            ?>
+                            <span class="mws-dropdown-notif"><?= count($this->latestMsg) ?></span>
+                            <?
+                        endif;
+                    ?>
+                    <!-- Messages dropdown -->
+                    <div class="mws-dropdown-box">
+                        <div class="mws-dropdown-content">
+                            <ul class="mws-messages">
+                                <?
+                                    foreach ($this->latestMsg as $values):
+                                        ?>
+                                        <li class="unread">
+                                            <a onclick="window.location.href = '<?= APPLICATION_URL_ADMIN ?>msgs/viewmsgs/msgsId/<?= $values['message_id'] ?>'" href="<?= APPLICATION_URL_ADMIN ?>msgs/viewmsgs/msgsId/<?= $values['message_id'] ?>">
+                                                <span class="sender"><?= $values['sender_name'] ?></span>
+                                                <span class="message">
+                                                    <?= substr($values['message_text'], 0, 30) ?>
+                                                </span>
+                                                <span class="time">
+                                                    <?= date('F j, Y', strtotime($values['date_message_sent'])) ?>
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <?
+                                    endforeach;
+                                ?>
+                            </ul>
+                            <div class="mws-dropdown-viewall">
+                                <a  onclick="window.location.href = '<?= APPLICATION_URL_ADMIN ?>msgs'" href="<?= APPLICATION_URL_ADMIN ?>msgs">View All Messages</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- User Information and functions section -->
+                <div id="mws-user-info" class="mws-inset">
+
+                    <!-- User Photo -->
+                    <div id="mws-user-photo">
+                        <img src="<?= APPLICATION_URL_ADMIN; ?>example/profile.jpg" alt="User Photo" />
+                    </div>
+
+                    <!-- Username and Functions -->
+                    <div id="mws-user-functions">
+                        <div id="mws-username">
+                            Admin
+                        </div>
+                        <ul>
+
+                            <li><a href="<?= APPLICATION_URL_ADMIN ?>changepassword/index">Change Password</a></li>
+                            <li><a href="<?= APPLICATION_URL_ADMIN ?>index/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Main Wrapper -->
+        <div id="mws-wrapper">
+
+            <!-- Necessary markup, do not remove -->
+            <div id="mws-sidebar-stitch"></div>
+            <div id="mws-sidebar-bg"></div>
+
+            <!-- Sidebar Wrapper -->
+            <div id="mws-sidebar">
+
+                <!-- Searchbox -->
+                <!--<div id="mws-searchbox" class="mws-inset">
+                <form action="http://www.malijuthemeshop.com/themes/mws-admin/1.3/typography.html">
+                        <input type="text" class="mws-search-input" />
+                    <input type="submit" class="mws-search-submit" />
+                </form>
+            </div>-->
+
+                <!-- Main Navigation -->
+                <? include("left.phtml"); ?>
+
+            </div>
+
+            <!-- Main Container Start -->
+            <div id="mws-container" class="clearfix">
+
+                <!-- Inner Container Start -->
+                <div class="container">
+
+                    <!-- Statistics Button Container -->
+
+
+                    <!-- Panels Start -->
+
+
+                    <div class="mws-panel grid_8">
+                        <?
+                            if (isset($mySession->errorMsg))
+                            {
+                                ?><div class="mws-form-message error"><?= $mySession->errorMsg; ?></div><?
+                                unset($mySession->errorMsg);
+                            }
+
+                            if (isset($mySession->sucessMsg))
+                            {
+                                ?><div class="mws-form-message success"><?= $mySession->sucessMsg; ?></div><?
+                                unset($mySession->sucessMsg);
+                            }
+                            if (isset($mySession->InfoMsg))
+                            {
+                                ?><div class="mws-form-message info"><?= $mySession->InfoMsg; ?></div><?
+                                    unset($mySession->InfoMsg);
+                                }
+                                if (isset($mySession->warningMsg))
+                                {
+                                    ?><div class="mws-form-message warning"><?= $mySession->warningMsg; ?></div><?
+                                    unset($mySession->warningMsg);
+                                }
+                                echo $this->layout()->content;
+                            ?>
+                        <!-- Panels End -->
+                    </div>
+                    <!-- Inner Container End -->
+
+                    <!-- Footer -->
+                    <div id="mws-footer">
+                        Copyright <?= SITE_NAME ?> <?= date("Y"); ?>. All Rights Reserved.
+                    </div>
+
+                </div>
+                <!-- Main Container End -->
+
+            </div>
+
+    </body>
+</html>

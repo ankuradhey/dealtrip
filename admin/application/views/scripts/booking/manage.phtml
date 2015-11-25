@@ -1,0 +1,776 @@
+<style type="text/css">
+    #step-4 .mws-form-inline .mws-form-row{
+        padding:0 10px;
+    }
+    </style>
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-check">Manage Booking</span>
+    </div>
+    <div class="mws-panel-body" >
+        <form class='mws-form wzd-default' name="myform" id="mws-wizard-form" action="<?php echo $this->url(array('controller' => 'booking', 'action' => 'processbook', 'step' => 1), 'default', true) ?>" method="post">
+            <div class="mws-wizard-nav clearfix">
+                <ul>
+                    <li class="current">
+                        <a class="mws-ic-16 ic-accept" href="#step-1">Holiday Rental Details</a>
+                    </li>
+                    <li>
+                        <a href="#step-2" class="mws-ic-16 ic-delivery">Your Details</a>
+                    </li>
+                    <li>
+                        <a class="mws-ic-16 ic-user" href="#step-3">Property Extra's</a>
+                    </li>
+                    <li>
+                        <a class="mws-ic-16 ic-user" href="#step-4">Payment/Confirmation</a>
+                    </li>
+                </ul>
+            </div>
+            <fieldset id="step-1" class="mws-form-inline clearfix" >
+                <div class="mws-form-inline">
+                    <div class="mws-form-row">
+                        <label>Property Code<span class="red">*</span>:</label>
+                        <div class="mws-form-item large"> 
+                            <?php echo $this->form->propertyCode; ?>
+                            <input type="hidden" id="propertyId" name="propertyId" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="mws-form-inline">
+                    <div class="mws-form-row">
+                        <label>Adults<span class="red">*</span>:</label>
+                        <div class="mws-form-item large"><?php echo $this->form->Adults; ?></div>
+                    </div>
+                </div>
+                <div class="mws-form-inline">
+                    <div class="mws-form-row">
+                        <label>Children<span class="red">*</span>:</label>
+                        <div class="mws-form-item large"><?php echo $this->form->Children; ?></div>
+                    </div>
+                </div>
+                <div class="mws-form-inline">
+                    <div class="mws-form-row">
+                        <label>Infants<span class="red">*</span>:</label>
+                        <div class="mws-form-item large"><?php echo $this->form->Infants; ?></div>
+                    </div>
+                </div>
+                <div class="mws-form-inline">
+                    <div class="mws-form-row">
+                        <label>Check-in Date<span class="red">*</span>:</label>
+                        <div class="mws-form-item large"><?php echo $this->form->date_from; ?></div>
+                    </div>
+                </div>
+                <div class="mws-form-inline">
+                    <div class="mws-form-row">
+                        <label>Nights<span class="red">*</span>:</label>
+                        <div class="mws-form-item large"><?php echo $this->form->date_to; ?></div>
+                    </div>
+                </div>
+                <div class="mws-form-inline">
+                    <div class="mws-form-row">
+                        <label>Departure Date<span class="red">*</span>:</label>
+                        <div class="mws-form-item large"><?php echo $this->form->departureDates; ?></div>
+                    </div>
+                </div>
+                <input type="hidden" name="totalAmount" id="totalAmount" value="">
+                <input type="hidden" name="partySize" id="partySize" value="">
+            </fieldset>
+            <fieldset id="step-2" class="mws-form-inline clearfix">
+                <div  class="search_form" id = "prvemailAddress">
+                    <div class="mws-form-inline">
+                        <div class="mws-form-row">
+                            <label>Choose Option</label>
+                            <div class="mws-form-item large"> 
+                                <label style="white-space: nowrap;">
+                                    <input name="attribute_status" id="registered-0" value="0" checked="checked" class="mws-textinput required" type="radio" style="width:10px;" onclick="$('.new_customer').hide();
+                                            $('.registered_customer').show()">
+                                    Registered Customer
+                                </label>
+                                <label style="white-space: nowrap;">
+                                    <input name="attribute_status" id="registered-1" value="1" class="mws-textinput required" type="radio" style="width:10px;" onclick="$('.new_customer').show();
+                                            $('.registered_customer').hide()">
+                                    New Customer
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mws-form-inline registered_customer">
+                        <div class="mws-form-row">
+                            <label>Registered Customer Address:</label>
+                            <div class="mws-form-item large"> 
+                                <input type="text" class = "mws-textinput floatL required userAvailable mws-textinput" name="emailAddress" id="emailAddress" value="" style="width:400px;" />
+                                <input type="hidden" name="userId" value="" id="userId">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="new_customer" style="display:none;" id="testform">
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>Title:</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->title ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>First Name<span class="red">*</span> :</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->first_name ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>Surname<span class="red">*</span> :</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->last_name ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>Email Address<span class="red">*</span>:</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->email_address ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>Confirm Email Address<span class="red">*</span>:</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->cemail_address ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>Password<span class="red">*</span> :</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->password ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-item small">
+                                <span class="left_deal_head_notes">
+                                    Password Notes:  This is required to set up a Customer Area for you where you will be able to access your booking information and keep records of all your transactions with us.  You will also be automatically enrolled into our Deal-A-Trip Rewards programme and enjoy our Customer Benefits.
+                                </span> 
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>Confirm Password<span class="red">*</span> :</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->password_c ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>Street Address<span class="red">*</span> :</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->address ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>City/Location<span class="red">*</span> :</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->city_id ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>State/Region/Area<span class="red">*</span> :</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->state_id ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>Country<span class="red">*</span> :</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->country_id ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>Zip/Postal Code<span class="red">*</span> :</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->zipcode ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>Home Telephone<span class="red">*</span>:</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->home_number ?>
+                                </div>
+                            </div>
+                        </div>           
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>Work Telephone:</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->work_number ?>
+                                </div>
+                            </div>
+                        </div>           
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>Mobile Telephone:</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->mobile_number ?>
+                                </div>
+                            </div>
+                        </div>           
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label>Personal Web Link :</label>
+                                <div class="mws-form-item small">
+                                    <?= $this->myform->webaddress ?>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset id="step-3" class="mws-form-inline">
+                <div class="mws-panel-content">
+                    <h3>Customer Extras</h3>
+                    <span class="left_deal_head_notes">NB: Property Extras costs will be added to the 'Final Details' costing on Step 4.</span> 
+                    <table class="mws-table" id="extrasList">
+                        <thead>
+                            <tr>
+                                <th class ="name">Property Extra</th>
+                                <th class="cost">Cost</th>
+                                <th class="option">Optional/Compulsory</th>
+                                <th class="per">Per Night/ Per Stay</th>
+                                <th class="tick">Tick to Add</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <input type="hidden" name="extraCost" id="extraCost" value="0">
+                    <br />
+
+                    <p class="floatL">Do you have a Special Offer code for this Property?</p> 
+                    <div class="floatL search_form mws-form-inline" style="width:auto;height:auto;"> 
+                        <div class="mws-form-cols">
+                            <label style='display:none;' class="error" >Enter Voucher</label> 
+                            <input type="text" name="spclCode" class="mws-textinput" id="spclCode" style="width:100px;"/>
+                        </div>
+                    </div>
+
+                    <div class="floatL search_form mws-form-inline" style="width:auto;height:auto;"> 
+                        <div class="mws-form-cols">
+                            <a class="mws-button btn" href="javascript:__checkPromo();" >Apply</a>
+                            <input type="hidden" name="spclOffrId" value="" id="spclOffrId">
+                        </div>
+                    </div>
+
+                    <div  id = "spcl_blck_book" style="display:none;" > <!-- special offer div-->
+                        <h3>Special Offers Applied</h3>
+                        <span class="left_deal_head_notes">NB: Special Offer Discounts or Freebies will be adjusted / confirmed on Step 4.</span> 
+                        <table class="mws-table spclOffers" id="spclOffrList">
+                            <thead>
+                                <tr>
+                                    <th class ="name">Special Offer Name</th>
+                                    <th class="cost">Discount Offers or Freebies</th>
+                                </tr>
+                            </thead>
+                            <tbody id="spcl_offer_body">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset id="step-4" class="mws-form-inline">
+                <h3>Final Booking Details</h3>
+                <div class='bookDetails'> 
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label><strong>1. Check-in Date:</strong></label>
+                                <label id="checkInDate" style="margin-left: 100px;"></label>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label><strong>2. Number of Nights:</strong></label>
+                                <label id="nights" style="margin-left: 100px;"></label>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label><strong>3. Departure Date:</strong></label>
+                                <label id="departureDate" style="margin-left: 100px;"></label>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label><strong>4. Cost of Holiday Rental:</strong></label>
+                                <label id="totalCost" style="margin-left: 100px;"></label>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label><strong>5. Special Offer Discount/Freebie:</strong></label>
+                                <label id="spclOffrText" style="margin-left: 100px;">N/A</label>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label><strong>6. Revised Cost of Holiday Rental:</strong></label>
+                                <label id="costAftrSpcl" style="margin-left: 100px;"></label>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label><strong>7. Cost of Property Extras:</strong></label>
+                                <label id="extraCostDisplay" style="margin-left: 100px;">&pound;0</label>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label><strong>8. Total Cost of Holiday Rental:</strong></label>
+                                <label id="finalCost" style="margin-left: 100px;"></label>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label><strong>8. Online Booking Status:</strong></label>
+                                <label id="bookingStatus" style="margin-left: 100px;"></label>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label><strong>9. Amount Paid:</strong></label>
+                                <label style="margin-left: 100px;">
+                                    <input name="amountPaid" class="mws-textinput" id="amountPaid" value="">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label><strong>10. Card Fees:</strong></label>
+                                <label  style="margin-left: 100px;">
+                                    <input name="cardFees" class="mws-textinput" id="cardFees" value="" onblur="setFinalAmount()">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mws-form-inline">
+                            <div class="mws-form-row">
+                                <label><strong>11. Final Amount:</strong></label>
+                                <label style="margin-left: 100px;">
+                                    <input type="text" class="mws-textinput" name="finalAmount" id="finalAmount" value="">
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!--<li><span style="color:#000;">Number of Nights:</span> <span id="nights"></span></li>-->
+                        <!--<li><span style="color:#000;">Departure Date:</span> <span id="departureDate"></span></li>-->
+                        <!--<li><span style="color:#000;">Cost of Holiday Rental: </span><span id="totalCost"></span></li>-->
+                        <!--<li><span style="color:#000;">Special Offer Discount/Freebie:</span><span id="spclOffrText">N/A</span></li>-->
+                        <!--<li><span style="color:#000;">Revised Cost of Holiday Rental: </span><span id="costAftrSpcl"></span></li>-->
+                        <!--<li><span style="color:#000;">Cost of Property Extras: </span><span id="extraCostDisplay">&pound;0</span></li>-->
+                        <!--<li><span style="color:#000;">Total Cost of Holiday Rental: </span><span id="finalCost"></span></li>-->
+                        <!--<li><span style="color:#000;">Online Booking Status: </span> <span id="bookingStatus"></span></li>-->
+<!--                        <li><span style="color:#000;">Full Payment or Advanced: </span>
+                            <input onclick="$('#depositAmountWrap').hide();
+                                            $('#amountPaidWrap').show();
+                                            $('#depositAmount').val('')" checked="checked" type="radio" name="full" value="1">
+                            <label for="full" style="float:none;">Full</label>
+                            <input onclick="$('#amountPaidWrap').hide();
+                                            $('#depositAmountWrap').show();
+                                            $('#amountPaid').val('')" type="radio" name="full" value="0">
+                            <label for="advanced" style="float:none;">Advanced</label>
+                        </li>-->
+<!--                        <li id="amountPaidWrap">
+                            <span style="color:#000;">Amount Paid: </span> 
+                            <input name="amountPaid" id="amountPaid" value=""></li>-->
+<!--                        <li id="depositAmountWrap" style="display:none;">
+                            <span style="color:#000;">Deposit Amount: </span> 
+                            <input name="depositAmount" id="depositAmount" value="" onblur="setFinalAmount()"></li>-->
+<!--                        <li>
+                            <span style="color:#000;">Card Fees: </span> 
+                            <input name="cardFees" id="cardFees" value="" onblur="setFinalAmount()"></li>-->
+<!--                        <li>
+                            <span style="color:#000;">Final Amount: </span>
+                            <input type="text" name="finalAmount" id="finalAmount" value="">
+                        </li>-->
+                    <!--</ol>-->
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+<script type='text/javascript'>
+                                        $.validator.addMethod("userAvailable", function(value, element) {
+                                            var success = false;
+                                            $.ajax({
+                                                type: "POST",
+                                                url: "<?php echo APPLICATION_URL_ADMIN ?>users/validateuser",
+                                                data: "email=" + value,
+                                                async: false,
+                                                dataType: "json",
+                                                success: function(msg) {
+                                                    // if the user exists, it returns a string "true"
+                                                    if (msg.success == "false")
+                                                        success = false;  // already exists
+                                                    else {
+                                                        $('#userId').val(msg.userId);
+                                                        success = true;
+                                                    }
+                                                }
+                                            });
+                                            return success;
+                                        }, "User not found");
+
+                                        //already email id exists validity
+                                        $.validator.addMethod("checkemail", function(value, element) {
+                                            var success = false;
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: SITEURLADMIN + "users/registeruser",
+                                                async: false,
+                                                dataType: 'json',
+                                                data: {
+                                                    'first_name': $('#first_name').val(),
+                                                    'last_name': $('#last_name').val(),
+                                                    'title': $('#title').val(),
+                                                    'email_address': $('#email_address').val(),
+                                                    'password': $('#password').val(),
+                                                    'country_id': $('#country_id').val(),
+                                                    'state_id': $('#state_id').val(),
+                                                    'city_id': $('#city_id').val(),
+                                                    'zipcode': $('#zipcode').val(),
+                                                    'home_number': $('#home_number').val(),
+                                                    'work_number': $('#work_number').val(),
+                                                    'mobile_number': $('#mobile_number').val(),
+                                                    'webaddress': $('#webaddress').val(),
+                                                    'address': $('#address').val()
+                                                },
+                                                async: false,
+                                                        success: function(data) {
+                                                    if (data.success == 'true') {
+                                                        $("#userId").val(data.userId);
+                                                        success = true;
+                                                    } else {
+                                                        alert(data.message);
+                                                        success = false;
+                                                    }
+                                                }});
+                                            return success;
+                                        }, "User already registered with this email address");
+
+
+                                        //check whether booking is available or not
+                                        $.validator.addMethod("checkAvailability", function(value, element) {
+                                            var success = false;
+                                            $.ajax({
+                                                type: "POST",
+                                                url: "<?php echo APPLICATION_URL_ADMIN ?>booking/checkavailability",
+                                                data: {Adults: $("#Adults").val(), Children: $('#Children').val(), date_from: $("#date_from").val(), date_to: $("#date_to").val(), partySize: $("#partySize").val(), pptyId: $('#propertyId').val()},
+                                                async: false,
+                                                dataType: "json",
+                                                success: function(msg) {
+                                                    // if the user exists, it returns a string "true"
+                                                    if (msg.success == "false")
+                                                        success = false;  // already exists
+                                                    else {
+                                                        $('#totalAmount').val(msg.cost);
+                                                        success = true;
+                                                    }
+                                                }
+                                            });
+                                            return success;
+                                        }, "Booking error");
+
+                                        function departureDate()
+                                        {
+
+                                            var dateFrom = $("#date_from").val();
+                                            var dateTo = $("#date_to").val();
+
+                                            if (dateFrom != "" && dateTo != "")
+                                            {
+                                                dateFrom = dateFrom.split("/");
+                                                dateFrom = new Date(dateFrom[2], dateFrom[1] - 1, dateFrom[0]);
+                                                dateFrom = dateFrom.setDate(dateFrom.getDate() + parseInt(dateTo));
+                                                dateFrom = new Date(dateFrom);
+                                                //alert(dateFrom.getMonth());
+
+                                                var x = dateFrom.getDate() + "/" + (dateFrom.getMonth() + 1) + "/" + dateFrom.getFullYear();
+                                                $("#departureDates").val(x);
+                                            }
+                                        }
+
+                                        function addMembersCount(propertyCode) {
+                                            var membersLimit = 0;
+                                            $.ajax({
+                                                url: "<?php echo APPLICATION_URL_ADMIN; ?>booking/getmemberlimit",
+                                                data: {"pptycode": propertyCode},
+                                                type: "POST",
+                                                dataType: "json",
+                                                success: function(data) {
+                                                    if (data.success == 'true') {
+                                                        for (var i = 0; i <= parseInt(data.maximumOccupancy); i++) {
+                                                            var htmlText = "<option value='" + i + "'>" + i + "</option>";
+                                                            $('#Adults,#Children, #Infants').append(htmlText);
+                                                        }
+                                                        $('#propertyId').val(data.propertyId);
+                                                        $('#partySize').val(data.maximumOccupancy);
+                                                        var bookingStatus = data.cal_default == '0' ? "Available" : "On Request";
+                                                        $('#bookingStatus').empty().text(bookingStatus);
+                                                    } else {
+                                                        alert(data.message);
+                                                    }
+                                                },
+                                                error: function(err) {
+                                                    alert("Oops! some error occurred. Please refresh");
+                                                }
+                                            });
+                                        }
+
+                                        function getExtras(propertyId) {
+                                            var extras = "";
+                                            $.ajax({
+                                                url: "<?php echo APPLICATION_URL_ADMIN; ?>property/getextras",
+                                                data: {"pptyId": propertyId},
+                                                type: "POST",
+                                                success: function(data) {
+                                                    var extraCost = 0;
+                                                    var days = $("#date_to").val();
+                                                    console.log(data);
+                                                    if (data) {
+                                                        extras = data.split('|');
+                                                        for (var i = 0; i < parseInt(extras.length); i++) {
+                                                            var temp = extras[i].split(",");
+                                                            var htmlText = "<tr>";
+                                                            htmlText += "<td>" + temp[0] + "</td>";
+                                                            htmlText += "<td>&pound;" + temp[1] + "</td>";
+                                                            htmlText += "<td>" + (temp[2] == '0' ? 'Optional' : 'Compulsory') + "</td>";
+                                                            htmlText += "<td>" + (temp[4] == '0' ? 'Per Night' : 'Per Stay') + "</td>";
+                                                            htmlText += "<td><input data-price='" + (temp[4] == '0' ? temp[1] * days : temp[1]) + "' type='checkbox' name='extras[]' value='" + temp[3] + "' " + (temp[2] == '1' ? 'checked="checked" disabled="disabled"' : 'onclick="updateExtra(this)"') + " ></td>";
+                                                            htmlText += "</tr>";
+                                                            //take compulsory days cost into account
+                                                            console.log(temp[2]);
+                                                            if (temp[2] == "1") {
+                                                                extraCost = parseFloat(extraCost) + parseFloat(temp[1] * days);
+                                                            }
+                                                            $('#extrasList tbody').empty().append(htmlText);
+                                                        }
+                                                        $("#extraCost").val(extraCost);
+                                                        $("#extraCostDisplay").empty().text("£ "+extraCost);
+                                                    } else {
+                                                        $('#extrasList tbody').empty().html("<tr><td colspan='5'>No Extras Found</td></tr>");
+                                                    }
+                                                },
+                                                error: function(xhr, ajaxOptions, thrownError) {
+                                                    alert(xhr.status);
+                                                    alert(thrownError);
+                                                }
+                                            });
+                                        }
+                                        //totalAmount
+                                        //extraCost
+                                        //costAftrSpcl
+                                        //finalCost
+                                        function updateExtra($this) {
+                                            var extraCost = $("#extraCost").val();
+                                            if ($this.checked) {
+                                                var cost = $($this).data('price');
+                                                extraCost = parseFloat(extraCost) + parseInt(cost);
+                                            }
+                                            $("#extraCost").val(extraCost);
+                                            $("#extraCostDisplay").empty().text(extraCost);
+                                        }
+                                        function __checkPromo()
+                                        {
+                                            if ($("#spclCode").val() == "")
+                                            {
+                                                $("label.error").not("#mws-validate-error").show();
+                                                $("label.error").text("Enter Voucher");
+                                            }
+                                            else
+                                            {
+                                                $.ajax({
+                                                    url: "<?= APPLICATION_URL_ADMIN ?>booking/getvoucher",
+                                                    type: "POST",
+                                                    data: ({ppty: $("#propertyId").val(), code: $("#spclCode").val(), nights: $("#date_to").val(), arrivalDate: $("#date_from").val(), totalAmount: $("#totalAmount").val()}),
+                                                    success: function(data) {
+                                                        if (data.success == 'true')
+                                                        {
+                                                            $('#spcl_blck_book').slideDown(200);
+
+                                                            var htmlText = "<tr>";
+                                                            htmlText += "<td class='name'>" + data.type_name + "</td>";
+                                                            htmlText += "<td class='name'>" + data.promo_code + "</td>";
+                                                            htmlText += "</tr>";
+                                                            $(".spclOffers #spcl_offer_body").html(htmlText);
+                                                            $("#spclOffrText").text(data.type_name);
+                                                            $("#spclOffrId").val(data.spcl_offer_id);
+                                                            $("#costAftrSpcl").empty().text("&pound;"+data.reducedCost);
+                                                        } else {
+                                                            $("label.error").not("#mws-validate-error").show();
+                                                            $("label.error").text("Enter correct voucher code");
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+
+                                        function setFinalAmount() {
+                                                var finalAmount = $('#amountPaid').val();
+                                                var cardFees = $('#cardFees').val();
+                                                finalAmount = Number(finalAmount) + Number(cardFees);
+                                                $('#finalAmount').val(finalAmount);
+                                        }
+</script>
+<!--                <div class="register_form">
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Title:</label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->title; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>First Name<span class="red">*</span></label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->first_name; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Last Name<span class="red">*</span></label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->last_name; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Email Address<span class="red">*</span></label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->email_address; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Confirm Email Address<span class="red">*</span></label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->cemail_address; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Password<span class="red">*</span></label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->password; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Confirm Password<span class="red">*</span></label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->password_c; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Street Address<span class="red">*</span></label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->address; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>City/Location<span class="red">*</span></label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->city_id; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>State/Region/Area<span class="red">*</span></label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->state_id; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Country<span class="red">*</span></label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->country_id; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Zip/Postal Code<span class="red">*</span></label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->zipcode; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Home Telephone<span class="red">*</span></label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->home_number; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Work Telephone</label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->work_number; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Mobile Telephone</label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->mobile_number; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Personal Web Link</label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->webaddress; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mws-form-inline">
+                                        <div class="mws-form-row">
+                                            <label>Profile Photo</label>
+                                            <div class="mws-form-item large"> 
+<?php echo $this->userForm->photo; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>-->

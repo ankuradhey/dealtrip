@@ -1,0 +1,57 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><?=$this->pageHeading?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" valign="middle" ><form name="myform" id="myform" action="<?php echo $this->url(array('controller'=>'classified', 'action'=>'saveclassified'), 'default', true)?>" method="post" enctype="multipart/form-data">
+<table width="100%" cellpadding="2" cellspacing="2"  border="0">
+    <tr>
+        <td align="left" valign="middle"  colspan="2"> 
+            <table cellpadding="0" cellspacing="0"  width="50%" border="0">
+                <tr> 
+                <td  height="54" align="left" valign="middle">Category Name :</td>
+                <td  align="left" valign="middle"><?=$this->myform->cat_id?></td>
+                </tr>
+            </table>
+	    </td>
+    </tr>
+    <tr>
+    <td align="left" valign="middle" >
+	   <table cellpadding="2" cellspacing="2" border="0">
+        <tr>
+		    <td align="left" valign="middle" > Posting Title</td><td align="left" valign="middle">Price $:</td><td align="left" valign="middle">Location
+    		</td>
+         
+		  <td align="left" valign="middle"> Zipcode</td>
+	    </tr>
+       <tr>       
+            <td align="left" valign="middle"><?=$this->myform->c_name?></td>
+            <td align="left" valign="middle"><?=$this->myform->price?></td>
+            <td align="left" valign="middle"><?=$this->myform->location?></td>
+            <td align="left" valign="middle"><?=$this->myform->zipcode?></td>
+	   </tr>    
+      </table>
+     </td>
+    </tr>
+    
+    <tr>
+     <td align="left" valign="middle" >
+	   <table cellpadding="0" cellspacing="0" border="0">
+       <tr>             <td  align="left" valign="top">Description:</td></tr>
+       <tr>
+            <td align="left" valign="top"><?=$this->myform->description?></td>
+		</tr>
+       </table>
+     </td>
+    </tr>
+    <tr>
+
+    <td align="center" valign="top"><input type="submit" name="Submit" id="Submit" value="Submit" class="myButton" /></td>
+    </tr>
+    </table>
+    </form></td>
+    </tr>
+</table>

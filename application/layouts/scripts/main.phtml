@@ -1,0 +1,311 @@
+<?
+    global $mySession;
+    $myControllerName = Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
+    $myActionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
+    
+?><!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <!--[if gte IE 9]>
+      <style type="text/css">
+        .aContent {
+           filter: none;
+        }
+      </style>
+    <![endif]-->
+    <head>
+        <!--<meta charset="UTF-8" />-->
+        <!--<meta http-equiv="content-type" content="text/html;charset=UTF-8" />-->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="HandheldFriendly" content="true" />
+        <meta name="MobileOptimized" content="width" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="robots" content="index,follow" />
+        <meta name="author" content="<?php echo SITE_NAME; ?>" />
+        <meta name="google-site-verification" content="nd5ZYuUPO8FnsCfPWiklGoP5FrNZjO795Sp5bbqUtFo" />
+        <meta name="p:domain_verify" content="1a73711916c7a7ad4a5dd6bedc83f302"/>
+        <meta name="msvalidate.01" content="085AE3D4D337735F01C9D1614AA18FAA" />
+        <?php
+            echo $this->headMeta();
+
+            if ($this->pageTitle != "" && $myControllerName != 'error')
+            {
+                echo "\n\t\t<title>" . SITE_NAME . " - " . $this->pageTitle . "</title>";
+            }
+            elseif($myControllerName != 'error')
+            {
+                echo "\n\t\t".$this->headTitle();
+            }
+            else
+            {
+                echo "\n\t\t<title>Page Not Found - ".SITE_NAME."</title>";
+            }
+            
+            //canonical url
+            if($myControllerName == 'index' && $myActionName == 'index'){
+                echo "\n\t\t<link rel='canonical' href='".APPLICATION_URL."' />\n";
+            }
+            
+        ?>
+        <link href="<?= IMAGES_URL; ?>favicon.ico" type="image/x-icon" rel="icon" />
+        <link type="text/css" rel="stylesheet" href="<?= CSS_URL ?>style.css?v=1.1" />
+        <link type="text/css" rel="stylesheet" href="<?= CSS_URL ?>custom.css?v=1.12" />
+        <link rel="stylesheet" href="<?= CSS_URL ?>jquery.rating.css" type="text/css" media="screen" />
+        <script type="text/javascript" src="<?= JS_URL ?>html5.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>js/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="<?= JS_URL ?>general.js"></script>
+        <script type="text/javascript" src="<?= JS_URL ?>jquery.rating.js"></script>
+        <script type="text/javascript">
+            var SITEURL = "<?= APPLICATION_URL; ?>";
+            var SITEURLADMIN = "<?= APPLICATION_URL_ADMIN ?>";
+            $('img').live('contextmenu', function(e) {
+                alert('Image context menu is not permitted');
+                return false;
+            });
+        </script>
+
+        <!--Google Analytics Start-->
+        <script>
+            (function(i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r;
+                i[r] = i[r] || function() {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+                a = s.createElement(o),
+                        m = s.getElementsByTagName(o)[0];
+                a.async = 1;
+                a.src = g;
+                m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', 'UA-47198796-1', 'dealatrip.co.uk');
+            ga('send', 'pageview');
+
+        </script>
+        <!--Google Analytics End-->        
+
+        <?
+            include ("admincssjsheader_out.phtml");
+        ?>
+
+    </head>
+    <body>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id))
+                    return;
+                js = d.createElement(s);
+                js.id = id;
+                js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=692432350787615";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));</script>
+
+        <div class="wrapper">
+            <div class="header"><? include ("header1.phtml"); ?></div>
+            <?
+                //condition for title
+                if ($myControllerName == "index" && $myActionName == "index" || !isLogged() || $myControllerName == "error")
+                    $titlecss = "";
+                else
+                    $titlecss = "style='margin-left:20%;'";
+
+
+                if ($myControllerName == "index" && $myActionName == "index")
+                {
+                    include ("searchpanel.phtml");
+                }
+                else
+                {
+                    ?>
+                    <div class="banner_header" tabindex="0">
+
+                        <?php
+                        if ($this->pageTitle || $this->headlineText):
+                            ?>
+                            <h1 class = "pageTitles" <?= $titlecss ?>><? echo $this->pageTitle?$this->pageTitle:$this->headlineText; ?></h1>		
+                            <?
+                        endif;
+
+                        if (isset($mySession->errorMsg))
+                        {
+                            ?><div  class="mws-form-message error"  id="mws-validate-error"><?= $mySession->errorMsg; ?></div><?
+                            unset($mySession->errorMsg);
+                        }
+                        else
+                        {
+                            ?><div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div><?
+                        }
+
+                        if (isset($mySession->sucessMsg))
+                        {
+                            ?><div class="mws-form-message success"><?= $mySession->sucessMsg; ?></div><?
+                                unset($mySession->sucessMsg);
+                            }
+                            else
+                            {
+                                ?><div id="mws-validate-success" class="mws-form-message success" style="display:none;"></div><?
+                            }
+
+                            if (isset($mySession->InfoMsg))
+                            {
+                                ?><div class="mws-form-message info"><?= $mySession->InfoMsg; ?></div><?
+                                unset($mySession->InfoMsg);
+                            }
+                            if (isset($mySession->warningMsg))
+                            {
+                                ?><div class="mws-form-message warning"><?= $mySession->warningMsg; ?></div><?
+                                unset($mySession->warningMsg);
+                            }
+
+                            //including search header
+
+                            if ($myControllerName == 'search' && $myActionName == 'index')
+                            {
+                                ?>
+                            <!-- Div above search -->
+
+                            <div class="panel-padding panel-background-gray panel-border" id="search_params">
+
+
+                                <form class="search_form position-left" id="search_form" method="post">
+
+                                    <label>Sort By: </label>
+
+                                    <select class="font-medium" name="sorti" id="sorti">
+                                        <?
+                                        $select1 = $select2 = $select3 = $select4 = "";
+
+                                        switch ($mySession->order)
+                                        {
+                                            case '1': $select1 = "selected='selected'";
+                                                break;
+                                            case '2': $select2 = "selected='selected'";
+                                                break;
+                                            case '3': $select3 = "selected='selected'";
+                                                break;
+                                            case '4': $select4 = "selected='selected'";
+                                                break;
+                                        }
+                                        ?>
+
+                                        <option value="1" <?= $select1 ?>>Rental Rates (low-high) </option>
+                                        <option value="2" <?= $select2 ?>>Rental Rates (high-low)</option>
+                                        <option value="3" <?= $select3 ?>>Bedrooms (least-most) </option>
+                                        <option value="4" <?= $select4 ?>>Bedrooms (most-least)</option>
+                                    </select>
+                                    <input type="hidden" value="<?= isset($mySession->gridType) ? $mySession->gridType : 1 ?>" id="grid" name="grid">
+                <!--                                          <input type="hidden" value="1" id="sorti" name="sorti">-->
+                                </form>
+
+                                <?
+                                $gridselect1 = $gridselect2 = $gridselect3 = "";
+                                switch ($mySession->gridType)
+                                {
+                                    case '1': $gridselect1 .= "class='btn search_type_option blue'";
+                                        $gridselect2 .= "class='btn search_type_option gray'";
+                                        $gridselect3 .= "class='btn search_type_option gray'";
+                                        break;
+                                    case '2': $gridselect1 .= "class='btn search_type_option gray'";
+                                        $gridselect2 .= "class='btn search_type_option blue'";
+                                        $gridselect3 .= "class='btn search_type_option gray'";
+                                        break;
+                                    case '3': $gridselect1 .= "class='btn search_type_option gray'";
+                                        $gridselect2 .= "class='btn search_type_option gray'";
+                                        $gridselect3 .= "class='btn search_type_option blue'";
+                                        break;
+                                }
+                                ?>
+
+
+                                <div class="btn-group position-right" id="search_type_toggle">
+                                    <button id="search_type_list" <?= $gridselect1 ?> onclick = "gridtype(1)">
+                                        List
+                                    </button>
+
+                                    <button id="search_type_photo" <?= $gridselect2 ?>  onclick = "gridtype(2)">
+                                        Photo
+                                    </button>
+
+                                    <button id="search_type_map" <?= $gridselect3 ?> onclick = "gridtype(3)">
+                                        Map
+                                    </button>
+                                </div>
+
+
+
+                            </div>
+                            <!-- div aove search ends -->
+                            <?
+                        }
+                        ?>
+
+
+
+
+                    </div>
+
+                <? } ?>
+
+            <div class="mid_section">
+
+                
+                <?
+                    if (isLogged() && $myControllerName != "index" && $myControllerName != "search" && $myControllerName != "booking" && $myControllerName != "signin" && $myActionName != "preview" && $myControllerName != "location" && $myControllerName != "error")
+                    {
+                        include("login_box_header.phtml");
+                        ?>
+                        <div class="mRytContent" >
+                            <?= $this->layout()->content ?>
+                        </div>
+                        <?
+                    }
+                    else
+                        echo $this->layout()->content;
+                    ?>
+            </div>
+
+            <div class="footer"><? include ("footer.phtml"); ?></div>
+            <div class="clear"></div>
+
+        </div>
+
+        <!-- BEGIN ProvideSupport.com Graphics Chat Button Code -->
+        <style>
+            .chatBox{
+                bottom: 0;
+                position: fixed;
+                right: 5px;
+            }
+        </style>
+        <div id="ciVAiv" style="z-index:100;position:absolute"></div>
+        <div id="scVAiv" class="chatBox" style="display:inline"></div>
+        <div id="sdVAiv" style="display:none"></div>
+        <script type="text/javascript">
+            var seVAiv = document.createElement("script");
+            seVAiv.type = "text/javascript";
+            var seVAivs = (location.protocol.indexOf("https") == 0 ? "https" : "http") + "://image.providesupport.com/js/1qb5p5locufa113633rv2o6g4n/safe-standard.js?ps_h=VAiv&ps_t=" + new Date().getTime();
+            setTimeout("seVAiv.src=seVAivs;document.getElementById('sdVAiv').appendChild(seVAiv)", 1)
+        </script>
+        <noscript><div style="display:inline"><a href="http://www.providesupport.com?messenger=1qb5p5locufa113633rv2o6g4n">Chat Support</a></div></noscript>
+        <!-- END ProvideSupport.com Graphics Chat Button Code -->
+
+        <script type="text/javascript" src="<?php echo APPLICATION_URL ?>js/jquery.totemticker.js"></script>
+        <script type="text/javascript">
+            $(function() {
+                $('#vertical-ticker').totemticker({
+                    row_height: '100px',
+                    //                    next: '#ticker-next',
+                    //                    previous: '#ticker-previous',
+                    //                    stop: '#stop',
+                    //                    start: '#start',
+                    mousestop: true
+                });
+            });
+        </script>
+    </body>
+</html>

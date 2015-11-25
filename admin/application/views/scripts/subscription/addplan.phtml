@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+	
+		
+		
+		<title>DataTables example</title>
+		
+       <?
+	     include SITE_ROOT.'admin/application/layouts/scripts/contents.phtml';
+	   ?>
+        
+	</head>
+    
+   
+   
+    
+    
+	<body id="dt_example">
+      <div class="text" >
+       <?=$this->pageHeading?> 
+       </div>
+
+
+
+
+
+
+
+
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><?=$this->pageHeading?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" valign="middle">
+
+<form name="myform" id="myform" action="<?php echo $this->url(array('controller'=>'subscription', 'action'=>'saveplan'), 'default', true)?>" method="post" enctype="multipart/form-data">
+
+<table width="100%" cellpadding="5" cellspacing="5" border='0'>
+<tr>
+<td width="30%" align="left" valign="top">Plan Name :</td>
+<td width="70%" align="left" valign="middle"><?=$this->myform->plan_name?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Plan Icon:</td>
+<td align="left" valign="middle"><?=$this->myform->plan_image?></td>
+</tr>
+<tr>
+<td align="left" valign="top">No of Images :</td>
+<td align="left" valign="middle"><?=$this->myform->nof_images?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Free :</td>
+<td align="left" valign="middle"><?=$this->myform->Isfree?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Plan Price :</td>
+<td align="left" valign="middle"><?=$this->myform->plan_price?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Plan Validity :</td>
+<td align="left" valign="middle"><?=$this->myform->plan_validity?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Use for Description :</td>
+<td align="left" valign="middle"><?=$this->myform->des_box?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Listed on Featured Business :</td>
+<td align="left" valign="middle"><?=$this->myform->featured_business?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Offer Coupons :</td>
+<td align="left" valign="middle"><?=$this->myform->offer_coupons?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+<td align="left" valign="top"><input type="submit" name="Submit" id="Submit" value="Submit" class="myButton" /></td>
+</tr>
+</table></form></td>
+</tr>
+</table>
+
+     
+	</body>
+</html>
+
+<script language="javascript">
+function SetFreeorPaid()
+{
+	if(document.getElementById('Isfree').checked==true)
+	{
+		document.getElementById('plan_price').disabled=true;
+		document.getElementById('plan_validity').disabled=true;
+	}
+	else
+	{
+		document.getElementById('plan_price').disabled=false;
+		document.getElementById('plan_validity').disabled=false;
+	}
+}
+SetFreeorPaid();
+</script>

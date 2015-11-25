@@ -1,0 +1,894 @@
+<?php
+global $mySession;
+?>
+<link href="<?= CSS_URL ?>style2.css" rel="stylesheet">
+<style type="text/css">
+    #map_canvas
+    {
+        width:100%;height:300px;border: solid 1px #cccccc;	
+        margin-left:15px;
+    }
+    .check_bx .checkbox_block
+    {
+        width:50%;
+        float:left;
+    }
+    .check_bx .checkbox_block > input
+    {
+        float:left;
+    }
+
+    .check_bx .checkbox_block > label
+    {
+        float:left;
+    }
+
+    .rental_rate_blck label {
+        color: #FFFFFF;
+        font-size: 13px;
+        font-weight: bold;
+        padding-left: 131px;
+        padding-top: 30px;
+    }
+
+
+    .extras_blck label[title="from"] {
+        color: #FFFFFF;
+        padding-left: 103px;
+    }
+    .extras_blck label {
+        color: #FFFFFF;
+        font-size: 13px;
+        font-weight: bold;
+        padding-left: 135px;
+        padding-top: 30px;
+    }
+</style>
+<script>
+    var SITEURL = "<?= APPLICATION_URL; ?>";
+    var PPTY_ID = "<?= $this->pptyId ?>";
+    var dataArray = [];
+</script>
+<?
+if ($this->step == '3') {
+    ?>
+    <script type="text/javascript" src="<?= JS_URL ?>main.js"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+    <?
+}
+?>
+<link href="<?= CSS_URL ?>style.css" rel="stylesheet">
+<script type="text/javascript">
+    $(document).ready(function(e) {
+
+        $("#check_in").datepicker({
+            maxDate: new Date(),
+            dateFormat: "dd/mm/yy"
+        });
+
+        jQuery.validator.addMethod("validUrl", function(value, element) {
+            return this.optional(element) || /^(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(value);
+        }, "Please Enter Valid URL");
+
+        $("#mws-ui-button-radio").buttonset();
+    });
+
+    function do_save_cal()
+    {
+
+        if ($("#mws-validate").valid())
+        {
+            $.ajax({
+                type: 'POST',
+                url: '<?= APPLICATION_URL_ADMIN ?>property/savecalendarstat/pptyId/<?= $this->pptyId ?>',
+                async: false,
+                data: ({Datef: $("#date_from").val(), Datet: $("#date_to").val(), Status: $("#status").val()}),
+                success: function(data) {
+                    //alert(data);
+                    window.location = window.location.href;
+
+                }
+
+            });
+
+        }
+        return false;
+    }
+
+    //upload image code ends	
+    //currency function
+    function setcurrency()
+    {
+        if ($("#currency").val() != "")
+        {
+
+            $.ajax({
+                type: 'POST',
+                url: '<?= APPLICATION_URL_ADMIN ?>property/setcurrency/pptyId/<?= $this->pptyId ?>',
+                async: false,
+                data: ({Value: $("#currency").val()}),
+                success: function(data) {
+                    data = $.trim(data);
+                    window.location = window.location.href;
+
+                }
+            });
+        }
+
+    }
+
+</script>
+<!-- scripts for rental rates-->
+<script type="text/javascript">
+    function checkvalid(id)
+    {
+        var error_flag = 0;
+        $("#error_discount_offer" + id).hide();
+        $("#error_valid_from" + id).hide();
+        $("#error_valid_to" + id).hide();
+        $("#error_min_stay" + id).hide();
+        $("#error_bookby" + id).hide();
+
+        if ($("#discount_offer" + id).length > 0)
+        {
+            if (isNaN($('#discount_offer' + id).val()) || $('#discount_offer' + id).val() == "" || $('#discount_offer' + id).val() == null || $("#discount_offer" + id).val().length > 3)
+            {
+                $("#error_discount_offer" + id).show();
+                error_flag = 1;
+            }
+        }
+
+        if ($("#valid_from" + id).val() == "" || $("#valid_from" + id).val() == null)
+        {
+            $("#error_valid_from" + id).show();
+            error_flag = 1;
+        }
+
+        if ($("#valid_to" + id).val() == "" || $("#valid_to" + id).val() == null)
+        {
+            $("#error_valid_to" + id).show();
+            error_flag = 1;
+        }
+
+        if ($("#min_stay" + id).length > 0)
+        {
+            if (isNaN($("#min_stay" + id).val()) || $("#min_stay" + id).val() == "" || $("#min_stay" + id).val() == null || $("#min_stay" + id).val().length > 3)
+            {
+                $("#error_min_stay" + id).show();
+                error_flag = 1;
+            }
+        }
+
+        if ($("#bookby" + id).val() == "" || $("#bookby" + id).val() == null)
+        {
+            $("#error_bookby" + id).show();
+            error_flag = 1;
+        }
+
+
+
+        if (error_flag == 0)
+            $.ajax({
+                url: "<?= APPLICATION_URL_ADMIN ?>updater/saveoffers/pptyId/<?= $this->pptyId ?>",
+                type: "POST",
+                data: ({Valid_f: $("#valid_from" + id).val(), Valid_t: $("#valid_to" + id).val(), Nights: $("#min_stay" + id).val(), Discount: $("#discount_offer" + id).val(), Book_by: $("#bookby" + id).val(), offer_id: $("#offer_id" + id).val()}),
+                async: false,
+                success: function(data) {
+                    location.reload();
+                }
+
+
+            });
+
+    }
+
+    function dactive(id)
+    {
+        var c = confirm("Are you sure you want to de-activate this offer");
+        if (c)
+        {
+            $.ajax({
+                url: "<?= APPLICATION_URL_ADMIN ?>property/deactivateoffers/id/" + $("#spcl_offer_id" + id).val(),
+                type: "GET",
+                async: false,
+                success: function(data) {
+                    data = $.trim(data);
+                    window.location.href = "<?= APPLICATION_URL_ADMIN ?>property/editproperty/pptyId/<?= $this->pptyId ?>/step/6";
+                }
+
+
+            });
+        }
+    }
+
+    function mindate(value, id)
+    {
+        var selectedDate = new Date(value);
+        var msecsInADay = 86400000;
+        var endDate = new Date(selectedDate.getTime() + msecsInADay);
+        $("#" + id).datepicker("option", "minDate", endDate);
+    }
+    function mindateforbook(value, id)
+    {
+        var selectedDate = new Date(value);
+        var msecsInADay = 86400000;
+        var endDate = new Date(selectedDate.getTime() - msecsInADay);
+        $("#" + id).datepicker("option", "maxDate", endDate);
+    }
+
+    function do_save_ppty() //function for saving rental rates
+    {
+        var flag = 0;
+        if ($("#mws-validate1").valid())
+        {
+            var Data = 0;
+            $('#rate_blck').html("<div align = 'center' style='width:100%;'><img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20'></div>");
+            $.ajax({
+                url: "<?= APPLICATION_URL_ADMIN ?>updater/setrates/pptyId/<?= $this->pptyId ?>",
+                type: "POST",
+                data: ({Date_f: $("#date_from").val(), Date_t: $("#date_to").val(), Nights: $("#nights").val(), Rate: $("#rate").val(), Option: $('.rateOption:checked').val()}),
+                async: false,
+                success: function(data) {
+
+                    data = $.trim(data);
+                    flag = 1;
+                    do_ppty();
+                }
+            })
+            return false;
+        }
+
+        if (flag == 1)
+            do_ppty();
+    }
+
+    function do_ppty() //function for displaying rental rates
+    {
+        var Data = 0;
+        $('#rate_blck').html("<div align = 'center' style= 'clear:both;width:100%;'><img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20'></div>");
+
+        $.ajax({
+            url: "<?= APPLICATION_URL_ADMIN ?>property/getrates/pptyId/<?= $this->pptyId ?>",
+            type: "GET",
+            async: false,
+            success: function(data) {
+
+                data = $.trim(data);
+                $("#rate_blck").text("");
+
+                if (data != '0' && data != "" && data != null)
+                {
+                    var ArrData = data.split("|");
+                    if (ArrData.length > 0)
+                    {
+                        for (var i = 0; i < ArrData.length; i++)
+                        {
+                            var mySplit = ArrData[i].split(",");
+                            var OptionValue1 = mySplit[0];
+                            var OptionValue2 = mySplit[1];
+                            var OptionValue3 = mySplit[2];
+                            var OptionValue4 = mySplit[3];
+                            var OptionValue5 = mySplit[4];
+                            $("#rate_blck").append("<div style='width:100%;float:left;'><div style='width:20%' align = 'center'><label>" + OptionValue1 + "</label></div><div style='width:20%;' align = 'center'><label >" + OptionValue2 + "</label></div><div style='width:30%;' align='center'><label>" + OptionValue3 + "</label></div><div style='width:23%;' align='center'><label>" + OptionValue4 + "</label></div><div onclick = 'modifyrate(" + i + ",&quot;" + OptionValue5 + "&quot;,&quot;" + OptionValue1 + "&quot;,&quot;" + OptionValue2 + "&quot;,&quot;" + OptionValue3 + "&quot;,&quot;" + OptionValue4 + "&quot;);' style = 'cursor:pointer'><img class='deletes' src='<?= IMAGES_URL ?>application_form_edit.png' width = '20' height = '20'></div><div onclick = 'deleterate(" + OptionValue5 + ");' style = 'cursor:pointer'><img class='deletes' src='<?= IMAGES_URL ?>delete.png' width = '20' height = '20'></div></div>");
+
+                            if (i + 1 == ArrData.length)
+                                $("#cal_date").val(OptionValue2);
+
+                        }
+
+
+                    }
+
+
+                }
+                else
+                {
+                    $("#rate_blck").html("<div align='center' style = 'color:red;width:100%;'>No Items to display</div>");
+                    $("#cal_date").val("");
+                }
+            }
+
+        })
+
+        return false;
+    }
+
+
+    function ratetocheck(ptr)
+    {
+        var rateto = ptr.value.split("")
+        $("#rateFrom").datepicker("option", "maxDate", new Date(ptr.value));
+    }
+
+    function ratefromcheck(ptr)
+    {
+        var rateto = ptr.value.split("")
+        $("#rateTo").datepicker("option", "minDate", new Date(ptr.value));
+    }
+
+    function modifyrate(i, id, from, to, night, rate)
+    {
+        var MIN_NIGHTS = "<select id = 'minNights'>";
+
+        for (var j = 7; j <= 14; j++)
+        {
+            if (j == night)
+            {
+                var selected = 'selected="selected"'
+            }
+            else
+            {
+                var selected = '';
+            }
+            MIN_NIGHTS += "<option " + selected + ">" + j + "</option>";
+
+        }
+        MIN_NIGHTS += "</select>";
+
+        $('#rate_blck').children("div :eq(" + i + ")").html("<div style='width:100%;float:left;margin-top:10px;' ><div style='width:20%' align = 'center'><label>" + from + "</label></div><div style='width:20%;' align = 'center'><label >" + to + "</label></div><div style='width:30%;' align='center'><label>" + MIN_NIGHTS + "</label></div><div style='width:23%;' align='center'><label><input type='text' id = 'rentalRate' value = '" + rate + "'></label></div><div onclick = 'updaterate(" + id + "," + from + "," + to + "," + night + "," + rate + ");' style = 'cursor:pointer'><img class='deletes' src='<?= IMAGES_URL ?>accept.png' width = '20' height = '20'></div><div onclick = 'do_ppty();' style = 'cursor:pointer'><img class='deletes'  src='<?= IMAGES_URL ?>cancel.png' width = '20' height = '20'></div></div>");
+
+
+        var ratefrom = $("#rateFrom").val();
+        ratefrom = ratefrom.split("-");
+
+        var rateto = $("#rateTo").val();
+        rateto = rateto.split("-");
+
+
+        $("#rateFrom").datepicker({minDate: new Date(ratefrom[2], ratefrom[1] - 1, ratefrom[0]),
+            maxDate: new Date(rateto[2], rateto[1] - 1, rateto[0])
+        });
+
+        $("#rateTo").datepicker({minDate: new Date(ratefrom[2], ratefrom[1] - 1, ratefrom[0]),
+            maxDate: new Date(rateto[2], rateto[1] - 1, rateto[0])
+        });
+
+
+    }
+    function extras_show() //function for showing extras
+    {
+        var Data = 0;
+        $('#extra_blck').html("<div align = 'center' style= 'clear:both;width:100%;'><img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20'></div>");
+        $.ajax({
+            url: "<?= APPLICATION_URL_ADMIN ?>property/getextras/pptyId/<?= $this->pptyId ?>",
+            type: "GET",
+            async: false,
+            success: function(data) {
+
+                data = $.trim(data);
+                $("#extra_blck").text("");
+
+                if (data != '0' && data != "" && data != null)
+                {
+                    var ArrData = data.split("|");
+                    if (ArrData.length > 0)
+                    {
+                        console.log($("#extra_blck")[0]);
+                        for (var i = 0; i < ArrData.length; i++)
+                        {
+                            var mySplit = ArrData[i].split(",");
+                            var OptionValue1 = mySplit[0];
+                            var OptionValue2 = mySplit[1];
+                            var OptionValue3 = mySplit[2];
+                            var OptionValue4 = mySplit[3];
+                            var OptionValue5 = mySplit[4];
+
+                            if (OptionValue3 == 1)
+                                OptionValue3 = "Compulsory";
+                            else
+                                OptionValue3 = "Optional";
+
+
+                            if (OptionValue5 == 0)
+                                OptionValue5 = "Night";
+                            else
+                                OptionValue5 = "Stay";
+
+
+                            $("#extra_blck").append("<div class ='inExtra' style='width:100%;float:left;'><div style='width:33%' align = 'center'><label>" + OptionValue1 + "</label></div><div style='width:20%;' align = 'center'><label >" + OptionValue2 + "</label></div><div style='width:20%;' align='center'><label>" + OptionValue3 + "</label></div><div style='width:20%;' align='center'><label>" + OptionValue5 + "</label></div><a href = '#' style = 'display:block;'><div onclick = 'deleteextras(" + OptionValue4 + ");' ><img class='deletes' src='<?= IMAGES_URL ?>TRASH - EMPTY.png' width = '20' height = '20'></div></a></div>");
+                        }
+
+
+                    }
+
+
+                }
+                else
+                {
+                    $("#extra_blck").html("<div align='center' style = 'color:red;width:100%;'>No Items to display</div>");
+
+                }
+            }
+
+        })
+
+        return false;
+
+    }
+
+    function do_save_extra() //function for saving extras
+    {
+
+        var Data = 0;
+        $('#extra_blck').html("<div align = 'center' style='width:100%;'><img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20'></div>");
+        if ($("#mws-validate2").valid())
+        {
+            $.ajax({
+                url: "<?= APPLICATION_URL_ADMIN ?>updater/saveextras/pptyId/<?= $this->pptyId ?>",
+                type: "POST",
+                data: ({extra_name: $("#extra_name").val(), extra_price: $("#extra_price").val(), extra_type: $("#extra_type").val(),
+                    stay_type: $("#stay_type").val(), Option: $('#extraOption:checked').val()}),
+                async: false,
+                success: function(data) {
+
+                    data = $.trim(data);
+                    extras_show();
+                }
+
+            });
+            window.location.href = window.location.href;
+
+        }
+        $('#extra_blck').text("");
+        return false;
+
+    }
+
+    function deleteextras(id) //function for deleting extras
+    {
+        alert(id);
+        var flag = 0;
+        $.ajax({
+            url: "<?= APPLICATION_URL_ADMIN ?>property/deleteextras/id/" + id,
+            type: "GET",
+            async: false,
+            success: function(data) {
+                data = $.trim(data);
+                if (data != "")
+                {
+                    alert("Record Sucessfully deleted");
+                    flag = 1;
+                }
+            }
+        })
+
+        if (flag == 1)
+            extras_show();
+    }
+
+</script>
+<script type="text/javascript">
+    // script for rental rates
+    $(document).ready(function(e) {
+        //**** Following is the date code *****//
+        //****        for rental rate     *****//	
+
+        var today = new Date();
+        var d = today.getDate();
+        var m = today.getMonth();
+        var y = today.getFullYear();
+
+        $("#date_from").datepicker({
+            minDate: today,
+            maxDate: new Date(y + 2, m, d),
+            dateFormat: "dd/mm/yy",
+            onSelect: function(dateText) {
+                dateText = dateText.split("/");
+                var $sD = new Date(dateText[2], dateText[1] - 1, dateText[0]);
+                $sD.setDate($sD.getDate() + 1);
+                $("#date_to").datepicker('option', 'minDate', $sD);
+            }
+        });
+
+
+        $("#date_to").datepicker({
+            minDate: today,
+            maxDate: new Date(y + 2, m, d),
+            dateFormat: "dd/mm/yy"
+        });
+
+
+
+        jQuery.validator.addMethod("dateCheck", function(value, element) {
+
+            var value1 = $("#date_from").val();
+            var value2 = $("#date_to").val();
+
+
+            var valu1 = value1.split("/");
+            var valu2 = value2.split("/");
+
+            value1 = new Date(valu1[2], valu1[1], valu1[0]);
+            value2 = new Date(valu2[2], valu2[1], valu2[0]);
+
+
+
+            return (value2 > value1);
+
+        }, "Choose Proper Date");
+        //**** Above is the date code *****//
+        //****  for rental rate ends  *****//	
+
+    });
+
+
+    function cal_default(value)
+    {
+        var c = confirm("Are you sure you want to proceed??");
+
+        if (c)
+        {
+
+            $.ajax({
+                type: 'POST',
+                url: '<?= APPLICATION_URL_ADMIN ?>property/setcaldefault/pptyId/<?= $this->pptyId ?>',
+                async: false,
+                data: ({Value: value}),
+                success: function(data) {
+                    data = $.trim(data);
+                    window.location = window.location.href;
+
+                }
+            });
+        }
+        else
+            window.location = window.location.href;
+
+    }
+
+    //sript for rental rate ends
+</script>
+<div>
+    <div class="mws-panel grid_8">
+        <div class="mws-panel-header"><span class="mws-i-24 i-check"><?= $this->pageHeading ?></span></div>
+        <div class="mws-panel-body" >
+            <fieldset id="step-1" class="mws-form-inline">
+                <div style="padding:20px;">
+                    <form name="myform" id="mws-validate" method="post"  action = '<?php echo $this->url(array('controller' => 'updater', 'action' => 'index', 'pptyId' => $this->pptyId, 'step' => '0'), 'default', true) ?>' novalidate class="mws-form" enctype="multipart/form-data" onsubmit="return validateUpdater()">
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Select Page:</label><div class="mws-form-item large"><?= $this->myform->page; ?> </div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Select XML Supplier:</label><div class="mws-form-item large"><?= $this->myform->supplier; ?> </div></div></div>
+                        <div class="not-work-page">
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Type:</label><div class="mws-form-item large"><?= $this->myform->accomodation_type ?> </div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Country:</label><div class="mws-form-item large"><?= $this->myform->country_id ?> </div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>State-Area-Region:</label><div class="mws-form-item large"><div id='country_state'></div><?= $this->myform->state_id ?> </div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>City-Location:</label><div class="mws-form-item large"><div id='state_city'></div><?= $this->myform->city_id ?> </div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Sub Area:</label><div class="mws-form-item large"><div id='city_sub'></div><?= $this->myform->sub_area ?> </div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Local Area:</label><div class="mws-form-item large"><div id='sub_local'></div><?= $this->myform->local_area ?> </div></div></div>
+    <!--                        <div class="mws-form-inline"><div class="mws-form-row"><label>Postal Code:</label><div class="mws-form-item large"><?= $this->myform->zipcode ?> </div></div></div>-->
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Number of Bedrooms:</label><div class="mws-form-item large"><?= $this->myform->no_of_bedroom ?> </div></div></div>
+                            <div class="mws-button-row1 not-work-page" >
+                                <input type="button" value="Search" class="mws-button blue floatR clearfix" onclick="showPropertyList();" />
+                            </div>
+                        </div>
+                        <div class="work-page" style="display:none;">
+                            <div class="mws-form-inline">
+                                <div class="mws-form-row">
+                                    <label>Property Codes</label>
+                                    <div class="mws-form-item large">
+                                        <select name="property-code[]" id="property-code" multiple="multiple" class="chzn-select">
+                                            <?php
+                                            foreach($this->propertyArr as $property){
+                                                ?>
+                                            <option value="<?php echo $property['id'] ?>"><?php echo $property['propertycode']; ?></option>
+                                            <?php
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mws-button-row" style="clear:both;max-height:400px;overflow-y:scroll;">
+                            <div style="float:left;">
+                                <p style="font-weight:bold;">Showing <span id="result-count">0</span> results</p>
+                            </div>
+                            <table id="updateList" class="mws-table">
+                                <thead><tr>
+                                        <th><input type="checkbox" id="_allCheckbx" checked="checked"></th>
+                                        <th>Property Image</th>
+                                        <th>Description</th>
+                                        <th>Property Code</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    if (isset($this->filteredPpty) && count($this->filteredPpty)) {
+                                        foreach ($this->filteredPpty as $pptyVal) {
+                                            ?>
+                                            <tr>
+                                                <td><input type ="checkbox" name="filteredProperty[]"  checked="checked" class="filteredProperty" value= "<?php echo $pptyVal['id']; ?>" ></td>
+                                                <td><img src="<?php echo IMAGES_URL ?>property/<?php echo $pptyVal['image_name']; ?>" width="100" height="100" ></td>
+                                                <td><?php echo $pptyVal['property_title']; ?></td>
+                                                <td><?php echo $pptyVal['propertycode']; ?></td>
+                                            </tr>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <?= $this->myform->step ?>
+                        <div class="mws-button-row1"> <input type="submit" value="Save" class="mws-button red" /></div> 
+
+                    </form>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<script language="javascript">
+
+    $(document).ready(function(e) {
+    
+        $('.filteredProperty').live('click', function(elem){
+            var $totalLength = $('.filteredProperty').length;
+            var $selectedLength = $('.filteredProperty:checked').length;
+            if($totalLength == $selectedLength)
+                $("#_allCheckbx").prop("checked", true);
+            else
+                $("#_allCheckbx").prop("checked", false);
+        });
+        
+        $('#_allCheckbx').live('click', function(elem) {
+            if ($("#_allCheckbx").is(':checked')) {
+                $(".filteredProperty").prop("checked", true);
+            } else {
+                $(".filteredProperty").prop("checked", false);
+            }
+        })
+    })
+
+    function AddOptiontoListBox(listBoxId, Value, Text)
+    {
+        var elSel = document.getElementById(listBoxId);
+        var opt = document.createElement("option");
+        elSel.options.add(opt);
+        opt.text = Text;
+        opt.value = Value;
+    }
+
+    function RemoveItems(optinoId)
+    {
+        var elSel = document.getElementById(optinoId);
+        for (i = elSel.length - 1; i > 0; i--) {
+            elSel.remove(i);
+        }
+    }
+
+    function ChangeCountry()
+    {
+        document.getElementById('DisplayCountry').style.display = "none";
+        document.getElementById('ChooseCountry').style.display = "block";
+    }
+
+    function getCountryState(countryId)
+    {
+        $('#country_state').html("<img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20' >");
+        $.ajax({url: "<?= APPLICATION_URL . "signup/getstatebycountry" ?>",
+            type: "POST",
+            async: false,
+            cache: false,
+            data: ({countryId: countryId}),
+            success: function(data)
+            {
+                EmptyListbox('state_id');
+                AddOptiontoListBox('state_id', '', '- - State - -');
+                data = $.trim(data);
+                if (data != '')
+                {
+
+                    var ArrData = data.split("***");
+
+                    if (ArrData.length > 0)
+                    {
+                        for (var i = 0; i < ArrData.length; i++)
+                        {
+                            var mySplit = ArrData[i].split("|||");
+                            var OptionValue = mySplit[0];
+                            var OptionText = mySplit[1];
+                            AddOptiontoListBox('state_id', OptionValue, OptionText);
+                        }
+                    }
+                    i
+
+
+                }
+
+
+                $('#country_state').text("");
+            }
+
+        });
+
+
+    }
+    function getStateCity(stateId)
+    {
+        $('#state_city').html("<img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20' >");
+        $.ajax({url: "<?= APPLICATION_URL . "signup/getcitiesbystate" ?>",
+            type: "POST",
+            data: ({stateId: stateId}),
+            success: function(data)
+            {
+
+                EmptyListbox('city_id');
+                AddOptiontoListBox('city_id', '', '- - City - -');
+                data = $.trim(data);
+                if (data != "")
+                {
+                    var ArrData = data.split("***");
+                    if (ArrData.length > 0)
+                    {
+                        for (var i = 0; i < ArrData.length; i++)
+                        {
+                            var mySplit = ArrData[i].split("|||");
+                            var OptionValue = mySplit[0];
+                            var OptionText = mySplit[1];
+                            AddOptiontoListBox('city_id', OptionValue, OptionText);
+                        }
+
+                    }
+                }
+
+                $('#state_city').text("");
+            }
+        });
+
+    }
+
+    function getCitySub(cityId)
+    {
+        $('#city_sub').html("<img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20' >");
+        $.ajax({url: "<?= APPLICATION_URL . "signup/getsubareabycity" ?>",
+            type: "POST",
+            data: ({cityId: cityId}),
+            success: function(data)
+            {
+
+                EmptyListbox('sub_area');
+                AddOptiontoListBox('sub_area', '', '- - Sub Area - -');
+                data = $.trim(data);
+                if (data != "")
+                {
+                    var ArrData = data.split("***");
+                    if (ArrData.length > 0)
+                    {
+                        for (var i = 0; i < ArrData.length; i++)
+                        {
+                            var mySplit = ArrData[i].split("|||");
+                            var OptionValue = mySplit[0];
+                            var OptionText = mySplit[1];
+                            AddOptiontoListBox('sub_area', OptionValue, OptionText);
+                        }
+
+                    }
+                }
+
+                $('#city_sub').text("");
+            }
+        });
+
+    }
+
+    function getSubLocal(subId)
+    {
+        $('#sub_local').html("<img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20' >");
+        $.ajax({url: "<?= APPLICATION_URL . "signup/getlocalareabysub" ?>",
+            type: "POST",
+            data: ({subId: subId}),
+            success: function(data)
+            {
+
+                EmptyListbox('local_area');
+                AddOptiontoListBox('local_area', '', '- - Local Area - -');
+                data = $.trim(data);
+                if (data != "")
+                {
+                    var ArrData = data.split("***");
+                    if (ArrData.length > 0)
+                    {
+                        for (var i = 0; i < ArrData.length; i++)
+                        {
+                            var mySplit = ArrData[i].split("|||");
+                            var OptionValue = mySplit[0];
+                            var OptionText = mySplit[1];
+                            AddOptiontoListBox('local_area', OptionValue, OptionText);
+                        }
+
+                    }
+                }
+
+                $('#sub_local').text("");
+            }
+        });
+
+    }
+
+    function showPropertyList() {
+        var accomodation_type = $('#accomodation_type').val(),
+                country_id = $('#country_id').val(),
+                state_id = $('#state_id').val(),
+                city_id = $('#city_id').val();
+        $.ajax({url: "<?= APPLICATION_URL . "admin/updater/property-list" ?>",
+            type: "POST",
+            data: ($('#mws-validate').serialize()),
+            success: function(data) {
+//                var html = '';
+//                for (var i in data.data) {
+//                    html += '<div class="mws-form-row">';
+//                    html += '<div class="mws-form-cols">';
+//                    html += '<div class="mws-form-col-1-8">';
+//                    html += '<input type ="checkbox" name="filteredProperty[]"  class="filteredProperty" value= "' + data.data[i].id + '" >';
+//                    html += '</div>';
+//                    html += '<div class="mws-form-col-1-8">';
+//                    html += '<img src="<?php echo IMAGES_URL ?>property/' + data.data[i].image_name + '" width="100" height="100" >';
+//                    html += '</div>';
+//                    html += '<div class = "mws-form-col-2-8">';
+//                    html += data.data[i].property_title
+//                    html += '</div>';
+//                    html += '<div class = "mws-form-col-1-8">';
+//                    html += data.data[i].propertycode
+//                    html += '</div>';
+//                    html += '</div>';
+//                    html += '</div>';
+//                }
+//                html += '</ul>';
+//                var html = '<table class="mws-table">';
+                var html = '<thead><tr>';
+                html += '<th><input type="checkbox" id="_allCheckbx"></th>';
+                html += '<th>Property Image</th>';
+                html += '<th>Description</th>';
+                html += '<th>Property Code</th>';
+                html += '</tr></thead><tbody>';
+                var i = -1;
+                for (i in data.data) {
+                    html += '<tr>';
+                    html += '<td><input type ="checkbox" name="filteredProperty[]"  class="filteredProperty" value= "' + data.data[i].id + '" ></td>'
+                    html += '<td><img src="<?php echo IMAGES_URL ?>property/' + data.data[i].image_name + '" width="100" height="100" ></td>';
+                    html += '<td>' + data.data[i].property_title + '</td>';
+                    html += '<td>' + data.data[i].propertycode + '</td>';
+                    html += '</tr>';
+                }
+                html += '</tbody>';//'</table>';
+                $('#updateList').empty().html(html);
+                $('#result-count').empty().text(parseInt(i)+1);
+            }
+        });
+    }
+
+    function validateUpdater() {
+        var page = $('#page').val();
+        if (!$(".filteredProperty:checked").length && page != 4)
+        {
+            alert("No property selected");
+            return false;
+        }else{
+         var s = confirm("Are you sure you want to proceed?");
+         return s;
+        }
+    }
+    function pageSelect(_id){
+        var _url = "<?php echo APPLICATION_URL_ADMIN; ?>";
+        switch(_id){
+            case '1':
+                $('#mws-validate').attr("action",_url+"updater/specification");
+                break;
+            case '2':
+                $('#mws-validate').attr("action",_url+"updater/area");
+                break;
+            case '3':
+                $('#mws-validate').attr("action",_url+"updater/rentalrates");
+                break;
+            case '4':
+                $('#mws-validate').attr("action",_url+"updater/workpage");
+                $('.not-work-page').hide();
+                $('.work-page').show();
+                break;    
+        }
+        
+    }
+    do_ppty();
+    extras_show();
+</script>

@@ -1,0 +1,101 @@
+ <script type="text/javascript">
+   show = '0';
+   $(document).ready(function(e){
+	   
+
+   
+   
+   });
+   
+   
+    </script>	
+ 
+	<div class = "messageContainer">
+    
+         
+            <div class = "msg_board_tab" style="float:right;">
+                <ul>
+                    <li><a href="<?=APPLICATION_URL?>messageboard/inbox" class="">Inbox</a></li>
+                    <li><a href="<?=APPLICATION_URL?>messageboard/outbox" >Outbox</a></li>
+                    <li><a href="<?=APPLICATION_URL?>messageboard/compose" class="active" >Compose</a></li>
+                </ul>
+            </div>
+         
+         	<div class="messagebox compose">
+                    <form name="myform" id="mws-validate"  method="post" novalidate="novalidate" class="mws-form" >
+            <div style="width:90%;margin:10px 0 0 35px;" >
+         		
+                <div id="elmnt2" class="elmnt"><!-- elmnt2 starts-->
+                    <!-- Mail Actions Top -->
+                    <div class="draft_field">
+                        <div style="width:12%;height:39px;" class="floatL"></div>
+                        <div class="draft_actions floatL">
+                              <input type="submit" value="Send" class="btn search_type_option gray" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                        <div class="adjustdiv"></div>
+                    <!-- Mail Actions Top Ends -->
+                 </div><!-- elmnt 2 ends-->
+                 
+                 <div id="elmnt4" class="elmnt"><!-- elmnt 4 starts-->
+                    <div class="label"><div title="Write the name of your contacts" id="to_label" class="label_txt">To</div></div>
+                                <?=$this->myform->receiver_id?><!--<input type="text" class="noborder" id="to_input_1" aria-haspopup="true" style="width: 20px;">-->
+<!--                                <input type="hidden" id="to">-->
+                </div><!-- elmnt4 ends-->
+                 
+                 <div id="elmnt7" class="elmnt"><!-- elmnt 7 starts-->
+                    <div class="label"><div title="Write the subject for this mail" id="sub_label" class="label_txt">Subject</div></div>
+                    <div class="field">
+                        <?=$this->myform->message_subject?><!--<input type="text" autocomplete="off" value="" name="subject" id="subject_1" class="textfield">-->
+                    </div>
+                    <div class="adjustdiv"></div>
+                 </div><!-- elmnt 7 ends-->
+                 
+                 
+                 <div id="elmnt8" class="elmnt">
+                    <div class="label">
+                        <div id="lang_label" class="label_txt">Message</div>
+                    </div>
+
+                    <!-- Editor Body Section -->
+                	<?=$this->myform->message_text?>	
+                    <br>
+                    <br>
+                    <!-- Editor Body Section Ends -->
+                    <div class="adjustdiv"></div>
+
+                </div>
+                 
+                 
+                 <div id="elmnt2" class="elmnt"><!-- elmnt2 starts-->
+                    <!-- Mail Actions Top -->
+                    <div class="draft_field">
+                        <div style="width:12%;height:39px;" class="floatL"></div>
+                        <div class="draft_actions floatL">
+                               <input type="submit" value="Send" class="btn search_type_option gray" />
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                        <div class="adjustdiv"></div>
+                    <!-- Mail Actions Top Ends -->
+                 </div><!-- elmnt 2 ends-->
+                 
+			 </div>
+	
+    		</form>
+    </div> 	<!-- message container ends-->
+	</div>
+ 
+   <!-- <div class="mws-panel-body">
+        <form name="myform" id="mws-validate"  method="post" novalidate="novalidate" class="mws-form" >
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+            <div id = "loading" class = 'loading'></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Send to :</label><div class="mws-form-item large"><?=$this->myform->receiver_id?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Subject :</label><div class="mws-form-item large"><?=$this->myform->message_subject?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Message :</label><div class="mws-form-item large"><?=$this->myform->message_text?></div></div></div>
+            <div class="mws-button-row">
+                <input type="submit" value="Submit" class="mws-button" />
+            </div>
+        </form>
+ 	</div>-->

@@ -1,0 +1,1 @@
+APPLICATION_URL."rant/reportcomment/adminId/".$this->topicArr['story_id']."/cadminId/".$values1['comment_id']

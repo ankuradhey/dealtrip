@@ -1,0 +1,41 @@
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-check"><?=$this->pageHeading?></span>
+    </div>
+    
+    <div class="mws-panel-body">
+        <form name="myform" id="mws-validate" action="" method="post" novalidate="novalidate" class="mws-form">
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+            <div class="mws-form-inline">
+                <div class="mws-form-row">
+                    <label>Subscriber Name :</label>
+                    <div class="mws-form-item large">
+                        <?=$this->myform->subscriber_name?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Subscriber Url :</label>
+                    <div class="mws-form-item large">
+                        <?=$this->myform->subscriber_url?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Subscriber API UserName :</label>
+                    <div class="mws-form-item large">
+                        <?=$this->myform->subscriber_api_username?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Subscriber API Password :</label>
+                    <div class="mws-form-item large">
+                        <?=$this->myform->subscriber_api_password?>
+                    </div>
+                </div>
+            <div class="mws-button-row">
+                <input type="submit" value="Submit" class="mws-button red" />
+            </div>
+            </div>
+        </form>
+    </div>    	
+</div>
+</div>

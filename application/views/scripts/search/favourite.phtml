@@ -1,0 +1,145 @@
+<script type="text/javascript">
+status = "show";
+function showFav()
+{
+	
+	$(".showFav").toggle(status);	
+	if(status == "show")
+	status = "hide";
+	else
+	status = "show";
+}
+
+function addFav(id)
+{
+	alert(id);
+	$(".showFav div").eq(0).html("<img src = '<?=IMAGES_URL?>black-001-loading.gif' width = '20' height = '20'>");
+}
+
+</script>
+
+<div class="myFav">
+    <div class = "showFav">
+    	<div align="center"><!--first-->
+        
+        </div>
+        
+        <div><!-- second-->
+        
+        </div>
+        
+        <div><!-- third-->
+        
+        </div>
+        
+        <div><!-- fourth-->
+        
+        
+        </div>
+        
+        <div><!-- fifth-->
+        
+        </div>
+        
+        <div><!-- sixth-->
+        
+        </div>
+        
+        <div><!-- seventh-->
+        
+        </div>
+        
+        <div><!-- eighth-->
+        
+        </div>
+        
+        
+    
+    </div>
+
+</div>
+<div class"arrowFav" align="center" style="position:absolute;top:220px;width:79%;cursor:pointer;" onclick="showFav();">
+	<img src="<?=IMAGES_URL?>down_arrowFav.png" />
+</div>
+
+<?
+foreach($this->propertyData as $values)
+	{
+		
+		if($values['image_name'])
+		$image = $values['image_name'];
+		else
+		$image = "generic.gif";
+?>	
+		<div class="ppty_list">
+			<div class = 'left_panel_heading_ppty'> <!-- top div -->
+            	<div>
+				<? if($values['address']) echo $values['address']; else echo "[No Location described]";?>  
+                </div>
+                <span style="float:right">Property No: <?=$values['propertycode']?></span>
+            </div> <!-- top div ends -->           
+            <div>
+            	<span class = 'tab_box_heading'>
+                	Your Property is currently <?  
+													switch($values['status'])
+													{
+														case '1': echo "Incomplete"; break;
+														case '2': echo "Pending Approval"; break;
+														case '3': echo "Live"; break;
+														case '4': echo "Suspended"; break;	
+													}
+					
+												?>
+                </span>
+        	</div>	
+        	<div class = 'inn_content'><!-- big div--> 
+            	<!-- image content-->
+                <div class = 'img_wrapper'>
+                	<img src="<?=APPLICATION_URL?>image.php?image=<?=IMAGES_URL?>property/<?=$image?>&height=156&width=200">
+                </div>
+                <!-- image content ends-->
+                <div class = 'ppty_desc tab_box_dis'>
+                	<?=$values['property_title']?>
+                    <br>
+					<?=$values['brief_desc']?>
+                </div>
+             </div>   
+            <!-- div for buttons -->
+            <div class="edit_btns" style = 'float:left;'>
+                <div class="btns" align="center"><!-- first div -->
+                <a href='<?=APPLICATION_URL?>myaccount/editproperty/ppty/<?=$values['id']?>'>Edit Property</a>
+                </div>
+                
+                <div class="btns" align="center"><!-- 2nd div -->
+                <a href='<?=APPLICATION_URL?>myaccount/updatecalendar/ppty/<?=$values['id']?>'>Update Calendar</a>
+                </div>
+                
+                <div class="btns" align="center"><!-- 3rd div-->
+                <a href='<?=APPLICATION_URL?>myaccount/preview/ppty/<?=$values['id']?>'>Preview Property</a>
+                </div>
+                
+                <div class="btns" align="center"><!-- 4th div-->
+                <a href='<?=APPLICATION_URL?>myaccount/review/ppty/<?=$values['id']?>'>Add a review</a>
+                </div>
+                
+                <div class="btns" align="center"><!-- 5th div-->
+                <a href='<?=APPLICATION_URL?>myaccount/suspend/ppty/<?=$values['id']?>'>Suspend</a>
+                </div>
+                
+                <div class="btns" align="center"><!-- 6th div-->
+                <a href='<?=APPLICATION_URL?>myaccount/deleteppty/ppty/<?=$values['id']?>' onclick = 'return isdelete();'>Delete</a>
+                </div>
+                
+                <div class="btns" align="center">
+                <a href='javascript:void(0);' onclick = 'return addFav(<?=$values['id']?>);'>Add as favourite</a>
+                </div>
+                
+            </div>
+            <!-- div for button ends -->
+                
+            </div><!-- big div ends-->
+		
+
+<?		
+	}
+?>

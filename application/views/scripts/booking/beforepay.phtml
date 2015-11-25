@@ -1,0 +1,53 @@
+<?
+    global $mySession;
+?>
+
+<div style="width:100%;" align="center">
+    <img src="<?= IMAGES_URL ?>loading_background.gif">
+</div>
+<!-- https://www.sandbox.paypal.com/cgi-bin/webscr-->
+<!--https://www.paypal.com/cgi-bin/webscr-->
+<form  action="https://www.sandbox.paypal.com/cgi-bin/webscr"  name="payment_frm" id="payment_frm" method="post">  <!--action="https://www.sandbox.paypal.com/cgi-bin/webscr" -->
+    <input type="hidden" name="cmd" value="_xclick">
+    <input type="hidden" name="upload" value="1">
+    <input type="hidden" name="custom" value="">
+    <!--<input type="hidden" name="business" value="<?= PAYPAL_EMAIL ?>">-->
+    <input type="hidden" name="business" value="test@radsoft.co.in">
+    <input type="hidden" name="amount" value="<?= $this->paypalDetails['amount'] ?>">
+    <input type="hidden" name="currency_code" value="GBP">
+    <input type="hidden" name="charset" value="utf-8">
+    <input type="hidden" name="full_pay_amount" id = "full_pay_amount" value="<?= $Totalpay ?>">
+    <input type="hidden" name="adv_pay_amount" id = "adv_pay_amount" value="<?= $advancePay ?>">
+    <input type="hidden" name="rm" value="2" >
+    <input type="hidden" name="first_name" value="<?= $mySession->bookingUser['first_name'] ?>">  
+    <input type="hidden" name="last_name" value="<?= $mySession->bookingUser['last_name'] ?>">  
+    <input type="hidden" name="address1" value="<?= $mySession->bookingUser['address'] ?>">  
+    <input type="hidden" name="address2" value="<?= $mySession->bookingUser['address1'] ?>">  
+    <input type="hidden" name="city" value="<?= $mySession->bookingUser['city_id'] ?>">  
+    <input type="hidden" name="state" value="<?= $mySession->bookingUser['state_id'] ?>">  
+    <input type="hidden" name="zip" value="<?= $mySession->bookingUser['zipcode'] ?>">  
+    <input type="hidden" name="night_phone_a" value="<?= $mySession->bookingUser['home_number'] ?>">  
+    <input type="hidden" name="night_phone_b" value="<?= $mySession->bookingUser['work_number'] ?>">  
+    <input type="hidden" name="night_phone_c" value="<?= $mySession->bookingUser['mobile_number'] ?>">  
+    <input type="hidden" name="email" value="<?= $mySession->bookingUser['email_address'] ?>">  
+    <input type="hidden" name="notify_url" value="<?= APPLICATION_URL . 'booking/afterpay/Return/1/' ?>">
+    <input type="hidden" name="return" id="return" value="<?= APPLICATION_URL . 'booking/afterpay/Return/1' ?>">
+    <input type="hidden" name="cancel_return" value="<?= APPLICATION_URL . 'booking/afterpay/Return/0' ?>">
+    <input type="image"  style="display:none;"="" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynow_LG.gif" name="submit" />
+</form>
+
+
+<script language="javascript" type="text/javascript">
+
+    function subm()
+    {
+        var frm = document.getElementById("payment_frm");
+        frm.submit();
+
+    }
+    window.onload = subm;
+
+
+
+</script>
+<noscript><input type="submit" value="verify submit"></noscript>

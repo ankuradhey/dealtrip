@@ -1,0 +1,71 @@
+ <!-- Panels Start -->
+               
+            	<div class="mws-panel grid_8">
+                	<div class="mws-panel-header">
+                    	<span class="mws-i-24 i-polaroids"><?=$this->pageHeading?></span>
+                    </div>
+                   
+                    <div class="mws-panel-body">
+                     <div class="mws-panel-toolbar top clearfix " style="float:right;">
+                    <ul>
+                        <li><a href="<?=APPLICATION_URL_ADMIN?>msgs/compose/rId/<?=$this->result[0]['sender_id']?>" class="mws-ic-16 ic-email"> Reply</a></li>
+                        <li><a class="mws-ic-16 ic-arrow-undo" href="<?=APPLICATION_URL_ADMIN?>msgs/index" title="Back">Back</a></li>
+                    </ul>
+                </div>
+        
+        
+                    	<div class="mws-panel-content" >
+                        <table width="100%" cellpadding="0" cellspacing="0" style="font-size:16px;">
+<tr>
+<td align="left" valign="top">
+	<table width="100%" cellpadding="5" cellspacing="5">
+	<tr>
+        <td width="20%" align="left" valign="top"><strong>Message Subject</strong></td>
+        <td width="3%" align="center" valign="top"><strong>:</strong></td>
+        <td width="77%" align="left" valign="top"><?=$this->result[0]['message_subject']?></td>
+	</tr>
+    
+    <tr>
+    	<td>&nbsp;</td>
+    </tr>
+    
+	<tr>
+		<td align="left" valign="top"><strong>Date</strong></td>
+		<td align="center" valign="top"><strong>:</strong></td>
+
+		<td align="left" valign="top"><?=date(DATEFORMAT,strtotime($this->result[0]['date_message_sent']))?></td>
+	</tr>
+    
+    <tr>
+    	<td>&nbsp;</td>
+    </tr>
+    
+	<tr>
+		<td align="left" valign="top"><strong>Sender</strong></td>
+		<td align="center" valign="top"><strong>:</strong></td>
+		<td align="left" valign="top"><?=$this->result[0]['sender_name']?></td>
+	</tr>
+    
+    <tr>
+    	<td>&nbsp;</td>
+    </tr>
+    
+	
+    <tr>
+		<td align="left" valign="top"><strong>Message</strong></td>
+		<td align="center" valign="top"><strong>:</strong></td>
+		<td align="left" valign="top"><?=$this->result[0]['message_text']?></td>
+	</tr>	
+	</table>
+</td>
+</tr>
+</table>
+                        </div></div>
+                            
+                            
+                           
+                    	</div>
+                    </div>
+				</div>
+                
+                <!-- Panels End -->

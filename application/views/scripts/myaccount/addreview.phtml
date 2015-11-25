@@ -1,0 +1,35 @@
+<?
+global $mySession;
+?>
+<form name="myform" id="mws-validate" method="post"  novalidate="novalidate" class="mws-form"  >
+    <div  class = "container_cal" > <!-- main wrapper div container -->
+    
+        <div class = 'container_cal_review_frm' >
+             <div class="mws-form-inline"><div class="mws-form-row"><label>Property Code<span class="red">*</span>:</label><div class="mws-form-item medium"><?=$this->myform->ppty_no?> </div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Name of Guest<span class="red">*</span>:</label><div class="mws-form-item medium"><?=$this->myform->full_name?> </div></div></div>
+            <span class="guide_note_review" >First Name and Surname or Nickname</span>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Guest is From<span class="red">*</span>:</label><div class="mws-form-item medium"><?=$this->myform->location?> </div></div></div>
+            <span class="guide_note_review" >Location and Country</span>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Check in date<span class="red">*</span>:</label><div class="mws-form-item medium"><?=$this->myform->check_in?> </div></div></div>
+
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Customer Rating<span class="red">*</span>:</label><div class="mws-form-item medium"><?=$this->myform->rating?> </div></div></div>
+            <span class="guide_note_review" >A Rating of 10 is the highest and 1 is the lowest.</span>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Review Headline<span class="red">*</span>:</label><div class="mws-form-item medium"><?=$this->myform->headline?> </div></div></div>
+            <span class="guide_note_review" >Quick Headline Summary for the Review</span>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Comment(Top Tip):</label><div class="mws-form-item medium"><?=$this->myform->comment?> </div></div></div>
+            <span class="guide_note_txtarea_review" >Any tips about the property and/or location for future renters.</span>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Review - Upto 1000 Characters <span class="red">*</span>:</label><div class="mws-form-item medium"><?=$this->myform->review?> </div></div></div>        
+            <span class="guide_note_txtarea_review">Detailed Renter Review</span>
+            <div class="mws-button-row"> 
+            <?=$this->myform->step?>
+            <input type="submit"  class="mws-button blue" value = 'Add Review' />
+            </div>
+
+        </div>
+        
+        <div class = 'container_cal_review_image' align="center">
+        	<img id = "profile_blck" src="<?=IMAGES_URL.$mySession->LoggedUser['image']?>"  width="100%" height="150" onclick="$('#image').click()"/>
+        </div>
+    
+    </div>
+</form>

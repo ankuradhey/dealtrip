@@ -1,0 +1,32 @@
+<?
+    $strfld_name = "page_content";
+    include_once(SITE_ROOT . "editor.php");
+?> 
+<table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+        <td align="left" valign="top" class="main_heading"><?= $this->pageHeading ?></td>
+    </tr>
+    <tr>
+        <td align="left" valign="top">&nbsp;</td>
+    </tr>
+    <tr>
+        <td align="center" valign="middle"><form name="myform" id="myform" action="<?php echo $this->url(array('controller' => 'pages', 'action' => 'savepage'), 'default', true) ?>" method="post"><table width="100%" cellpadding="2" cellspacing="2">
+                    <tr>
+                        <td width="12%" align="left" valign="top">Category :</td>
+                        <td width="88%" align="left" valign="middle"><?= $this->myform->page_cat_id ?></td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top">Title :</td>
+                        <td align="left" valign="middle"><?= $this->myform->page_title ?></td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top">Content :</td>
+                        <td align="left" valign="middle"><?= $this->myform->page_content ?></td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top">&nbsp;</td>
+                        <td align="left" valign="top"><input type="submit" name="Submit" id="Submit" value="Submit" class="myButton" /></td>
+                    </tr>
+                </table></form></td>
+    </tr>
+</table>

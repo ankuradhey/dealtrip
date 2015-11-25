@@ -1,0 +1,26 @@
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-check"><?=$this->pageHeading?></span>
+    </div>
+    <div class="mws-panel-body">
+        <form name="myform" id="mws-validate" action="<?php echo $this->url(array('controller'=>'property', 'action'=>'saveamenitypage'), 'default', true)?>" method="post" novalidate="novalidate" class="mws-form">
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+            <div class="mws-form-inline">
+                <div class="mws-form-row">
+                    <label>Title :</label>
+                    <div class="mws-form-item large">
+                        <?=$this->myform->page_title?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                <label>Content</label>
+                <div class="mws-form-item">
+                    <?=$this->myform->page_content?>
+                </div>
+            </div>
+            <div class="mws-button-row">
+                <input type="submit" value="Submit" class="mws-button red" />
+            </div>
+        </form>
+    </div>    	
+</div> 

@@ -1,0 +1,64 @@
+<?
+	global $mySession;
+?>
+<script type="text/javascript">
+
+function deleteNews(id)
+{
+	$.ajax({
+		
+		url:"<?=APPLICATION_URL?>myaccount/deletenews/id/"+id,
+		success:function(data){
+			window.location = window.location;
+		}
+		
+	});
+	
+}
+
+</script>
+
+
+<div class="staticPage">
+	
+     <?
+	
+	if($mySession->LoggedUserType == 2):
+    ?>
+	<h1 class="pageTitles newsheading">News Update</h1>
+    <div class="newsArea">
+    <?
+            
+        foreach($this->newsArr as $val):
+    ?>
+            <div>
+                <div class = "close_btn" onclick="deleteNews(<?=$val['news_id']?>)"><img src="<?=IMAGES_URL?>close_news.png" width='20' height = '20'/></div>
+            	<h4><?=date('d-m-Y',strtotime($val['posted_on']))?></h4>
+				<p>Subject:- <?=$val['subject']?></p><br />
+
+                <p>	<?=$val['news_update']?></p>
+            </div>
+        
+    <?
+        endforeach;	
+    
+    
+    
+    ?>
+    
+    </div>  
+    
+    <?
+	
+	endif;
+
+
+?>  
+
+    
+    <p><?=$this->welcomemessage?></p>
+    
+    
+    
+   
+</div>

@@ -1,0 +1,136 @@
+<? //prd($this->jobData)?>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><div style="float:left;"><?=$this->pageHeading?></div>
+<div style="float:right;"><a href="<?=APPLICATION_URL_ADMIN?>jobs/index">Back</a></div></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" valign="middle"><table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" width="60%"><table width="100%" cellpadding="5" cellspacing="5">
+<tr>
+<td align="left" valign="top" width="25%">Jobs Title</td>
+<td align="center" valign="top" width="5%"><strong>:</strong></td>
+<td align="left" valign="top" width="70%"><?=$this->jobData['job_title']?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Job Description</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->jobData['job_description']?></td>
+</tr>
+
+<tr>
+<td align="left" valign="top">Job Posted By</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->jobData['first_name']." ".$this->jobData['last_name']?></td>
+</tr>
+<?
+if( $this->jobData['job_type'] ==2 || $this->jobData['job_type'] ==3)
+{
+?>
+<tr>
+<td align="left" valign="top">Start Date</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->jobData['start_date']?></td>
+</tr>
+<? }?>
+
+<?
+if($this->jobData['job_type'] ==3)
+{
+?>
+<tr>
+<td align="left" valign="top">End Date</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->jobData['end_date']?></td>
+</tr>
+<? }  ?>
+
+<?
+if($this->jobData['job_type'] ==1)
+{
+?>
+
+<tr>
+<td align="left" valign="top">Start Time</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->jobData['start_time']?></td>
+</tr>
+
+<tr>
+<td align="left" valign="top">End Time</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->jobData['end_time']?></td>
+</tr>
+
+<tr>
+<td align="left" valign="top">Job Days</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->jobData['job_days']?></td>
+</tr>
+
+<? }?>
+<tr>
+<td align="left" valign="top">Pay Rate From</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->jobData['pay_rate_from']?></td>
+</tr>
+
+<tr>
+<td align="left" valign="top">Pay Rate To</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->jobData['pay_rate_to']?></td>
+</tr>
+
+<tr>
+<td align="left" valign="top">No of Child</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->jobData['nof_child']?></td>
+</tr>
+
+<tr>
+<td align="left" valign="top">Ages</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->jobData['ages']?></td>
+</tr>
+
+<tr>
+<td align="left" valign="top">Date Posted</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->jobData['date_posted']?></td>
+</tr>
+
+
+<tr>
+<td align="left" valign="top">Job Location </td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->jobData['job_location'] ?></td>
+</tr>
+</table></td>
+<td align="left" valign="top" width="40%">
+<?
+if($this->jobData['profile_image']!="" and file_exists(SITE_ROOT.'images/profileimgs/'.$this->jobData['profile_image']))
+{ 
+?>
+<img src="<?=APPLICATION_URL?>image.php?image=<?='images/profileimgs/'.$this->jobData['profile_image']?>&height=150&width=150" border="0" style="padding:3px;border: solid 1px #cccccc;" />
+<?
+}
+else
+{ 
+?>
+<img src="<?=APPLICATION_URL?>image.php?image=<?='images/profileimgs/plan.png'?>&height=150&width=150" border="0" style="padding:3px;border: solid 1px #cccccc;" />
+<?	
+}
+?>
+</td>
+</tr>
+</table></td>
+</tr>
+
+</table>
+
+
+

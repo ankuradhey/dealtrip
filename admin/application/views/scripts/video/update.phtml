@@ -1,0 +1,148 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><?=$this->pageTitle?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" valign="middle"><form name="videoform" id="videoform" enctype="multipart/form-data" action="<?php echo $this->url(array('controller'=>'video', 'action'=>'save','videoId'=>$this->videoData['video_id']), 'default', true)?>" method="post"><table width="100%" cellpadding="0" cellspacing="0">
+
+<tr>
+<td align="left" valign="middle" width="200">Video Type :</td>
+<td align="left" valign="middle"><?=$this->myform->video_type?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<tr id="path1">
+<td align="left" valign="middle">Video Path :</td>
+<td align="left" valign="middle"><?=$this->myform->video_path1?></td>
+</tr>
+<tr id="path2">
+<td align="left" valign="middle">Video Path :</td>
+<td align="left" valign="middle"><?=$this->myform->video_path2?></td>
+</tr>
+<?
+if($this->videoData['video_id']!="") 
+{
+?>
+<tr><td align="left" valign="top">Video</td>
+<td align="left" valign="top">
+<?
+if($this->videoData['video_path']!="")
+{
+if(file_exists(SITE_ROOT.'video/'.$this->videoData['video_path']))
+{
+	?>
+	<a href="<?=APPLICATION_URL?>download.php?download_file=video/<?=$this->videoData['video_path']?>">Download / View Video</a>
+	<?
+}
+else
+{ $vidoe =  explode('http://',$this->videoData['video_path']); 
+?>
+<a href="http://<?=$vidoe[1]?>" target="_blank"><?=$this->videoData['video_path']?></a>
+<?
+}
+}
+?>
+</td>
+</tr>
+<? } ?>
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td align="left" valign="middle">Video Title :</td>
+<td align="left" valign="middle"><?=$this->myform->video_title?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<? if($this->videoData['video_id']!="")
+{ ?>
+<tr>
+<td align="left" valign="middle">Uploaded On :</td>
+<td align="left" valign="middle"><?=$this->myform->up_date?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<? } ?> 
+<tr>
+<td align="left" valign="middle">Video Description :</td>
+<td align="left" valign="middle"><?=$this->myform->video_description?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<td align="left" valign="middle">Video Status :</td>
+<td align="left" valign="middle"><?=$this->myform->video_status?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td align="left" valign="middle">Featured Status :</td>
+<td align="left" valign="middle"><?=$this->myform->featured_status?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<td align="left" colspan="2" valign="top">
+<input type="submit" <? if($this->videoData['video_id']!=""){ echo 'value="Update"';} else { echo 'value="Add"'; }  ?>  class="myButton" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="Back" id="Back" value="Back" class="myButton" onclick="window.location='<?=APPLICATION_URL_ADMIN?>video/index'" /></td>
+</tr>
+</table></form></td>
+</table>
+
+<style>
+.textarea_medium { height:215px;}
+</style>
+
+<script type="text/javascript" language="javascript">
+$('#path2').css('display','none');
+$('#path1').css('display','none');
+function changetype()
+{
+ var ch1= document.getElementById('video_type-1').checked;
+ var ch2= document.getElementById('video_type-2').checked;
+ if(ch1==true)
+ {
+  $('#path2').css('display','none');
+  $('#path1').css('display','table-row');
+ }
+ else if(ch2==true)
+ {
+  $('#path1').css('display','none');
+  $('#path2').css('display','table-row');
+ }
+}
+
+
+
+
+$('#fpath2').css('display','none');
+$('#fpath1').css('display','none');
+function featuredpath()
+{
+var chk1= document.getElementById('featured_status-1').checked;
+var chk2= document.getElementById('featured_status-2').checked;
+ if(chk1==true)
+ {
+  $('#fpath2').css('display','none');
+  $('#fpath1').css('display','table-row');
+ }
+ 
+  else if(chk2==true)
+ {
+  $('#fpath1').css('display','none');
+  $('#fpath2').css('display','table-row');
+ }
+ 
+}
+</script>
+</script>
+<? if($_REQUEST['video_type']==1)
+ { ?>
+<script>
+$('#path1').css('display','table-row');
+$('#path2').css('display','none');
+</script> 
+<? }
+else if($_REQUEST['video_type']==2){ 
+?>
+<script>
+$('#path1').css('display','none');
+$('#path2').css('display','table-row');
+</script> 
+<? } ?> 

@@ -1,0 +1,108 @@
+<script type="text/javascript">
+
+$(document).ready(function(){	
+	$("#flex1").flexigrid
+			(
+			{
+			url: '<?=APPLICATION_URL_ADMIN."blog/generategridcomment/blog_post_id/".$this->blog_post_id?>', 
+			dataType: 'json',
+			colModel : [
+				{display: 'S.No.', name : '', width : 50, sortable : false, align: 'center'},
+				{display: '<span id="bcdel"><input type="checkbox" name="deletebcchk" id="deletebcchk" onclick="return checkall(this)" /></span>', name : '', width : 50, sortable : false, align: 'center'}, 
+				 
+				{display: 'Post By', name : 'first_name', width : 210, sortable : true, align: 'left'},
+				{display: 'Post On', name : 'postedon', width : 120, sortable : false, align: 'center'},
+				{display: 'View', name : '', width : 50, sortable : false, align: 'center'}  
+				],
+			buttons : [
+			{name:'Delete', bclass: 'delete', onpress: deleteitem} 
+			] ,
+			 
+			sortname: "first_name",
+			sortorder: "asc",
+			usepager: true,
+			title: '<?=$this->pageHeading?>',
+			useRp: true,
+			rpOptions: ['20','30','40','10'],
+			rp: 10,
+			showTableToggleBtn: true,
+			singleSelect : true,
+			height: 265,
+			width: 850,
+			autowidth:false
+			}
+			);   
+	updatelink();
+});
+function sortAlpha(com)
+{ 
+	jQuery('#flex1').flexOptions({newp:1, params:[{name:'letter_pressed', value: com},{name:'qtype',value:$('select[ta=qtype]').val()}]});
+	jQuery("#flex1").flexReload(); 
+	updatelink();
+}
+  function deleteitem(com)
+{
+	var r= "";
+	var s="";
+	var selected=false;
+	for(var i=1;document.getElementById('check'+i);i++){
+		if(document.getElementById('check'+i).checked==true){	
+			r += document.getElementById('check'+i).value+"|";
+			selected = true;
+		}
+	}	
+	
+	r += '0';
+	if(selected){
+		var confirmation = confirm("Are you sure want to delete ?");
+		if(confirmation!=true){
+			return false;
+		}	
+	
+		$.ajax({ url: "<?=APPLICATION_URL_ADMIN."blog/deletecomment"?>",
+		type: "POST",
+		data: ({Id:r}),
+		success: function(data){			
+			jQuery("#flex1").flexReload(); 
+			alert('Selected records have been deleted successfully.');
+		}});
+	} else {
+		alert('Please choose a record to delete.');
+	}
+}
+
+function updatelink()
+{
+	$("a.thickbox").fancybox({
+				'transitionIn'	: 'elastic',
+				'transitionOut'	: 'elastic',
+				'opacity'		: true,
+				'overlayShow'	: true,
+				'overlayColor'		: '#666',
+				'overlayOpacity'	: 0.8,
+				'scrolling'	:true,
+				'easingIn' : 'swing',
+				'easingOut' : 'swing',
+				'type'				: 'iframe'
+				
+			});
+}
+</script>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><?=$this->pageHeading?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="left" valign="top"><table width="100%" cellpadding="0" cellspacing="0" align="center">
+<tr>
+<td align="left" valign="top"><table id="flex1" style="display:none;padding:0px;margin:0px;" width="100%" align="center"></table></td>
+</tr>
+</table></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+</table>

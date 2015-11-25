@@ -1,0 +1,161 @@
+<link href="<?= CSS_URL ?>style.css" rel="stylesheet">
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header"><span class="mws-i-24 i-check"><?= $this->pageHeading ?></span></div>
+    <div class="mws-panel-body" >
+        <div style ="padding:20px;"><!-- step 9 content wrapper div -->
+            <form name="synform" class="mws-form validate" id="mws-validate" method="post" action="<?php echo $this->url(array('controller' => 'library', 'action' => 'synchronizebulk'), 'default', true); ?>">
+                <div class="mws-form-inline">
+                    <div class="mws-form-row"><label>Select Supplier</label>
+                        <div class="mws-form-item small">
+                            <select name="xml_subscriber_id" id="xml_subscriber_id" class="mws-textinput required" onchange="if(this.value==1) $('.rateMarkUp').show(); else{$('.xml_rate_markup').val(''); $('.rateMarkUp').hide(); }">
+                                <option value="">--Select--</option>
+                                <?php
+                                foreach ($this->subscriberArr as $subscKey => $subscVal) {
+                                    ?>
+                                    <option <?php echo $subscVal['subscriber_id'] == $this->supplierId ? 'selected="selected"' : ""; ?>  value="<?php echo $subscVal['subscriber_id']; ?>" <?php echo $this->propertyData['xml_subscriber_id'] == $subscVal['subscriber_id'] ? "selected='selected'" : ""; ?>  ><?php echo $subscVal['subscriber_name']; ?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mws-form-row">
+                        <?php
+                        foreach ($this->propertyList as $property) {
+                            
+                            $location = $property
+                            ?>
+                            <label><?php echo $property['propertycode']; ?> (Synch)</label>
+                            <div class="mws-form-item small">
+                                <input type="hidden" name="ref_property_id[]" value="<?php echo $property['id']; ?>">
+                                <input type="hidden" name="ref_property_caption[]" value="<?php echo $property['location_name']." ".$property['bedrooms']." Beds ".$property['ptyle_name']; ?>">
+                                <input type="text" name="xml_property_id[]" id="xml_property_id" class="mws-textinput required" value="<?php echo empty($this->propertyData['xml_property_id']) ? "" : $this->propertyData['xml_property_id']; ?>">
+                            </div>
+                            <div class="rateMarkUp" >
+                                <label><?php echo $property['propertycode']; ?> (Markup)</label>
+                                <div class="mws-form-item small">
+                                    <input type="text" name="xml_rate_markup[]" id="xml_rate_markup" class="xml_rate_markup mws-textinput required" value="<?php echo empty($this->propertyData['xml_rate_markup']) ? "" : $this->propertyData['xml_rate_markup']; ?>">
+                                </div>
+                            </div>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                </div>
+                <div class="mws-form-inline">
+                    <div class="mws-form-row"><label></label>
+                        <div class="mws-form-item large">
+                            <input type="submit" name="submiy" id="xml_submit" value="go" class="mws-button red">
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+            <br>
+            <hr>
+            <br>
+            <form name="myform" id="mws-validate" method="post"  action = '<?php echo $this->url(array('controller' => 'inhouse', 'action' => 'processpage', 'pptyId' => $this->pptyId, 'step' => $this->step), 'default', true) ?>' novalidate="novalidate" class="mws-form" enctype="multipart/form-data">
+                <div class="mws-form-inline">
+                    <div class="mws-form-row"><label>Heading</label>
+                        <div class="mws-form-item large">
+                            <textarea name="heading"><?php echo $this->propertyData['xml_heading']; ?></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="mws-form-inline">
+                    <div class="mws-form-row"><label>Description</label>
+                        <div class="mws-form-item large">
+                            <?php
+                            $this->propertyData['xml_description'] = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', "", htmlspecialchars_decode($this->propertyData['xml_description']));
+                            if (!empty($this->propertyData['xml_description']))
+                                echo html_entity_decode($this->propertyData['xml_description']);
+                            else {
+                                ?>
+                                <textarea name="description"></textarea>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="mws-form-inline">
+                    <div class="mws-form-row"><label>Features</label>
+                        <div class="mws-form-item large">
+                            <textarea name="features"><?php echo $this->propertyData['xml_features']; ?></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="mws-form-inline">
+                    <div class="mws-form-row"><label>Community</label>
+                        <div class="mws-form-item large">
+                            <textarea name="community"><?php echo $this->propertyData['xml_community']; ?></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="mws-form-inline">
+                    <div class="mws-form-row"><label>Rating</label>
+                        <div class="mws-form-item large">
+                            <?php
+                            if (!empty($this->propertyData['xml_rating']))
+                                echo $this->propertyData['xml_rating'];
+                            else
+                                echo "Rates are not yet synchronized";
+                            ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="mws-form-inline">
+                    <div class="mws-form-row"><label>Extras</label>
+                        <div class="mws-form-item large">
+                            <?php
+                            if (!empty($this->propertyData['xml_extras'])) {
+                                $extras = unserialize($this->propertyData['xml_extras']);
+                                //pr($extras);
+                                ?>     
+                                <div style="margin-bottom:55px;"><!-- display block of extras-->
+                                    <div class="extras_blck">
+                                        <label title="from">Name Of Extras</label>
+                                        <label>Price</label>
+                                        <label>Type</label>
+                                    </div>
+
+                                    <?php
+                                    if (array_key_exists('HasPrivatePool', $extras)) {
+                                        ?>
+                                        <div style="display:inline-block;" id="extra_blck" class="extras_blck2">
+                                            <div style="width:100%;float:left;">
+                                                <label style="width:28%;text-align: center;">Pool Heating</label>
+                                                <label style="width:24%;text-align: center;"><?php echo $extras['DailyCharge']; ?></label>
+                                                <label style="width:36%;text-align: center;">Optional</label>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    } else {
+
+                                        foreach ($extras as $exKey => $exVal) {
+                                            ?>
+                                            <div style="display:inline-block;" id="extra_blck" class="extras_blck2">
+                                                <div style="width:100%;float:left;">
+                                                    <label style="width:28%;text-align: center;"><?php echo $exVal['ItemDescription']; ?></label>
+                                                    <label style="width:24%;text-align: center;"><?php echo $exVal['FlatFee'] == 'true' ? $exVal['FlatFeeAmount'] : $exVal['DailyFeeAmount']; ?></label>
+                                                    <label style="width:36%;text-align: center;"><?php echo $exVal['Mandatory'] == 'true' ? 'Compulsory' : 'Optional'; ?></label>
+                                                </div>
+                                            </div>
+
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </div>
+                                <?php
+                            }
+                            else
+                                echo "Extras are not yet synchronized";
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </form>    
+        </div>        
+    </div>
+</div>

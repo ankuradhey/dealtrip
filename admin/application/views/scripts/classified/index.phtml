@@ -1,0 +1,96 @@
+<script type="text/javascript">
+
+$(document).ready(function(){	
+	$("#flex1").flexigrid
+			(
+			{
+			url: '<?=APPLICATION_URL_ADMIN."classified/generategridcategories"?>', 
+			dataType: 'json',
+			colModel : [
+				{display: 'S.No.', name : '', width : 70, sortable : false, align: 'center'},
+				{display: '<span id="bcdel"><input type="checkbox" name="deletebcchk" id="deletebcchk" onclick="return checkall(this)" /></span>', name : '', width : 70, sortable : false, align: 'center'},
+				{display: 'Category Name', name : 'cat_name', width : 290, sortable : true, align: 'left'},
+				{display: 'Edit', name : '', width : 70, sortable : false, align: 'left'},
+				
+				],
+			buttons : [
+			{name:'Delete', bclass: 'delete', onpress: deleteitem},
+			{name:'Add New Category', bclass: 'add', onpress: additem}
+			],
+			searchitems : [
+				{display: 'Category Name', name : 'cat_name', isdefault:true}
+				],
+			sortname: "cat_name",
+			sortorder: "asc",
+			usepager: true,
+			title: '<?=$this->pageHeading?>',
+			useRp: true,
+			rpOptions: ['20','30','40','10'],
+			rp: 10,
+			showTableToggleBtn: true,
+			singleSelect : true,
+			height: 265,
+			width: 550,
+			autowidth:false
+			}
+			);   
+	
+});
+function sortAlpha(com)
+{ 
+	jQuery('#flex1').flexOptions({newp:1, params:[{name:'letter_pressed', value: com},{name:'qtype',value:$('select[ta=qtype]').val()}]});
+	jQuery("#flex1").flexReload(); 
+}
+function deleteitem(com)
+{
+	var r= "";
+	var s="";
+	var selected=false;
+	for(var i=1;document.getElementById('check'+i);i++){
+		if(document.getElementById('check'+i).checked==true){	
+			r += document.getElementById('check'+i).value+"|";
+			selected = true;
+		}
+	}	
+	
+	r += '0';
+	if(selected){
+		var confirmation = confirm("Are you sure want to delete ?");
+		if(confirmation!=true){
+			return false;
+		}	
+	
+		$.ajax({ url: "<?=APPLICATION_URL_ADMIN."classified/deletecategory"?>",
+		type: "POST",
+		data: ({Id:r}),
+		success: function(data){			
+			jQuery("#flex1").flexReload(); 
+			alert('Selected records have been deleted successfully.');
+		}});
+	} else {
+		alert('Please choose a record to delete.');
+	}
+}
+function additem()
+{  window.location = "<?=APPLICATION_URL_ADMIN?>classified/addcategory";
+}
+
+</script>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><?=$this->pageHeading?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="left" valign="top"><table width="100%" cellpadding="0" cellspacing="0" align="left">
+<tr>
+<td align="left" valign="top"><table id="flex1" style="display:none;padding:0px;margin:0px;" width="100%" align="left"></table></td>
+</tr>
+</table></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+</table>

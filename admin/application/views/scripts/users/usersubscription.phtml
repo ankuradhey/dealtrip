@@ -1,0 +1,113 @@
+<script type="text/javascript">
+
+$(document).ready(function(){	
+	$("#flex1").flexigrid
+			(
+			{
+			url: '<?=APPLICATION_URL_ADMIN."users/usersubscription/uType/".$this->uType?>', 
+			dataType: 'json',
+			colModel : [
+				{display: 'S.No.', name : '', width : 50, sortable : false, align: 'center'},
+				{display: '<span id="bcdel"><input type="checkbox" name="deletebcchk" id="deletebcchk" onclick="return checkall(this)" /></span>', name : '', width : 50, sortable : false, align: 'center'},
+				{display: 'Image', name : 'first_name', width : 120, sortable : true, align: 'left'},
+				{display: 'Plan', name : 'last_name', width : 120, sortable : true, align: 'left'},
+				{display: 'Purchase Date', name : 'email_address', width : 120, sortable : true, align: 'left'},
+				
+				{display: 'Expire Date', name : '', width : 120, sortable : false, align: 'left'},
+				{display: 'Status', name : 'cat_status', width : 130, sortable : false, align: 'left'}
+				],
+			buttons : [
+			{name:'Delete', bclass: 'delete', onpress: deleteitem}/*,
+			{name:'Add New User', bclass: 'add', onpress: additem}*/
+			],
+			searchitems : [
+				{display: 'First Name', name : 'first_name', isdefault:true},
+				{display: 'Last Name', name : 'last_name', isdefault:true},
+				{display: 'Email Address', name : 'email_address', isdefault:true}
+				],
+			sortname: "first_name",
+			sortorder: "asc",
+			usepager: true,
+			title: '<?=$this->pageHeading?>',
+			useRp: true,
+			rpOptions: ['20','30','40','10'],
+			rp: 10,
+			showTableToggleBtn: true,
+			singleSelect : true,
+			height: 265,
+			width: 850,
+			autowidth:false
+			}
+			);   
+	
+});
+function sortAlpha(com)
+{ 
+	jQuery('#flex1').flexOptions({newp:1, params:[{name:'letter_pressed', value: com},{name:'qtype',value:$('select[ta=qtype]').val()}]});
+	jQuery("#flex1").flexReload(); 
+}
+function deleteitem(com)
+{
+	var r= "";
+	var s="";
+	var selected=false;
+	for(var i=1;document.getElementById('check'+i);i++){
+		if(document.getElementById('check'+i).checked==true){	
+			r += document.getElementById('check'+i).value+"|";
+			selected = true;
+		}
+	}	
+	
+	r += '0';
+	if(selected){
+		var confirmation = confirm("Are you sure want to delete ?");
+		if(confirmation!=true){
+			return false;
+		}	
+	
+		$.ajax({ url: "<?=APPLICATION_URL_ADMIN."users/deleteuser"?>",
+		type: "POST",
+		data: ({Id:r}),
+		success: function(data){			
+			jQuery("#flex1").flexReload(); 
+			alert('Selected records have been deleted successfully.');
+		}});
+	} else {
+		alert('Please choose a record to delete.');
+	}
+}
+function changestatus(Id,Status)
+{
+    $.ajax({ 
+				type: "POST", 
+				url: "<?=APPLICATION_URL_ADMIN?>users/changeuserstatus", 
+				data: ({Id:Id,Status:Status}),
+				cache: false, 
+				success: function(data){				 
+				 jQuery("#flex1").flexReload(); 
+			    }
+		  });
+}
+function additem()
+{  window.location = "<?=APPLICATION_URL_ADMIN?>users/adduser";
+}
+
+</script>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><?=$this->pageHeading?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="left" valign="top"><table width="100%" cellpadding="0" cellspacing="0" align="left">
+<tr>
+<td align="left" valign="top"><table id="flex1" style="display:none;padding:0px;margin:0px;" width="100%" align="left"></table></td>
+</tr>
+</table></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+</table>

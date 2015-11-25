@@ -1,0 +1,101 @@
+<script src='<?=JS_URL?>jquery.rating.js' type="text/javascript" language="javascript"></script>
+<link href='<?=CSS_URL?>jquery.rating.css' type="text/css" rel="stylesheet"/>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><div style="float:left;"><?=$this->pageHeading?></div>
+<div style="float:right;"><a href="<?=APPLICATION_URL_ADMIN?>services/businesses">Back</a></div></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" valign="middle"><table width="100%" cellpadding="0" cellspacing="0">
+<?
+if($this->reviewsData!="" and count($this->reviewsData)>0)
+{
+	$i=1;
+	foreach($this->reviewsData as $key=>$userReviews)
+	{
+?>
+<tr>
+<td align="left" valign="top"><table width="100%" cellpadding="2" cellspacing="2">
+<tr>
+<td width="15%" align="left" valign="top">
+<?
+if($userReviews['profile_image']!="" && file_exists(SITE_ROOT.'images/profileimgs/'.$userReviews['profile_image']))
+{
+	?>
+    <img src="<?=APPLICATION_URL?>image.php?image=<?='images/profileimgs/'.$userReviews['profile_image']?>&height=80&width=80" border="0" style="border: solid 1px #cccccc;padding:2px;" />
+    <?
+}
+else
+{
+	?>
+    <img src="<?=APPLICATION_URL?>image.php?image=images/profileimgs/<?=getDefaultUserImage($userReviews['sex'])?>&height=80&width=80" border="0" style="border: solid 1px #cccccc;padding:2px;"  />
+    <?
+}
+?><br />
+<div align="left" style="padding-top:5px;font-size:11px;font-weight:bold;"><?=ucfirst($userReviews['fullName'])?></div>
+</td>
+<td width="85%" align="left" valign="top"><div style="float:left;">
+<input name="StarRating<?=$i?>" type="radio" class="star" disabled="disabled" <? if($userReviews['rating_number']=='1') { ?> checked="checked" <? } ?> />
+<input name="StarRating<?=$i?>" type="radio" class="star" disabled="disabled" <? if($userReviews['rating_number']=='2') { ?> checked="checked" <? } ?> />
+<input name="StarRating<?=$i?>" type="radio" class="star" disabled="disabled" <? if($userReviews['rating_number']=='3') { ?> checked="checked" <? } ?> />
+<input name="StarRating<?=$i?>" type="radio" class="star" disabled="disabled" <? if($userReviews['rating_number']=='4') { ?> checked="checked" <? } ?> />
+<input name="StarRating<?=$i?>" type="radio" class="star" disabled="disabled" <? if($userReviews['rating_number']=='5') { ?> checked="checked" <? } ?> />
+</div>
+<div style="float:right;font-weight:bold;"><?=date(DATEFORMAT.' g:i A',strtotime($userReviews['date_reviewed']))?></div><br />
+<div style="float:left;padding-top:8px;" align="justify"><?=$userReviews['review_comment']?></div>
+<br />
+<div style="float:right;padding-top:8px;" align="justify">
+<?
+if($userReviews['review_status']=='1')
+{
+?>
+<a href="<?=APPLICATION_URL_ADMIN?>services/changereviewstatus/reviewId/<?=md5($userReviews['review_id'])?>/businessId/<?=$userReviews['service_business_id']?>/Change/0/AllReview/<?=$this->AllReview?>"><img src="<?=IMAGES_URL_ADMIN?>tick.gif" border="0" align="absmiddle" title="Click to Disable" /></a>&nbsp;&nbsp;<a href="<?=APPLICATION_URL_ADMIN?>services/changereviewstatus/reviewId/<?=md5($userReviews['review_id'])?>/businessId/<?=$userReviews['service_business_id']?>/Change/0/AllReview/<?=$this->AllReview?>" title="Click to Disable">Enable</a>
+<?	
+}
+else
+{
+?>
+<a href="<?=APPLICATION_URL_ADMIN?>services/changereviewstatus/reviewId/<?=md5($userReviews['review_id'])?>/businessId/<?=$userReviews['service_business_id']?>/Change/1/AllReview/<?=$this->AllReview?>"><img src="<?=IMAGES_URL_ADMIN?>cross.png" border="0" align="absmiddle" title="Click to Enable" /></a>&nbsp;&nbsp;<a href="<?=APPLICATION_URL_ADMIN?>services/changereviewstatus/reviewId/<?=md5($userReviews['review_id'])?>/businessId/<?=$userReviews['service_business_id']?>/Change/1/AllReview/<?=$this->AllReview?>" title="Click to Enable">Enable</a>
+<?
+}
+?>
+<a href="<?=APPLICATION_URL_ADMIN?>services/deletereview/reviewId/<?=md5($userReviews['review_id'])?>/businessId/<?=$userReviews['service_business_id']?>"><img src="<?=IMAGES_URL?>delete_icon.png" border="0" align="absmiddle" /></a>&nbsp;&nbsp;<a href="<?=APPLICATION_URL_ADMIN?>services/deletereview/reviewId/<?=md5($userReviews['review_id'])?>/businessId/<?=$userReviews['service_business_id']?>">Delete Review</a></div>
+</td>
+</tr>
+</table></td>
+</tr>
+<tr>
+<td align="left" valign="top" style="border-top: dotted 1px #cccccc;"><img src="<?=IMAGES_URL?>blank.gif" border="0" height="8" /></td>
+</tr>
+<?
+$i++;
+	}
+$params="";
+if($this->businessId!="")
+{
+$params="businessId/".$this->businessId;
+}
+?>
+<tr>
+<td align="center" valign="middle"><?=myPaging(APPLICATION_URL_ADMIN.'services/reviews',$this->totalRecords,$this->Start,$this->Limit,$params)?></td>
+</tr>
+<?
+}
+else
+{
+?>
+<tr>
+<td align="center" valign="middle" height="300"><strong>There are no reviews submitted by users yet.</strong></td>
+</tr>
+<?
+}
+?>
+</table></td>
+</tr>
+</table>
+
+
+

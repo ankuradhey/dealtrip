@@ -1,0 +1,120 @@
+<script src='<?=JS_URL?>jquery.rating.js' type="text/javascript" language="javascript"></script>
+<link href='<?=CSS_URL?>jquery.rating.css' type="text/css" rel="stylesheet"/>
+<script type="text/javascript" src="<?=APPLICATION_URL?>fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL?>fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL?>fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+<script type="text/javascript">
+
+$(document).ready(function(){	
+	$("#flex1").flexigrid
+			(
+			{
+<?php /*?>			url: '<?=APPLICATION_URL_ADMIN."users/generatejobsgrid/uType/".$this->uType?>',<?php */?> 
+			url: '<?=APPLICATION_URL_ADMIN."jobs/generatejobsgrid"?>',
+			dataType: 'json',
+			colModel : [
+				{display: 'S.No.', name : '', width : 50, sortable : false, align: 'center'},
+				{display: '<span id="bcdel"><input type="checkbox" name="deletebcchk" id="deletebcchk" onclick="return checkall(this)" /></span>', name : '', width : 50, sortable : false, align: 'center'},
+				{display: 'Job Title', name : 'job_title', width : 120, sortable : true, align: 'left'},
+//				{display: 'Job type', name : 'job_type', width : 120, sortable : false, align: 'left'},
+				{display: 'Job type', name : 'jobtype', width : 100, sortable : false, align: 'left'},
+				{display: '	Job Location', name : 'job_location', width : 180, sortable : true, align: 'left'},	
+				{display: 'User Name ', name : 'username', width : 170, sortable : false, align: 'left'},	
+				{display: 'Status', name : 'job_status', width : 50, sortable : false, align: 'left'},
+				{display: 'View', name : '', width : 50, sortable : false, align: 'left'}
+				],
+			buttons : [
+			{name:'Delete', bclass: 'delete', onpress: deleteitem}/*,
+			{name:'Add New User', bclass: 'add', onpress: additem}*/
+			],
+			searchitems : [
+				{display: 'Job Title', name : 'job_title', isdefault:true},
+//				{display: 'Job type', name : 'job_type', isdefault:true},
+				{display: 'Job Location', name : '	job_location', isdefault:true}
+				],
+			sortname: "job_title",
+			sortorder: "asc",
+			usepager: true,
+			title: '<?=$this->pageHeading?>',
+			useRp: true,
+			rpOptions: ['20','30','40','10'],
+			rp: 10,
+			showTableToggleBtn: true,
+			singleSelect : true,
+			height: 265,
+			width: 850,
+			autowidth:false
+			}
+			);   
+	
+});
+function sortAlpha(com)
+{ 
+	jQuery('#flex1').flexOptions({newp:1, params:[{name:'letter_pressed', value: com},{name:'qtype',value:$('select[ta=qtype]').val()}]});
+	jQuery("#flex1").flexReload(); 
+}
+function deleteitem(com)
+{
+	var r= "";
+	var s="";
+	var selected=false;
+	for(var i=1;document.getElementById('check'+i);i++){
+		if(document.getElementById('check'+i).checked==true){	
+			r += document.getElementById('check'+i).value+"|";
+			selected = true;
+		}
+	}	
+	
+	r += '0';
+	if(selected){
+		var confirmation = confirm("Are you sure want to delete ?");
+		if(confirmation!=true){
+			return false;
+		}	
+	
+		$.ajax({ url: "<?=APPLICATION_URL_ADMIN."jobs/deletejobs"?>",
+		type: "POST",
+		data: ({Id:r}),
+		success: function(data){			
+			jQuery("#flex1").flexReload(); 
+			alert('Selected records have been deleted successfully.');
+		}});
+	} else {
+		alert('Please choose a record to delete.');
+	}
+}
+function changestatus(Id,Status,For)
+{
+    $.ajax({ 
+				type: "POST", 
+				url: "<?=APPLICATION_URL_ADMIN?>jobs/changejobsstatus", 
+				data: ({Id:Id,Status:Status,For:For}),
+				cache: false, 
+				success: function(data){				 
+				 jQuery("#flex1").flexReload(); 
+			    }
+		  });
+}
+<?php /*?>function additem()
+{  window.location = "<?=APPLICATION_URL_ADMIN?>jobs/addjob";
+}
+<?php */?>
+</script>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><?=$this->pageHeading?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="left" valign="top"><table width="100%" cellpadding="0" cellspacing="0" align="left">
+<tr>
+<td align="left" valign="top"><table id="flex1" style="display:none;padding:0px;margin:0px;" width="100%" align="left"></table></td>
+</tr>
+</table></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+</table>

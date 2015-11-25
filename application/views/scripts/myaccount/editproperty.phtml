@@ -1,0 +1,3179 @@
+<?
+    global $mySession;
+?>
+
+<script>
+    var SITEURL="<?= APPLICATION_URL; ?>";
+    var dataArray = [];
+</script>
+
+<link href="<?= CSS_URL ?>style2.css" rel="stylesheet" />
+<?
+    if ($this->step == '4')
+    {
+        ?>
+        <script type="text/javascript" src="<?= JS_URL ?>main.js"></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+        <?
+    }
+    if ($mySession->step == 4)
+    {
+        ?>
+
+        <link href="<?= CSS_URL ?>img_upload.css" rel="stylesheet" />
+        <script type="text/javascript" src="<?= JS_URL ?>img_upload1.js"></script>
+
+        <?
+    }
+?>
+
+<script type="text/javascript" src="<?= APPLICATION_URL ?>fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="<?= APPLICATION_URL ?>fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+<script type="text/javascript">
+
+    var dataArray = [];
+    $(document).ready(function(e) {
+   	
+        var pageWidth = $(window).width();
+
+        if(pageWidth <= 320)
+            $(".rental_rate_blck label").eq(2).text("Minimum Stay");
+	
+        jQuery.validator.addMethod("dateCheck", function(value, element) { 
+            var value1  = $("#date_from").val();
+            var value2  = $("#date_to").val();	
+            var valu1 = value1.split("/");
+            var valu2 = value2.split("/");
+					
+            value1 = new Date(valu1[2], valu1[1], valu1[0]);
+            value2 = new Date(valu2[2], valu2[1], valu2[0]);
+				
+
+		
+            return (value2 > value1); 
+		
+        }, "Choose Proper Date");	
+
+        $("#mws-ui-button-radio").buttonset();
+
+        jQuery.validator.addMethod("limitmatch", function(value, element) { 
+            return !(/Up to 100 Characters/.test(value)); 
+        }, "This field is required");
+  
+        jQuery.validator.addMethod("limitmatch1", function(value, element) { 
+            return !(/Up to 300 Characters/.test(value)); 
+        }, "This field is required");
+
+        jQuery.validator.addMethod('atLeastOneChecked', function(value, element) {
+            return ($('.step2_tab input:checked').length > 0);
+        },"At least one should be checked");		
+
+        jQuery.validator.addMethod("validUrl", function(value, element) { 
+            return this.optional(element) || /^(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(value);
+            }, "Please Enter Valid URL");
+  
+
+
+            // upload images code
+            jQuery.validator.addMethod("minImages", function(value, element) { 
+                if($("#order_image").val() != "")
+                    var count = ($("#order_image").val()).match(/img/g).length;
+
+	
+	
+                if($("#order_image").val() == "")
+                {
+                    for(var i=0;i<5;i++)	
+                    {
+                        $("#img_blck"+i).css("border","1px dashed rgba(255, 0, 0, 1)");			
+                    }
+                    return false;
+                }
+                else
+                {
+                    for(var i=0;i<count;i++)	
+                    {
+                        $("#img_blck"+i).css("border","1px dashed rgba(0, 0, 0, 0.2)");			
+                    }	
+                }
+	
+                if(($("#order_image").val()).match(/img/g).length < 5)
+                {	
+                    for(var i=count;i<5;i++)	
+                    {
+                        $("#img_blck"+i).css("border","1px dashed rgba(255, 0, 0, 1)");				
+                    }
+
+                    $('#mws-validate-error').text("Upload atleast 5 images");
+                    //alert("1");
+                    return false;
+                }
+                else
+                {
+                    $("#img_blck"+count).css("border","1px dashed rgba(0, 0, 0, 0.2)");	
+                    return true;
+                }
+	
+                //	return value.indexOf(" ") < 0 && value != ""; 
+
+            }, "Space are not allowed");
+  
+  
+   
+
+            $("#order_image").removeClass('error');
+
+            var tmp = [];
+
+            $.ajax({
+                type: 'GET',
+                url: '<?= APPLICATION_URL ?>myaccount/uploaded',
+                async:false,
+                success: function(data){
+
+                    data = $.trim(data);
+                    tmp = data.split("+++");
+			
+		
+                }
+            });
+
+            if($.trim(tmp) != "")
+            {	
+
+                //$('#uploaded-files div').each(function(index) {
+			
+                for(var i=0;i<tmp.length;i++)
+                {
+                    var tmp1 = tmp[i].split("|");
+				
+                    if($.trim(tmp1[2]) == "")
+                    {	
+                        var title = "No Caption Set -- To set <a href='<?= APPLICATION_URL ?>myaccount/setcaption/id/"+tmp1[0]+"' id = 'email_link"+i+"' >Click here</a>";
+                        $("#img_blck"+i).removeClass("cancel");
+                    }
+                    /*else if(i == 0)
+                                var title = tmp1[2];*/
+                    else
+                    {	
+                        var title = tmp1[2]+"<br><a href='<?= APPLICATION_URL ?>myaccount/setcaption/id/"+tmp1[0]+"' id = 'email_link"+i+"' >Click here to change</a>";
+                        $("#img_blck"+i).removeClass("cancel");
+                    }
+				
+                    $("#img_blck"+i).html("<ul id='mws-gallery' class='clearfix'><li style = 'margin:0;width:100%;display:inline-block;' onmouseover = 'image_caption("+i+");' onmouseout ='image_caption_remove("+i+");' ><div id = 'img_caption"+i+"' class = 'img_caption' align = 'center'>"+title+"</div><a href='javascript:void(0);' ><img id = 'img_ups' src = '<?= APPLICATION_URL ?>image.php?image=<?= IMAGES_URL ?>property/"+tmp1[1]+"&width=150&height=102'></a><div class = 'cone_ryt' id = 'cone_ryt"+i+"' onclick = 'deleteimage("+tmp1[0]+","+i+");' ><img src='<?= IMAGES_URL ?>TRASH - EMPTY.png'></div></li></ul>");		//});
+				
+                    //inserting in text box the order of images
+                    if(i != 0)
+                    {	
+                        $("#order_image").val($("#order_image").val()+"&img[]=blck"+i);
+                        $("#img_blck0").css("border","1px dashed rgba(0, 0, 0, 0.2)");
+                    }
+                    else
+                    {	
+                        $("#order_image").val("img[]=blck0");
+                        $("#img_blck"+i).css("border","1px dashed rgba(0, 0, 0, 0.2)");
+                    }
+                    // insertion on loading ends	
+					
+                    $("#email_link"+i).fancybox({
+				
+                        'height'			: 245,
+                        'autoScale'			: true,
+                        'transitionIn'		: 'none',
+                        'transitionOut'		: 'none',
+                        'type'				: 'iframe'
+                    });
+			
+                }
+            }	
+	
+            //$("#img_caption").css("opacity",0);
+            //alert($("#order_image").val());
+	
+	
+		
+
+            //$("#uploaded-files .cancel").sortable({items:'div :not(.cancel)'});
+  
+            $("#uploaded-files").sortable({revert:true,
+                zIndex:999,
+                serialize:({key:"sort"}),
+                cancel:'.cancel',
+                stop:function(event,ui){
+											
+                    for(var i = 0;i<$('#uploaded-files div').length;i++)
+                    {
+                        if( !$('#img_blck'+i).hasClass('cancel') && $('#img_blck'+i).prev().hasClass('cancel') )
+                        {	$("#uploaded-files").find('div.cancel:eq(0)').before($('#img_blck'+i));
+                        }
+												
+                        /*if($('#img_blck0').prev('div'))
+                                                                                                $("#img_blck0").after($('#img_blck0').prev('div'));			*/
+                    }
+											
+											
+                    $("#order_image").val($(this).data().sortable.serialize());
+									
+                    for(var i = 0;i<$('#uploaded-files div').length;i++)
+                    {
+                        if($('#img_blck'+i).hasClass('cancel'))
+                        {
+                            $("#order_image").val($("#order_image").val().replace('&img[]=blck'+i,''));
+                        }
+                    }
+                    $.ajax({
+                        url:"<?php echo APPLICATION_URL ?>myaccount/processphoto", 
+                        data:({ppty:<?php echo!empty($this->ppty_id) ? $this->ppty_id : $mySession->property_id; ?>,order_image:$('#order_image').val()}),
+                        success:function(data){
+                                                                                                
+                        }
+                    });
+                }
+            });
+  
+            var sorted = $( ".selector" ).sortable( "serialize", { key: "sort" } );
+
+
+            var dataArrays = [];
+
+
+
+
+            $('#arrUp').click(function() {
+
+		
+                $.ajaxFileUpload({
+                    url: '<?= APPLICATION_URL ?>myaccount/instuctionupload',
+                    fileElementId:'arrival_instruction',
+                    dataType: 'json',
+                    success: function(data){
+					
+				
+                        if(data.error)
+                            alert(data.error)
+                        else
+                        {
+						
+                            alert(data.success);
+                            window.location = window.location.href;
+                        }
+					
+                    }
+		
+                });
+
+                return false;
+            });
+
+ 
+ 
+ 
+
+        });
+
+        /*function photoerror()
+{
+        $("#mws-validate").validate();
+        alert($("#mws-validate").valid());
+        return false;	
+	
+}*/
+
+
+        function deleteInstruction(id)
+        {
+	
+            $.ajax({
+				
+                type: 'GET',
+                url: '<?= APPLICATION_URL ?>myaccount/deleteinstruction/file/'+id,
+                async:false,
+                success: function(data){
+
+                    alert("File sucessfully deleted");
+                    window.location = window.location.href;
+
+                    //			window.location.href = window.location;
+                }
+            });
+		
+        }
+
+
+
+
+        function image_caption(id)
+        {
+            $("#img_caption"+id).animate({
+                'opacity': 0.8,'margin':0,'font-size':'12px','paddingRight':'2px'
+            });	
+        }
+
+        function image_caption_remove(id)
+        {
+            $("#img_caption"+id).animate({
+                'opacity': 0,'margin':0,'font-size':'12px','paddingRight':'2px'
+            });	
+        }
+
+        function deleteimage(id,index)
+        {
+            $("#img_blck"+index).html("<img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20' style = 'margin-top:40px;' >");
+            var status = "f";
+            $.ajax({
+                type: 'POST',
+                url: '<?= APPLICATION_URL ?>myaccount/deleteimg',
+                async:false,
+                data: ({Id:id}),
+                success: function(data){
+			
+                    data = $.trim(data);
+                    status = data;
+		
+                }
+            });
+	
+            $.ajax({
+                type: 'GET',
+                url: '<?= APPLICATION_URL ?>myaccount/uploaded',
+                async:false,
+                success: function(data){
+                    //alert(data);
+                    data = $.trim(data);
+                    tmp = data.split("+++");
+		
+		
+				
+                    if($.trim(tmp) != "")
+                    //$('#uploaded-files div').each(function(index) {
+			
+                    $("#uploaded-files div").text("");
+			
+                for(var i=0;i<tmp.length;i++)
+                {
+                    var tmp1 = tmp[i].split("|");
+                    //alert(i);
+                    //alert(print_r(tmp));
+				
+
+				
+                    if($.trim(tmp1[2]) == "")
+                    {	
+                        var title = "No Caption Set -- To set <a href='<?= APPLICATION_URL ?>myaccount/setcaption/id/"+tmp1[0]+"' id = 'email_link"+i+"' >Click here</a>";
+                        $("#img_blck"+i).removeClass("cancel");
+                    }
+                    /*else if(i == 0)
+                                var title = tmp1[2];
+                     */
+                    else
+                    {	
+                        var title = tmp1[2]+"<br><a href='<?= APPLICATION_URL ?>myaccount/setcaption/id/"+tmp1[0]+"' id = 'email_link"+i+"' >Click here to change</a>";
+                        $("#img_blck"+i).removeClass("cancel");
+                    }
+				
+				
+                    $("#img_blck"+i).text("");
+				
+				
+				
+                    $("#img_blck"+i).html("<ul id='mws-gallery' class='clearfix'><li style = 'margin:0;width:100%;' onmouseover = 'image_caption("+i+");' onmouseout ='image_caption_remove("+i+");' ><div id = 'img_caption"+i+"' class = 'img_caption' align = 'center'>"+title+"</div><a href='javascript:void(0);' ><img id = 'img_ups' src = '<?= APPLICATION_URL ?>image.php?image=<?= IMAGES_URL ?>property/"+tmp1[1]+"&width=150&height=102'></a><div class = 'cone_ryt' id = 'cone_ryt"+i+"' onclick = 'deleteimage("+tmp1[0]+","+i+");' ><img src='<?= IMAGES_URL ?>TRASH - EMPTY.png'></div></li></ul>");		//});
+				
+                    //inserting in text box the order of images
+                    if(i != 0)
+                        $("#order_image").val($("#order_image").val()+"&img[]=blck"+i);
+                    else
+                        $("#order_image").val("img[]=blck0");
+                    // insertion on loading ends	
+					
+                    $("#email_link"+i).fancybox({
+				
+                        'height'			: 245,
+                        'autoScale'			: true,
+                        'transitionIn'		: 'none',
+                        'transitionOut'		: 'none',
+                        'type'				: 'iframe'
+                    });
+			
+                    //removing red colored border from all box
+                    /*for(var j=0;j<5;j++)	
+                                {
+                                $("#img_blck"+j).css("border","1px dashed rgba(0, 0, 0, 0.2)");			
+                                }*/	
+			
+			
+                }
+            }
+		
+		
+
+
+
+        });
+
+
+
+        /*	index = parseInt(index);
+        $("#img_blck"+index).text("");
+        $("#img_blck"+index).addClass("cancel");  // cancel class added (classes which are not sortable)
+         */
+	
+        if(status == 's')
+            alert("sucessfully deleted");
+        else
+            alert("Please select any image");
+    }
+
+    //upload image code ends	
+
+
+        
+    function proceed_next(){
+
+        $.ajax({
+            type: 'POST',
+            url: '<?= APPLICATION_URL ?>myaccount/setsession/pId/<?= $this->ppty_no ?>',
+            async:false,
+            success: function(data){
+
+                window.location = "<?= APPLICATION_URL ?>myaccount/addproperty";
+            }
+        });
+	
+    }
+
+    /*
+var getGroups = function() {
+	
+    var result = {};
+    $('#.step2_tab input[type="radio"]').each(function(i) {
+        var field1Name = $(this).attr('name');
+        if (field1Name != undefined) { 
+            var field2Name = $(this).attr('name');
+            result['fieldPair_' + i] = field1Name + ' ' + field2Name;
+        }
+    });
+    alert(result);
+        return result;
+}
+     */
+
+</script>
+
+<script type="text/javascript">
+
+
+    function do_save_cal()
+    {
+
+        if($("#mws-validate").valid())
+        {
+            $.ajax({
+                type: 'POST',
+                url: '<?= APPLICATION_URL ?>myaccount/savecalendarstat/ppty/<?= $this->ppty_id ?>',
+                async:false,
+                data: ({Datef:$("#date_from").val(),Datet:$("#date_to").val(),Status:$("#status").val()}),
+                success: function(data){
+			
+
+			
+                    //window.location = window.location.href;
+			
+                }
+			
+            });
+		
+        }
+        return false;
+    }
+</script>
+
+<!-- scripts for rental rates-->
+<script type="text/javascript">
+    function checkvalid(id)
+    {
+        var error_flag = 0;
+        $("#error_discount_offer"+id).hide();
+        $("#error_valid_from"+id).hide();
+        $("#error_valid_to"+id).hide();	
+        $("#error_min_stay"+id).hide();	
+        $("#error_bookby"+id).hide();	
+
+        if($("#discount_offer"+id).length > 0)
+        {
+            if(isNaN($('#discount_offer'+id).val()) || $('#discount_offer'+id).val() == "" || $('#discount_offer'+id).val() == null || $("#discount_offer"+id).val().length >3)
+            {
+                $("#error_discount_offer"+id).show();
+                error_flag = 1;
+            } 
+        }
+	
+        if($("#valid_from"+id).val() == "" || $("#valid_from"+id).val() == null)
+        {
+            $("#error_valid_from"+id).show();	
+            error_flag = 1;		
+        }
+	
+        if( $("#valid_to"+id).val() == "" || $("#valid_to"+id).val() == null )
+        {
+            $("#error_valid_to"+id).show();	
+            error_flag = 1;		
+        }
+	
+        if($("#min_stay"+id).length > 0)
+        {
+            if(isNaN($("#min_stay"+id).val()) || $("#min_stay"+id).val() == "" || $("#min_stay"+id).val() == null ||  $("#min_stay"+id).val().length >3)
+            {
+                $("#error_min_stay"+id).show();	
+                error_flag = 1;		
+            }
+        }
+	
+        if( $("#bookby"+id).val() == "" || $("#bookby"+id).val() == null)
+        {
+            $("#error_bookby"+id).show();	
+            error_flag = 1;		
+        }	
+	
+		
+	
+        if(error_flag == 0)
+            $.ajax({
+	
+                url: "<?= APPLICATION_URL ?>myaccount/saveoffers",
+                type:"POST",
+                data: ({Valid_f:$("#valid_from"+id).val(), Valid_t:$("#valid_to"+id).val(), Nights:$("#min_stay"+id).val(), Discount:$("#discount_offer"+id).val(), Book_by: $("#bookby"+id).val() ,Spcl_offer_id:$("#spcl_offer_id"+id).val(),max_nights:$('#max_nights'+id).val()}),
+                async:false,
+                success: function(data){
+                    location.reload();
+                }
+		
+		
+        });
+	
+    }
+
+    function dactive(id)
+    {
+	
+        var c = confirm("Are you sure you want to de-activate this offer");
+
+        if(c)
+        {
+
+            $.ajax({
+	
+                url: "<?= APPLICATION_URL ?>myaccount/deactivateoffers/id/"+$("#spcl_offer_id"+id).val(),
+                type:"GET",
+                async:false,
+                success: function(data){
+                    data = $.trim(data);	
+                    window.location.href = "<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/7";
+                }
+		
+		
+            });
+	
+        }
+	
+    }
+
+    function mindate(value,id)
+    {
+        var fmtDate = value.split("/");
+				
+        if(fmtDate.length < 2)
+            var fmtDate = value.split("-");
+								
+        var selectedDate = new Date(fmtDate[2], fmtDate[1]-1, fmtDate[0]);
+				
+        var msecsInADay = 86400000;
+        var endDate = new Date(selectedDate.getTime()+msecsInADay);
+        console.log(endDate);
+				
+        $("#"+id).datepicker( "option", "minDate", endDate );
+				
+    }
+
+    function mindateforbook(value,id)
+    {
+        var fmtDate = value.split("/");
+        if(fmtDate.length < 2)
+            var fmtDate = value.split("-");
+        var selectedDate = new Date(fmtDate[2], fmtDate[1]-1, fmtDate[0]);
+        var msecsInADay = 86400000;
+        console.log(id);
+        var endDate = new Date(selectedDate.getTime()-msecsInADay);
+        console.log(endDate);
+				
+				
+        $("#"+id).datepicker( "option", "maxDate", endDate );
+    }
+
+    function do_save_ppty() //function for saving rental rates
+    {
+	
+        if($("#mws-validate1").valid())
+        {
+            var Data = 0;
+            $('#rate_blck').html("<div align = 'center' style='width:100%;'><img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20'></div>");
+		
+            $.ajax({
+			
+                url: "<?= APPLICATION_URL ?>myaccount/setrates",
+                type:"POST",
+                data: ({Date_f:$("#date_from").val(), Date_t:$("#date_to").val(), Nights:$("#nights").val(), Rate:$("#rate").val() }),
+                async:false,
+                success: function(data){
+	
+
+                    data = $.trim(data);
+				
+
+                    //do_ppty();
+				
+                }
+			
+            })
+
+            return false;	
+        }
+    }
+
+    //function for deleting rates data
+
+    function deleterate(id) //function for deleting rental rates
+    {
+        var flag = 0;
+	
+        var c = confirm("Do you want to delete this record");
+	
+        if(c)
+        {
+		
+            $.ajax({
+			
+                url: "<?= APPLICATION_URL ?>myaccount/deleterentalrate/id/"+id,
+                type:"GET",
+                async:false,
+                success: function(data){
+                    data = $.trim(data);
+                    if(data != "")
+                    {
+                        alert("Record Sucessfully deleted");
+                        window.location = window.location;
+                        flag = 1;
+                    }
+                }
+            })
+
+        }
+        if(flag == 1)
+            do_ppty();
+    }
+
+    function ratetocheck(ptr)
+    {
+
+        var rateto = ptr.value.split("")
+
+        console.log(ptr.value);
+        $("#rateFrom").datepicker("option","maxDate",new Date(ptr.value));
+
+	
+		
+	
+    }
+    function ratefromcheck(ptr)
+    {
+	
+        var rateto = ptr.value.split("")
+
+        console.log(ptr.value);
+        $("#rateTo").datepicker("option","minDate",new Date(ptr.value));
+	
+    }
+
+
+    function modifyrate(i,id, from, to, night, rate)
+    {
+        var MIN_NIGHTS = "<select id = 'minNights'>";
+	
+        for(var j =7;j<=14;j++)
+        {
+            if(j==night)
+            {	
+                var selected = 'selected="selected"'
+            }
+            else 
+            {	
+                var selected = '';
+            }
+            MIN_NIGHTS += "<option "+selected+">"+j+"</option>";
+		
+        }
+        MIN_NIGHTS += "</select>";
+	
+        $('#rate_blck').children("div :eq("+i+")").html("<div style='width:100%;float:left;margin-top:10px;' ><div class = 'dates_blck' align = 'center'><label>"+from+"</label></div><div class = 'dates_blck' align = 'center'><label >"+to+"</label></div><div class='nights_blck' align='center'><label>"+MIN_NIGHTS+"</label></div><div class = 'rates_blck' align='center'><label><input type='text' id = 'rentalRate' value = '"+rate+"'></label></div><div onclick = 'updaterate("+id+","+from+","+to+","+night+","+rate+");' style = 'cursor:pointer'><img class='deletes' src='<?= IMAGES_URL ?>accept.png' width = '20' height = '20'></div><div onclick = 'do_ppty();' style = 'cursor:pointer'><img class='deletes'  src='<?= IMAGES_URL ?>cancel.png' width = '20' height = '20'></div></div>");
+		
+        var ratefrom = $("#rateFrom").val();
+        ratefrom = ratefrom.split("-");
+		
+        var rateto = $("#rateTo").val();
+        rateto = rateto.split("-");
+		
+
+
+        $("#rateFrom").datepicker({minDate:new Date(ratefrom[2],ratefrom[1]-1,ratefrom[0]),
+            maxDate:new Date(rateto[2],rateto[1]-1,rateto[0]),
+            dateFormat: "dd/mm/yy" 
+        });
+
+        $("#rateTo").datepicker({minDate:new Date(ratefrom[2],ratefrom[1]-1,ratefrom[0]),
+            maxDate:new Date(rateto[2],rateto[1]-1,rateto[0]),
+            dateFormat: "dd/mm/yy" 
+        });
+
+
+		
+
+    }
+
+    function updaterate(id, from, to, night, rate)
+    {
+        var flag = 0;
+	
+        var c = confirm("Do you want to Edit this record");
+	
+        if(c)
+        {
+		
+            $.ajax({
+			
+                url: "<?= APPLICATION_URL ?>myaccount/updaterate/id/"+id,
+                type:"POST",
+                async:false,
+                data:({Nights:$("#minNights").val(), Rate:$("#rentalRate").val() }),
+                success: function(data){
+                    data = $.trim(data);
+                    if(data != "")
+                    {
+                        alert("Record Sucessfully updated");
+                        flag = 1;
+                    }
+                }
+            })
+
+        }
+        if(flag == 1)
+            do_ppty();
+	
+    }
+
+    function do_ppty() //function for displaying rental rates
+    {
+        var Data = 0;
+        $('#rate_blck').html("<div align = 'center' style= 'clear:both;width:100%;'><img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20'></div>");
+	
+        $.ajax({
+		
+            url: "<?= APPLICATION_URL ?>myaccount/getrates/ppty/<?= $this->ppty_id ?>",
+            type:"GET",
+            async:false,
+            success: function(data){
+
+                data = $.trim(data);
+                $("#rate_blck").text("");
+
+                if(data != '0' && data != "" && data != null)
+                {
+                    var ArrData = data.split("|");
+                    if(ArrData.length>0)
+                    {
+                        for(var i=0;i<ArrData.length;i++)
+                        {
+                            var mySplit=ArrData[i].split(",");
+                            var OptionValue1 = mySplit[0];
+                            var OptionValue2 = mySplit[1];
+                            var OptionValue3 = mySplit[2];
+                            var OptionValue4 = mySplit[3];						
+                            var OptionValue5 = mySplit[4];						
+						
+					
+                            $("#rate_blck").append("<div style='width:100%;float:left;'><div  class='date_blck' align = 'center'><label>"+OptionValue1+"</label></div><div class='date_blck'  align = 'center'><label >"+OptionValue2+"</label></div><div  class='nights_blck' align='center'><label>"+OptionValue3+"</label></div><div class='rates_blck'  align='center'><label>"+OptionValue4+"</label></div><div onclick = 'modifyrate("+i+",&quot;"+OptionValue5+"&quot;,&quot;"+OptionValue1+"&quot;,&quot;"+OptionValue2+"&quot;,&quot;"+OptionValue3+"&quot;,&quot;"+OptionValue4+"&quot;);' style = 'cursor:pointer'><img class='deletes' src='<?= IMAGES_URL ?>application_form_edit.png' width = '20' height = '20'></div><div onclick = 'deleterate("+OptionValue5+");' style = 'cursor:pointer'><img class='deletes' src='<?= IMAGES_URL ?>delete.png' width = '20' height = '20'></div></div>");
+						
+                            if(i+1 == ArrData.length)
+                                $("#cal_date").val(OptionValue2);
+					
+                        }
+			
+					
+                    }	
+				
+				
+                }
+                else
+                {
+                    $("#rate_blck").html("<div align='center' style = 'color:red;width:100%;'>No Items to display</div>");
+                    $("#cal_date").val("");	
+                }
+            }
+		
+        })
+	
+        return false;	
+    }
+
+    function extras_show() //function for showing extras
+    {
+        var Data = 0;
+        $('#extra_blck').html("<div align = 'center' style= 'clear:both;width:100%;'><img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20'></div>");
+        $.ajax({
+		
+            url: "<?= APPLICATION_URL ?>myaccount/getextras/ppty/<?= $this->ppty_id ?>",
+            type:"GET",
+            async:false,
+            success: function(data){
+
+                data = $.trim(data);
+                $("#extra_blck").text("");
+
+                if(data != '0' && data != "" && data != null)
+                {
+                    var ArrData = data.split("|");
+                    if(ArrData.length>0)
+                    {
+                        for(var i=0;i<ArrData.length;i++)
+                        {
+                            var mySplit=ArrData[i].split(",");
+                            var OptionValue1 = mySplit[0];
+                            var OptionValue2 = mySplit[1];
+                            var OptionValue3 = mySplit[2];
+                            var OptionValue4 = mySplit[3];	
+                            var OptionValue5 = mySplit[4];
+						
+                            if(OptionValue3 == 1)					
+                                OptionValue3 = "Compulsory";
+                            else
+                                OptionValue3 = "Optional";
+						
+                            if(OptionValue5 == 0)					
+                                OptionValue5 = "Night";
+                            else
+                                OptionValue5 = "Stay";
+						
+                            $("#extra_blck").append("<div class ='inExtra' style='width:100%;float:left;'><div style='width:30%' align = 'center'><label>"+OptionValue1+"</label></div><div style='width:18%;' align = 'center'><label >"+OptionValue2+"</label></div><div style='width:23%;' align='center'><label>"+OptionValue3+"</label></div><div style='width:16%;' align='center'><label>"+OptionValue5+"</label></div><strong></strong><a href = '#' style = 'display:block;'><div onclick = 'deleteextras("+OptionValue4+");' ><img class='deletes' src='<?= IMAGES_URL ?>TRASH - EMPTY.png' width = '20' height = '20'></div></a></div");
+						
+                        }
+			
+					
+                    }	
+				
+				
+                }
+                else
+                {
+                    $("#extra_blck").html("<div align='center' style = 'color:red;width:100%;'>No Items to display</div>");
+
+                }
+            }
+		
+        })
+	
+        return false;	
+	
+    }
+
+    function do_save_extra() //function for saving extras
+    {
+	
+        var Data = 0;
+        $('#extra_blck').html("<div align = 'center' style='width:100%;'><img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20'></div>");
+        if($("#mws-validate2").valid())
+        {
+            $.ajax({
+				
+                url: "<?= APPLICATION_URL ?>myaccount/saveextras",
+                type:"POST",
+                data: ({extra_name:$("#extra_name").val(), extra_price:$("#extra_price").val(), extra_type:$("#extra_type").val(),stay_type:$("#stay_type").val()}),
+                async:false,
+                success: function(data){
+                    console.log(data);
+                    data = $.trim(data);
+                    //do_ppty();
+                }
+				
+            });
+		
+        }
+        $('#extra_blck').text("");
+        return false;	
+	
+    }
+
+    function deleteextras(id) //function for deleting extras
+    {
+	
+        var c = confirm("Are you sure you want to delete this record?");
+        var flag = 0;
+	
+        if(c)
+        {
+            $.ajax({
+			
+                url: "<?= APPLICATION_URL ?>myaccount/deleteextras/id/"+id,
+                type:"GET",
+                async:false,
+                success: function(data){
+                    data = $.trim(data);
+                    if(data != "")
+                    {
+
+                        alert("Record Sucessfully deleted");
+                        flag = 1;
+                    }
+                }
+            })
+        }
+	
+		
+        if(flag == 1)
+            extras_show();
+    }
+
+</script>
+
+<script type="text/javascript">
+    // script for rental rates
+    $(document).ready(function(e) {
+    
+
+        do_ppty();
+        extras_show();
+        //**** Following is the date code *****//
+        //****        for rental rate     *****//	
+
+				  
+			
+
+				  
+        var today = new Date();
+        var d = today.getDate();
+        var m = today.getMonth();
+        var y = today.getFullYear();
+			
+        $("#date_from").datepicker({
+            minDate: today,
+            maxDate: new Date(y+2, m ,d),
+            dateFormat: "dd/mm/yy" ,
+            onSelect: function(dateText) {
+                dateText = dateText.split("/");
+                var $sD = new Date(dateText[2],dateText[1]-1,dateText[0]);
+                $sD.setDate($sD.getDate()+1);
+                $("#date_to").datepicker('option', 'minDate', $sD);
+            }
+        });
+					
+	
+					
+				
+        $("#date_to").datepicker({
+            minDate: today,
+            maxDate: new Date(y+2, m ,d),
+            dateFormat: "dd/mm/yy" 
+        });
+					
+					
+					
+				
+	
+        //**** Above is the date code *****//
+        //****  for rental rate ends  *****//	
+    });
+	
+    //sript for rental rate ends
+</script>
+
+<script type="text/javascript">  //script for review
+    $(document).ready(function(e) {
+    
+        $("#check_in").datepicker({
+            maxDate: new Date(),
+            dateFormat: "dd/mm/yy" 
+        });
+        $("#image").live("change",function(e){ $('#image_upload').text("Upload");});
+	
+        $('#image_upload').click(function() {
+		
+            if($("#image_upload").text()=="Choose Photo")
+            {
+                $("#image").trigger("click");
+            }
+            else
+            {
+                $.ajaxFileUpload({
+                    url: SITEURL+'myaccount/ownerimageupload',
+                    fileElementId:'image',
+                    dataType: 'json',				
+                    success: function(data){
+					
+                        if(data.error)
+                            alert(data.error)
+                        else
+                        {
+                            $("#profile_blck").attr("src",SITEURL+"image.php?image=<?= IMAGES_URL ?>profile/"+data.name+"&height=150&width=150");
+                            $('#image_upload').text("Upload");
+                        }
+                        //			window.location.href = window.location;
+                    }
+                });
+		
+            }
+		
+        });
+
+	
+    });
+
+
+    function checkreview()
+    {
+        if($("#mws-validate").valid())
+        {
+			
+            $.ajax({
+				
+                type: 'POST',
+                url: '<?= APPLICATION_URL ?>myaccount/savereview',
+                async:false,
+                data: ({Name:$("#full_name").val(),
+                    From:$("#location").val(),
+                    Check_in:$("#check_in").val(), 
+                    Rating:$("#rating").val(),
+                    Headline:$("#headline").val(),
+                    Comment:$("#comment").val(),												 						
+                    Review:$("#review").val()						
+                }),
+                success: function(data){
+                    data = $.trim(data);
+
+                    window.location.href = window.location;
+                }
+            });
+		
+			
+	
+        }
+    }
+
+
+    function replyreview(id)
+    {
+        if($("#mws-validate_"+id).valid())
+        {
+            $.ajax({
+                type: 'POST',
+                url: '<?= APPLICATION_URL ?>myaccount/savereviewreply',
+                async:false,
+                data: ({Comment:$("#response_"+id).val(),
+                    Id:id
+                }),
+                success: function(data){
+                    data = $.trim(data);
+                    window.location.href = window.location;
+                }	
+            });
+        }
+	
+        return false;
+    }
+
+
+    // for uploading floorplan
+
+
+    $(document).ready(function(e) {
+    
+
+  
+        $('#floor_planio').click(function() {
+
+
+
+			
+
+            $.ajaxFileUpload({
+				
+                fileElementId:'floor_plan',
+                url: '<?= APPLICATION_URL ?>myaccount/floorplan/ppty/<?= $this->ppty_id ?>',
+                dataType:"json",
+                success: function(data){
+					
+					
+                    if(data.error)
+                        alert(data.error)
+                    else
+                        window.location = window.location.href;
+                }
+            });
+
+        });
+
+
+
+    });
+    //end floorplan
+
+
+    function cal_default(value)
+    {
+        var c = confirm("Are you sure you want to proceed??");
+	
+        if(c)
+        {	
+	
+            $.ajax({
+					
+                type: 'POST',
+                url: '<?= APPLICATION_URL ?>myaccount/setcaldefault',
+                async:false,
+                data: ({Value:value}),
+                success: function(data){
+                    data = $.trim(data);
+                    window.location = window.location.href;
+	
+                }
+            });	
+        }
+        else
+            window.location = window.location.href;
+	
+    }
+
+    //currency function
+    function setcurrency()
+    {
+        if($("#currency").val() != "")
+        {
+            $.ajax({
+				
+                type: 'POST',
+                url: '<?= APPLICATION_URL ?>myaccount/setcurrency',
+                async:false,
+                data: ({Value:$("#currency").val()}),
+                success: function(data){
+                    data = $.trim(data);
+                    window.location = window.location.href;
+
+                }
+            });			
+        }
+	
+    }
+
+    function deletefloorplan()
+    {
+        $.ajax({
+				
+            type: 'GET',
+            url: '<?= APPLICATION_URL ?>myaccount/deletefloorplan/ppty/<?= $this->ppty ?>',
+            async:false,
+            data: ({Value:$("#currency").val()}),
+            success: function(data){
+                data = $.trim(data);
+                window.location = window.location.href;
+
+            }
+        });		
+		
+    }
+
+</script>
+
+<?
+// Rating stars selected // 
+//$RatingChk=1;
+    if (isset($mySession->property_id))
+    {
+
+        $RatingChk = $this->rating;
+    }
+
+
+
+
+// Rating stars selected ends //
+
+    switch ($this->step)  // steps block link color
+    {
+        case '1': $cstep1 = 'style="color:blue;"';
+            break;
+        case '2': $cstep2 = 'style="color:blue;"';
+            break;
+        case '3': $cstep3 = 'style="color:blue;"';
+            break;
+        case '4': $cstep4 = 'style="color:blue;"';
+            break;
+        case '5': $cstep5 = 'style="color:blue;"';
+            break;
+        case '6': $cstep6 = 'style="color:blue;"';
+            break;
+        case '7': $cstep7 = 'style="color:blue;"';
+            break;
+        case '8': $cstep8 = 'style="color:blue;"';
+            break;
+        case '9': $cstep9 = 'style="color:blue;"';
+            break;
+        case '10':$cstep10 = 'style="color:blue;"';
+            break;
+    }
+
+    if ($this->pId != "")    //checking if user has continued adding property then the steps will be displayed to him
+    {
+        ?>
+
+
+        <?
+        if (!isset($mySession->property_id))
+        {
+            $steps_fnc = "alert('first complete the step 1'); return false;";
+            $step1_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-error.png' />";
+        }
+        else
+        {
+            $steps_fnc = "";
+            $step1_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-success.png' />";
+        }
+
+        if ($this->status_2)
+            $step2_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-success.png' />";
+        else
+            $step2_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-error.png' />";
+
+        if ($this->status_3)
+            $step3_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-success.png' />";
+        else
+            $step3_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-error.png' />";
+
+        if ($this->status_4)
+            $step4_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-success.png' />";
+        else
+            $step4_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-error.png' />";
+
+        if ($this->status_5)
+            $step5_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-success.png' />";
+        else
+            $step5_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-error.png' />";
+
+        if ($this->status_6)
+            $step6_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-success.png' />";
+        else
+            $step6_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-error.png' />";
+
+        if ($this->status_7)
+            $step7_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-success.png' />";
+        else
+            $step7_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-error.png' />";
+
+        if ($this->status_8)
+            $step8_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-success.png' />";
+        else
+            $step8_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-error.png' />";
+
+        if ($this->status_9)
+            $step9_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-success.png' />";
+        else
+            $step9_status = "<img src='" . IMAGES_URL_ADMIN . "core/message-error.png' />";
+        ?>
+
+        <div class = "property_stages">
+            <div class = 'steps' align = 'center'>
+                <h5>Step1<?= $step1_status ?></h5>
+                <a href="<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/1" <?= $cstep1 ?> >Property Overview</a>
+            </div>
+
+            <div class = 'steps' align = 'center'>
+                <h5>Step2<?= $step2_status ?></h5>
+                <a href="<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/2" <?= $cstep2 ?>  onclick = "<?= $steps_fnc ?>" >Property Specification</a>
+            </div>
+
+            <div class = 'steps' align = 'center'>
+                <h5>Step3<?= $step3_status ?></h5>
+                <a href="<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/3" <?= $cstep3 ?> onclick = "<?= $steps_fnc ?>" >Area & Amenities</a>
+            </div>
+
+            <div class = 'steps' align = 'center'>
+                <h5>Step4<?= $step4_status ?></h5>
+                <a href="<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/4" <?= $cstep4 ?> onclick = "<?= $steps_fnc ?>" >Location</a>
+            </div>
+
+            <div class = 'steps' align = 'center'>
+                <h5>Step5<?= $step5_status ?></h5>
+                <a href="<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/5" <?= $cstep5 ?> onclick = "<?= $steps_fnc ?>" >Photo Gallery</a>
+            </div>
+
+            <div class = 'steps' align = 'center'>
+                <h5>Step6<?= $step6_status ?></h5>
+                <a href="<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/6" <?= $cstep6 ?> onclick = "<?= $steps_fnc ?>" >Availability Calendar</a>
+            </div>
+
+            <div class = 'steps' align = 'center'>
+                <h5>Step7<?= $step7_status ?></h5>
+                <a href="<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/7" <?= $cstep7 ?> onclick = "<?= $steps_fnc ?>"  >Rental Rates </a>
+            </div>
+
+            <div class = 'steps' align = 'center'>
+                <h5>Step8<?= $step8_status ?></h5>
+                <a href="<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/8" <?= $cstep8 ?> onclick = "<?= $steps_fnc ?>" >Property Reviews</a>
+            </div>
+
+            <div class = 'steps' align = 'center'>
+                <h5>Step9<?= $step9_status ?></h5>
+                <a href="<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/9" <?= $cstep9 ?> onclick = "<?= $steps_fnc ?>" >Arrival Instructions</a>
+            </div>
+
+            <div class = 'steps' align = 'center'>
+                <h5><span>Step10</span></h5>
+                <a href="<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/10" onclick = "<?= $steps_fnc ?>" <?= $cstep10 ?> >Activate</a>
+            </div>	
+
+
+        </div>  <!-- property steps links block ends -->
+        <br />
+
+        <?
+        if ($this->step != '10')
+        {
+            ?>	
+            <div class = "add_property_sub_head" style=""> <!-- display property number -->
+                <p >You are currently administrating:
+                    Deal A Trip Property Number: <span class = 'ppty_nos'><?
+        if (isset($this->pId) && $this->pId != "")
+            echo $this->pId;
+        else
+            echo $this->ppty_no;
+            ?></span>
+
+                    <a target="_blank" style="margin-left:10px;" class="mws-ui-button  ui-widget ui-state-default  ui-button-text-only" href="<?= APPLICATION_URL ?>myaccount/preview/ppty/<?= $mySession->property_id ?>" role="button" aria-disabled="false"><span class="ui-button-text">Preview</span></a>
+                </p>
+
+
+            </div><!-- property number display block -->
+
+
+
+            <?
+        }
+
+
+
+        if ($this->step == '1')
+        {
+            ?>
+            <!-- number 1 tab(step 1) -->
+            <span class="left_deal_head">All questions on Step 1 are required to be completed for the property upload process to take place in our system.  NB: The Steps that follow can or will be saved during your work progress.</span>
+            <div class = 'step1_tab'>
+
+                <form name="myform" id="mws-validate" method="post"  action = '<?php echo $this->url(array('controller' => 'myaccount', 'action' => 'processpage', 'ppty' => $this->ppty_id), 'default', true) ?>' novalidate="novalidate" class="mws-form" enctype="multipart/form-data">
+
+                    <!-- first div (first stage)-->
+
+
+                    <p class="left_panel_heading" style="border-bottom:#CCCCCC dotted 1px;">Property Type</p> <!-- accomodation entries start -->
+
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Type<span class="red">*</span>:</label><div class="mws-form-item small"><?= $this->myform->accomodation_type ?> </div></div></div>
+                    <!-- accomodation entries ends -->
+
+                    <p class="left_panel_heading" style="border-bottom:#CCCCCC dotted 1px;">Property Location</p>	
+                    <!-- Location entries starts-->	
+
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Country<span class="red">*</span>:</label><div class="mws-form-item small"><?= $this->myform->country_id ?> </div></div></div>
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>State-Area-Region<span class="red">*</span>:</label><div class="mws-form-item small"><div id='country_state'></div><?= $this->myform->state_id ?> </div></div></div>
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>City-Location<span class="red">*</span>:</label><div class="mws-form-item small"><div id='state_city'></div><?= $this->myform->city_id ?> </div></div></div>
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Sub Area:</label><div class="mws-form-item small"><div id='city_sub'></div><?= $this->myform->sub_area ?> </div></div></div>
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Local Area:</label><div class="mws-form-item small"><div id='sub_local'></div><?= $this->myform->local_area ?> </div></div></div>
+
+                    <div class="mws-form-inline"><div class="mws-form-item small">
+                            <span class = "left_deal_head_notes">
+                                If the location of your property is not shown on the drop down menu, please <a target = "_blank" href = "<?= APPLICATION_URL ?>contents/pages/slug/owner_contact_us">send us a message</a> to let us know and we will add it to our database. Please include details of the region, area and location / development
+                            </span></div></div>
+
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Postal Code<span class="red">*</span>:</label><div class="mws-form-item small"><?= $this->myform->zipcode ?> </div></div></div>
+                  <!--  <div class="mws-form-inline"><div class="mws-form-row"><label>Telephone Number<span class="red">*</span>:</label><div class="mws-form-item small"><?= $this->myform->telephone ?> </div></div></div>	 			-->
+                      <!--      <div class="mws-form-inline"><div class="mws-form-row"><label>Website:</label><div class="mws-form-item small"><?= $this->myform->website ?> </div></div></div>	 			-->
+
+                    <!-- location entries ends -->
+
+
+
+
+                    <p class="left_panel_heading" style="border-bottom:#CCCCCC dotted 1px;">Property details</p> <!-- other details entries start -->
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Number of Bedrooms<span class="red">*</span>:</label><div class="mws-form-item small"><?= $this->myform->no_of_bedroom ?> </div></div></div>
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Number of Bathrooms<span class="red">*</span>:</label><div class="mws-form-item small"><?= $this->myform->no_of_bathroom ?> </div></div></div>
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Number of En-Suite Bathrooms<span class="red">*</span>:</label><div class="mws-form-item small"><?= $this->myform->no_of_en_suite_bathroom ?> </div></div></div>	
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Maximum occupancy(Excluding infants)<span class="red">*</span>:</label><div class="mws-form-item small"><?= $this->myform->occupancy ?> </div></div></div>		       
+                    <!-- other details entries start -->
+
+
+                    <p class="left_panel_heading" style="border-bottom:#CCCCCC dotted 1px;">Headline Title and Summary description</p>
+                    <span  class = "left_deal_head_notes">
+                        Provide users with a Headline Title and an overview of the property. Start by including the size and type of property, followed by where the property is located, then highlight the key property features and benefits (selling points).
+                    </span>
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Headline Title<span class="red">*</span>:</label><div class="mws-form-item small"><?= $this->myform->title ?> </div></div></div>
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Summary Description<span class="red">*</span>:</label><div class="mws-form-item small"><?= $this->myform->introduction ?> </div></div></div>  
+
+
+                    <p class="left_panel_heading" style="border-bottom:#CCCCCC dotted 1px;">Star Rating:</p>      
+                    <span class = "left_deal_head_notes" >Select the Star Rating for the rental property from an overall perspective of the entire property and take everything into account: the property itself, living areas, kitchen, bedrooms, bathrooms, furnishings, dÃ©cor, entertainment amenities; and both the property outlook, surroundings and area.</span>  
+                    <span class = "left_deal_head_notes" ><label>One Star:</label> A quite moderate property offering a basic standard of living accommodation, furnishings and facilities, suitable to those visitors that are traveling on a very limited budget.</span>
+                    <br />
+                    <span class = "left_deal_head_notes" ><label>Two Star:</label> A No Frills but pleasant property offering standard accommodation and facilities, basic furnishing and features, suitable for those visitors with a limited budget.</span>
+                    <br />
+                    <span class = "left_deal_head_notes" ><label>Three Star:</label> A good standard of property offering spacious accommodation with attractive furnishings and features.</span>		
+                    <br />
+                    <span class = "left_deal_head_notes" ><label>Four Star:</label> A first class well-appointed property with excellent dÃ©cor, furnishings and features throughout the accommodation offered.</span>	
+                    <br />
+                    <span class = "left_deal_head_notes" ><label>Five Star:</label> An outstanding property offering top quaIity accommodation with exceptional dÃ©cor, furnishings and features, situation in an upscale area, providing an all-round high standard for the discerning traveller.</span>
+                    <br />
+                    <span class = "left_deal_head_notes" >Star ratings are intended as a guide to assist customers in evaluating rental properties.
+                        If you have any difficulty in deciding on the rating most appropriate for the property then <a target = "_blank" href="<?= APPLICATION_URL ?>contents/pages/slug/owner_contact_us">send us an e-mail</a> asking for our opinion and including a link to where we can view the most comprehensive description of the property. NB: If deemed appropriate we may decide to adjust the rating selected.
+                    </span>	
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Rating<span class="red">*</span>:</label>
+                            <div style="float:left;padding-top:7px;">
+                                <input type="radio" name = "rating" class = "star required" value="1"   <?
+        if ($RatingChk == '1')
+        {
+                ?> checked="checked" <? } ?>/>
+                                <input type="radio" name = "rating" class = "star" value="2"  <?
+                           if ($RatingChk == '2')
+                           {
+                ?> checked="checked" <? } ?> />
+                                <input type="radio" name = "rating" class = "star" value="3"  <?
+                           if ($RatingChk == '3')
+                           {
+                ?> checked="checked" <? } ?>/>
+                                <input type="radio" name = "rating" class = "star" value="4"  <?
+                           if ($RatingChk == '4')
+                           {
+                ?> checked="checked" <? } ?>/>
+                                <input type="radio" name = "rating" class = "star" value="5"  <?
+                           if ($RatingChk == '5')
+                           {
+                ?> checked="checked" <? } ?>/>                                                                                
+                            </div>
+                        </div></div>		       	      
+                    <?= $this->myform->step ?>
+                    <?= $this->myform->ppty_no ?> 
+                    <div class="mws-button-row"> <input type="submit" value="Save & Next" class="mws-button" /></div> 
+                    <!-- first div (first stage) ends-->
+                </form>
+                <?
+            }
+            elseif ($this->step == '2')  // step 2 
+            {
+                ?>			
+
+                <span class="left_deal_head">Please SAVE your input for each section HEADED IN RED as you proceed - by using the Red Save Button located to the right immediately below each section</span>
+
+                <div class = 'step2_tab'>
+
+
+                    <!--  
+                          <input type="radio" name = 'checki' value ='0' class = 'required' />0
+                                  <input type="radio" name = 'checki' value ='1' />1
+                                  <input type="radio" name = 'checki' value ='2' />2
+                                  <input type="radio" name = 'checki' value ='3' />3
+                                          <input type="radio" name = 'checki' value ='4'  />4
+                                      <label for="checki" class="error" style="display:none;">Please choose one.</label>
+                    -->
+                    <form name="myform1" id="mws-validate1" method="post"  action = "<?php echo $this->url(array('controller' => 'myaccount', 'action' => 'processpage', 'step' => $this->stepId, 'ppty' => $this->ppty_id), 'default', true) ?>" novalidate="novalidate" class="mws-form" >
+                        <?
+                        $i = 0;
+                        $cat_name = "";
+                        $cat_name1 = "";
+                        $form_flag = 0;
+
+                        foreach ($this->specData as $value) /* loop of displaying property specification */
+                        {
+                            if ($value['mandatory']) /* checking mandatory fields */
+                                $mandatory = "<span class = 'red'>*</span>";
+                            else
+                                $mandatory = "";
+
+
+
+                            if ($form_flag == 1 && $cat_name != $value['cat_name'])
+                            {
+                                ?>
+                                <div class="mws-form-inline"><div class="mws-form-row">
+                                        <input type="submit"  class = "mws-button" value ="save progress"/>
+
+                                    </div></div>
+
+
+                                <?= $this->myform->step ?>
+
+                                <!--                                    </form>-->
+                                <?
+                            }
+
+
+                            if ($cat_name != $value['cat_name'])
+                            {
+
+                                echo "<h4 class = 'left_panel_heading' style='border-bottom:1px dotted #CCCCCC; margin-bottom:40px;'>" . $value['cat_name'] . "</h4>";
+                                $form_flag = 1;
+                            }
+                            $cat_name = $value['cat_name'];
+                            $x = "ques" . $i;
+
+                            if ($value['spec_id'] != BATHROOM_ID && $value['spec_id'] != BEDROOM_ID && $value['spec_id'] != ADDITIONAL_BATHROOM_ID)
+                            {
+                                ?> 
+                                <label><?= $value['question'] . $mandatory ?></label>
+                                <br /><br />
+
+                                <!-- <div style = 'padding:5px;margin-bottom:20px;width:100%;height:auto;' class = 'ppty_spec_block'>-->
+                                <div class="mws-form-inline"><div class="mws-form-row">
+                                        <?= $this->myform->$x ?>
+                                        <label for="<?= $x . "[]" ?>" class="error" style="display:none;">Please choose one.</label>
+                                    </div></div>
+                                <?
+                            }
+                            else
+                            {
+                                for ($s = 0; $s < $this->no_bedrooms; $s++)
+                                {
+
+                                    $tmp = "ques" . $i . $s;
+
+
+                                    if ($s == 0)
+                                    {
+                                        ?>			
+
+                                        <label><?= $value['question'] . $mandatory ?></label>
+                                        <br /><br />
+                                        <?
+                                    }
+                                    ?>
+                                    <!-- <div style = 'padding:5px;margin-bottom:20px;width:100%;height:auto;' class = 'ppty_spec_block'>-->
+                                    <div class="mws-form-inline"><div class="mws-form-row">
+                                            <span style="font-weight:bold;margin-bottom:10px;">For Bedroom <?= $s + 1 ?></span><br />
+                                            <?= $this->myform->$tmp ?>
+                                            <label for="<?= $x . "[]" ?>" class="error" style="display:none;">Please choose one.</label>
+                                        </div></div>
+
+
+                                    <?
+                                    $i++;
+                                }// end for loop
+                                $i--;
+                            }
+                            $i++;
+                        }
+                        ?>
+                        <div class="mws-form-inline"><div class="mws-form-row">
+                                <input type="submit"  class = "mws-button" value ="save progress"/>
+                            </div></div>
+                        <?= $this->myform->step ?>
+
+
+
+
+                        <div class="mws-button-row"> 
+                            <!--<a class="Btn" href="<?= APPLICATION_URL ?>myaccount/editproperty/step/3">-->
+                            <input type="submit" value="Save & Next" name="allsubmit" class="mws-button-large" />
+                            <!--</a>-->
+                        </div> 
+                    </form>
+                </div> <!-- step2 tab ends -->
+                <?
+            } //step 2 ends
+            elseif ($this->step == '3')  // step 3 starts    
+            {
+                ?>			
+                <div class = 'step1_tab'>
+                    <h2 class = "left_panel_heading" style="border-bottom:#CCCCCC dotted 1px;margin:30px 0 20px 0;">Area and Amenities</h2>		
+
+                    <form name="myform" id="mws-validate" method="post"  action = '<?php echo $this->url(array('controller' => 'myaccount', 'action' => 'processpage', 'ppty' => $this->ppty_id), 'default', true) ?>' novalidate="novalidate" class="mws-form" enctype="multipart/form-data">
+                        <h4 class='left_panel_heading' style="border-bottom:#CCCCCC dotted 1px;padding:6px;font-size:14px;margin:30px 0 40px 0;">Location Description & Information</h4>
+                        <label>Write a brief overview about the actual development (or the immediate local area) where the property is located. (Limit 2000 characters)</label>
+                        <div class="mws-form-inline"><div class="mws-form-row"><div class="mws-form-list"><?= $this->myform->overview ?> </div></div></div>
+
+
+                        <div class="mws-ppty-button-row" style="clear:both;"> <input type="submit" value="Save" class="mws-button" /></div> 
+
+                        <h4 class='left_panel_heading' style="border-bottom:#CCCCCC dotted 1px;padding:6px;font-size:14px;margin:30px 0 40px 0;">Location Amenities & Features</h4>
+                        <label>Tell us if the development where the property is located has any of these features on-site - not the local area. Please tick only those amenities and facilities that are ON-SITE available to guests free of charge.Tick all the ON-SITE amenities that apply:</label>	
+                        <br />
+                        <br />
+
+                        <?
+                        $i = 0;
+                        foreach ($this->amenityArr as $value) /* loop of displaying Amenities */
+                        {
+
+                            $x = "ques" . $i;
+                            ?> 
+                            <div class="mws-form-inline" style="width:200px;float:left;"><label>&nbsp;<?= $this->myform->$x ?>&nbsp;<?= $value['title'] ?></label>
+                            </div>
+
+                            <?
+                            $i++;
+                        }
+                        ?>
+                        <div style="clear:left;"><!-- div for airport location --><br />
+
+                            <strong  style="padding-top:20px;font-size:13px;">Nearest international airport in miles to the property (NB: Please provide details for one or two airports as appropriate)</strong>
+                            <?= $this->myform->step ?>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Enter Nearest Airport First:</label>
+                                    <div class="mws-form-item small"><?= $this->myform->airport1 ?></div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Approximate distance(Miles):</label>
+                                    <div class="mws-form-item small"><?= $this->myform->distance1 ?></div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Enter Nearest Airport Second:</label>
+                                    <div class="mws-form-item small"><?= $this->myform->airport2 ?></div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Approximate distance(Miles)::</label>
+                                    <div class="mws-form-item small"><?= $this->myform->distance2 ?></div></div></div> 
+                        </div><!-- div for airport ends-->
+
+
+                        <div style="margin-top:20px; font-size:13px;">
+                            <strong>If you have a question regarding the location description or on-site amenities send us a message:</strong>
+                            <div class="mws-form-inline"><div class="mws-form-row">
+                                    <?= $this->myform->description ?></div></div>
+                            <div  class="mws-ppty-button-row" style="clear:both;"> <input type="submit" value="Save" class="mws-button pptyBtn" /></div> 
+                        </div>
+                    </form>
+
+                    <a class="Btn" href="<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/4"><input type="button" value="Next" class="mws-button" /></a>
+                </div> <!-- step3 tab ends -->
+                <?
+            } //step 3 ends
+            elseif ($this->step == '4')  // step 4 starts    
+            {
+                ?>			
+                <div class = 'step2_tab'><br />
+                    <h2 style="border-bottom:#CCC dotted 1px">Location</h2>		
+
+                    <form name="myform" id="mws-validate" method="post"  action = '<?php echo $this->url(array('controller' => 'myaccount', 'action' => 'processpage', 'ppty' => $this->ppty_id), 'default', true) ?>' novalidate="novalidate" class="mws-form" enctype="multipart/form-data">
+
+
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Enter Location:</label>
+                                <div class="mws-form-item small"><?= $this->myform->address ?><?= $this->myform->latitude ?><?= $this->myform->longitude ?> </div></div></div>
+
+                        <div class="mws-form-inline"><div class="mws-form-row"><label style="width:100%;">Or, pinpoint the property location using the Map.</label></div></div>
+
+                        <div id="map_canvas" ></div><br />
+
+
+
+
+                        <!-- checkboxes for point of interests -->
+                        <span style="font-weight:bold;font-size:13px;">Check boxes to view local points of interest and services</span>
+                        <div class = "check_bx"><br />
+
+
+                            <!-- transport checkbox -->
+                            <div class = "checkbox_block">
+                                <input type="checkbox" name="transport"  id = "transport"/><label for="transport">&nbsp;Transport</label>
+
+                                <div style="margin-left:200px;">
+                                    <img src="http://maps.gstatic.com/mapfiles/place_api/icons/airport-71.png" height="20" width="20"/>
+                                    <img src="http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png" height="20" width="20"/>
+                                    <img src="http://maps.gstatic.com/mapfiles/place_api/icons/travel_agent-71.png" height="20" width="20"/>
+                                </div>
+
+                            </div>
+
+                            <!-- bars and restaurants checkbox -->
+                            <div class = "checkbox_block">
+                                <input type="checkbox" name="bars"  id = "bars"/><label for="bars">&nbsp;Bars and restaurants</label>
+
+                                <div style="margin-left:200px;">
+                                    <img src="http://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png" height="20" width="20" />
+                                    <img src="http://maps.gstatic.com/mapfiles/place_api/icons/restaurant-71.png" height="20" width="20" />
+                                    <img src="http://maps.gstatic.com/mapfiles/place_api/icons/bar-71.png" height="20" width="20" />
+
+                                </div>
+
+                            </div>
+
+                            <!-- Tourist Attraction checkbox -->
+                            <div class = "checkbox_block">
+                                <input type="checkbox" name="tourist"  id = "tourist"/><label for="tourist">&nbsp;Tourist Attractions </label>
+
+                                <div style="margin-left:200px;">
+                                    <img src="http://maps.gstatic.com/mapfiles/place_api/icons/museum-71.png" height="20" width="20" />
+                                    <img src="http://maps.gstatic.com/mapfiles/place_api/icons/art_gallery-71.png" height="20" width="20" />
+                                    <img src="http://maps.gstatic.com/mapfiles/place_api/icons/camping-71.png" height="20" width="20" />
+                                </div>
+
+                            </div>
+
+                            <!-- shopping -->
+                            <div class = "checkbox_block">
+                                <input type="checkbox" name="shopping"  id = "shopping"/><label for="shopping">&nbsp;Shopping</label>
+
+                                <div style="margin-left:200px;">
+                                    <img src="http://maps.gstatic.com/mapfiles/place_api/icons/shopping-71.png" height="20" width="20" />
+                                    <img src="http://maps.gstatic.com/mapfiles/place_api/icons/jewelry-71.png" height="20" width="20" />
+                                    <img src="http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png" height="20" width="20" />
+                                    <img src="http://maps.gstatic.com/mapfiles/place_api/icons/electronics-71.png" height="20" width="20" />
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- points of interest ends -->
+
+
+                        <?= $this->myform->step ?>
+
+
+                        <div class="mws-ppty-button-row"> <input type="submit" value="Save" class="mws-button" /></div> 
+                    </form>
+
+                </div> <!-- step4 tab ends -->
+                <a class="Btn" href="<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/5"><input type="button" value="Next" class="mws-button" /></a>
+                <?
+            } //step 4 ends
+            elseif ($this->step == '5')  // step 5 starts    
+            {
+                ?>			
+                <div class = 'step2_tab'>
+                    <h2>Photo Gallery</h2>	<BR />
+                    <span class = "left_deal_head_notes" >
+                        <label>Photo Upload Tips:</label>
+                    </span>	
+                    <span class = "left_deal_head_notes">
+                        1. A minimum of 5 images is required - with captions - you may provide up to 24 images.
+                    </span>
+                    <span class = "left_deal_head_notes">
+                        2. Good use of images is essential - place them in an order to take renters through the property.
+                    </span>
+                    <span class = "left_deal_head_notes">
+                        3. The first image must be one of the property frontal (exterior) -<span style="color:#EC1C24"> we will set this caption.</span>
+                    </span>
+                    <span class = "left_deal_head_notes">
+                        4. Please try to use landscape shaped images and avoid portrait style, also avoid small images.
+                    </span>
+                    <span class = "left_deal_head_notes">
+                        5. Click on "Browse" to upload images from your computer - the first one will have the caption set.<br />
+                        <span style="color:#EC1C24">Aside from the first image a caption is Mandatory for each image - prior to uploading the next one - click on the photo for pop-up caption facility.</span>
+                    </span>
+                    <span class = "left_deal_head_notes">
+                        6. To change the order of the images simply drag and drop them into the best position.
+                    </span>
+                    <span class = "left_deal_head_notes">
+                        7. To delete an image click on the "bin" in the image top right corner (you may have to refresh page).
+                    </span>
+                    <span class = "left_deal_head_notes">
+                        8. If you have a floor-plan to assist renters to visualise the property upload it using the facility provided.
+                    </span>
+                    <form name="myform0" id="mws-validate0" action = '<?php echo $this->url(array('controller' => 'myaccount', 'action' => 'floorplan', 'ppty' => $this->ppty_id), 'default', true) ?>' method="post"  novalidate="novalidate" class="mws-form" enctype="multipart/form-data"  >
+                        <!-- image upload -->
+
+
+                        <?
+                        if (!$this->floorPlan)
+                        {
+                            ?>
+                            <!-- floor plan -->	      
+                            <div class="mws-form-inline" ><div class="mws-form-row"><label>Floor Plan(optional):</label></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row">
+                                    <input type="file" name = 'floor_plan' id = 'floor_plan' class = "mws-textinput required floorPlan" />
+                                </div>
+                            </div>
+                            <?
+                        }
+                        else
+                        {
+                            ?>
+                            <div class="mws-form-inline" ><div class="mws-form-row"><label>Floor Plan(optional):</label></div></div>
+                            <?
+                        }
+                        ?>       
+
+                        <div class="mws-button-row" style="border:none;">
+                            <?
+                            if ($this->floorPlan)
+                            {
+                                ?>
+                                <a class = 'biglink' target = '_blank' href="<?= IMAGES_URL ?>floorplan/<?= $this->floorPlan ?>" style="text-decoration:underline;">View Floorplan</a> &nbsp;&nbsp; or&nbsp;&nbsp;	 
+                                <a class = 'biglink'  href="javascript:deletefloorplan()" style="text-decoration:underline;" >Delete Floorplan</a>	 
+
+                                <?
+                            }
+                            ?>	
+
+
+                        </div>	    
+                        <?
+                        if (!$this->floorPlan):
+                            ?>
+                            <div class="mws-ppty-button-row"><input type="button" id = "floor_planio" value="upload" class="mws-tooltip-n mws-button blue" ></div>
+                            <?
+                        endif;
+                        ?>
+                </div> 
+            </form>
+            <!-- floor plan ends -->
+
+            <form name="myform" id="mws-validate" action = '<?php echo $this->url(array('controller' => 'myaccount', 'action' => 'processphoto', 'ppty' => $this->ppty_id), 'default', true) ?>' method="post"  novalidate="novalidate" class="mws-form" enctype="multipart/form-data"  >	
+                <div class="content">
+
+                    <div id="drop-files" ondragover="return false">
+                        Browse Images
+                    </div>
+                    <input type="file" name="photo_res" id = "photo_res" />
+
+                    <br />
+                    <br />
+            <!--			<p style="font-family:'museo_300regular';">When you drag and drop images to a new position please use the Save button when complete:</p>-->
+                    <br />
+
+                    <div id="uploaded-holder">
+                        <div id="dropped-files">
+                            <div id="upload-button">
+                                <a href="#" class="upload">Upload!</a>
+                                <a href="#" class="delete">delete</a>
+                                <span>0 Files</span>
+                            </div>
+                        </div>
+                        <div id="extra-files">
+                            <div class="number">
+                                0
+                            </div>
+                            <div id="file-list">
+                                <ul></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="loading">
+                        <div id="loading-bar">
+                            <div class="loading-color"> </div>
+                        </div>
+                        <div id="loading-content">Uploading file.jpg</div>
+                    </div>
+
+                    <div id="file-name-holder">
+                        <div id="uploaded-files" >
+
+                            <div id = 'img_blck0' class='cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck1' class='cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck2' class='cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck3' class='cancel' align="center"> 
+
+                            </div>
+
+                            <!-- 4 blocks -->
+
+                            <div id = 'img_blck4' class='cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck5' class='cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck6' class='cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck7' class='cancel' align="center"> 
+
+                            </div>
+
+                            <!-- 8 blocks -->
+
+                            <div id = 'img_blck8' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck9' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck10' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck11' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <!-- 12 blocks -->
+
+                            <div id = 'img_blck12' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck13' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck14' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck15' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <!-- 16 blocks -->
+
+                            <div id = 'img_blck16' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck17' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck18' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck19' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <!-- 20 blocks -->
+                            <div id = 'img_blck20' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck21' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck22' class= 'cancel' align="center"> 
+
+                            </div>
+
+                            <div id = 'img_blck23' class= 'cancel' align="center"> 
+
+                            </div>
+                            <!-- 24 blocks -->
+
+                        </div>	
+                    </div>
+                </div>
+
+                <!-- image upload ends-->
+                <?= $this->myform->step ?>
+                <input type="hidden" name = 'order_image' id = 'order_image' />
+                <input type="hidden" name="pptyId" id="pptyId"  value="<?= $this->ppty_id ?>" />
+            <!--				<div class="mws-button-button-row" style="float:right;padding:10px;width:100%;"> <input  type="submit" value="Save" class="mws-button floatR" /></div> -->
+            </form>
+
+            <a class="Btn" style="clear:both" href="<?= APPLICATION_URL ?>myaccount/editproperty/ppty/<?= $this->ppty_id ?>/step/6"><input type="button" value="Next Step" class="mws-button" /></a>
+
+            <?
+        } //step 5 ends
+        elseif ($this->step == '6') //step 6 starts
+        {
+            ?>
+
+            <!-- calendar code starts here -->
+            <?
+            if ($this->nexts == '1')
+            {
+                $prevurl = APPLICATION_URL . "myaccount/editproperty/ppty/" . $this->ppty_id;
+                $nexturl = "javascript:void(0)";
+                $nextText = "Previous";
+                $current_year = date('Y') + 1;
+                $current_mnth = $mnth_display = date('m');
+                $next_style = "style = 'width:86%;'";
+            }
+            else
+            {
+                $prevurl = "javascript:void(0)";
+                $nexturl = APPLICATION_URL . "myaccount/editproperty/ppty/" . $this->ppty_id . "/cal/1";
+                $nextText = "Next";
+                $current_year = date('Y');
+                $current_mnth = $mnth_display = date('m');
+                $next_style = "style = 'margin-bottom:20px;width:86%'";
+                $next_btn = "style = 'float:right'";
+            }
+
+            $week = array('S', 'M', 'T', 'W', 'T', 'F', 'S');
+            ?>
+
+
+            <form name="myform" id="mws-validate"  method="post"  novalidate="novalidate" class="mws-form" >
+                <div  class = "container_cal"> <!-- main wrapper div container -->
+                    <span class = "left_deal_head_notes">
+                        Select a choice of default for your Calendar. Select AVAILABLE if you intend to keep the calendar up to date - Select ON REQUEST if, for whatever reason, you cannot keep it up to date. NB: Selecting AVAILABLE will show the property to renters for immediate online booking and maximise booking potential. Selecting ON REQUEST means potential renters are made aware that Availability has to be checked.
+                    </span>
+                    <br />
+                    <br />
+
+                    <span class="left_deal_head_notes_high" ><label>Important Calendar notes:</label> Each date that is shown in blue should be available to be booked - as a fall back we operate a safety net in our booking procedure to alert customers that until they receive a confirmation e-mail with a confirmed reservation number from us then a booking is not definite.</span>
+                    <br />
+                    <span class="left_deal_head_notes_low" >If a renter checks out on any given day, then that date should be shown in blue as available for a new arrival. Only show as booked nights that have a rental in-house. Eg: renter books for 14 August for 14 nights, checking-out on 28 August - therefore using the calendar block dates as "booked" from 14 August to 27 August - the last night.</span>
+                    <div style="width:80%;">
+                        <?
+                        if ($this->cal_default == '0')
+                        {
+                            $checked_a = "checked = 'checked'";
+                            $checked_b = "";
+                        }
+                        if ($this->cal_default == '1')
+                        {
+                            $checked_a = "";
+                            $checked_b = "checked = 'checked'";
+                        }
+                        ?>
+                        <div class="mws-form-inline"><div class="mws-form-row">
+                                <label>Default option <span class="red">*</span>:</label>
+                                <br />
+                                <br />
+                                <br />
+
+                                <div id="mws-ui-button-radio" class="ui-buttonset">
+                                    <input type="radio"  <?= $checked_a ?>  name="radio" id="radio1" value = '0' class="ui-helper-hidden-accessible" onclick="return cal_default(this.value);"><label for="radio1" class="ui-button ui-widget ui-state-default ui-button-text-only " role="button" ><span class="ui-button-text">Available</span></label>
+                                    <input type="radio"  <?= $checked_b ?> name="radio" id="radio2" value = '1' class="ui-helper-hidden-accessible" onclick="return cal_default(this.value);"><label for="radio2" class="ui-button ui-widget ui-state-default ui-button-text-only " role="button" ><span class="ui-button-text">On Request</span></label>
+                                </div>
+                            </div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Date From(Arrival):</label><div class="mws-form-item small"><?= $this->myform->date_from ?> </div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Date To(Night of):</label><div class="mws-form-item small"><?= $this->myform->date_to ?> </div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Status:</label><div class="mws-form-item small"><?= $this->myform->status ?> </div></div></div>
+                        <div class="mws-button-row"> <input type="submit"  class="mws-button" value = 'Process' onclick = "do_save_cal();"/></div> 
+
+                        <hr style="border-top:dotted 1px #000;margin:10px 0 20px 0;">
+
+                        <div class="left_deal_head_notes_low">
+                            The Calendar Availability page on the website display’s the date of the last Calendar update. If there are no new calendar entries you can return here at any time to click the 'My Calendar is up to Date' Button to indicate to viewer that the calendar is up to date.
+                            <div class="spacer"></div>
+                            <br>
+                            <a class="floatL" href = "<?php echo APPLICATION_URL ?>myaccount/uptodate/ppty/<?php echo $this->ppty_id; ?>/type/edit" style="text-decoration:none;"><input class="mws-button black small" type="button" value="My Calendar is Up to date"></a>
+                            <?php echo $this->date_calendar_modified == date('Y-m-d') ? "<img class='floatL' src='" . IMAGES_URL . "/check_yes.png'>" : ''; ?>
+                        </div>
+                        <div class="spacer"></div>
+                        <hr style="border-top:dotted 1px #000;margin:10px 0 20px 0;">
+                        <p>Colour Codes:</p>
+
+                        <p>
+                        <div style="height:20px;width:20px;background-color:#99CCFF;float:left;">
+                        </div>	<label style='float:left;margin:0 10px;'>Available</label>
+                        <div style="height:20px;width:20px;background-color:yellow;float:left;">
+                        </div>	<label style='float:left;margin:0 10px;'>On Request</label>
+                        <div style="height:20px;width:20px;background-color:#CC3300;float:left;">
+                        </div>	<label style='float:left;margin:0 10px;'>Booked</label><br />
+                        </p>
+
+                    </div>
+            </form>
+            <br />
+            <div class="cal_btns">
+                <div style='float:left;'>
+                    <a href = "<?= $prevurl ?>"><input class="mws-button black small" type="button" value="Prev"></a>	
+                </div>
+
+                <div style='float:right;'>
+                    <a href = "<?= $nexturl ?>" style="float:right;"><input class="mws-button black small" type="button" value="Next"></a>	
+                </div>
+            </div>
+
+            <br />
+            <br />
+            <?
+            //echo $this->calArr[0]['cal_status'];
+            //exit;
+            for ($t = 1; $t <= 12; $t++) /*             * *main loop* */
+            {
+                ?>    
+
+
+                <div class = 'calendar_box'><!-- first calendar box-->
+                    <div class = 'calendar_head'>
+                        <label><?= date('F Y', mktime(0, 0, 0, $current_mnth, 1, $current_year)) ?></label>
+                    </div>	
+                    <?
+                    for ($w = 0; $w < 7; $w++)
+                    {
+                        ?>	
+                        <div class = 'week_block' align="center"><!--smaller blocks of week-->
+                            <label><?= $week[$w] ?></label>
+                        </div>
+                        <?
+                    }
+                    //if($t == 10)
+                    //echo date('w',mktime(0, 0, 0, $current_mnth,1,$current_year)); 
+                    for ($i = 0, $k = 1; $i < 42; $i++)
+                    {
+                        $block_class = 'date_block';
+
+                        if ($this->cal_default == '0')
+                            $block_class = 'date_block3';
+                        if ($this->cal_default == '1')
+                            $block_class = 'date_block2';
+
+                        for ($s = 0; $s < count($this->calArr); $s++)
+                        {
+                            //checking from database that if user has specified the status of the dates
+                            if (date('Y-m-d', strtotime($current_year . "-" . $current_mnth . "-" . $k)) >= date('Y-m-d', strtotime($this->calArr[$s]['date_from'])) && date('Y-m-d', strtotime($current_year . "-" . $current_mnth . "-" . $k)) <= date('Y-m-d', strtotime($this->calArr[$s]['date_to'])) && $i >= date('w', mktime(0, 0, 0, $current_mnth, 1, $current_year)) && $k <= date('t', mktime(0, 0, 0, $current_mnth, 1, $current_year)))
+                            {
+
+                                switch ($this->calArr[$s]['cal_status'])
+                                {
+                                    case 0: $block_class = 'date_block1';
+                                        break;
+                                    case 1: $block_class = 'date_block2';
+                                        break;
+                                    case 2: $block_class = 'date_block3';
+                                        break;
+                                }
+                            }
+                        }
+                        ?>			<div class = '<?= $block_class ?>' align="center"><!--smaller blocks of dates--> 	
+                            <?
+                            if ($i < date('w', mktime(0, 0, 0, $current_mnth, 1, $current_year)) || $k > date('t', mktime(0, 0, 0, $current_mnth, 1, $current_year)))
+                                echo "&nbsp";
+                            else
+                            {
+                                echo $k;
+                                $k++;
+                            }
+                            ?>
+
+                        </div>			
+                        <?
+                    }
+                    ?>
+
+                </div><!-- first calendar box ends-->
+                <!-- CHECKING IF THE DISPLAYED MONTH WAS THE LAST MONTH OR NOT -->
+                <?
+                if ($current_mnth == 12)
+                {
+                    $current_mnth = 1;
+                    $current_year = $current_year + 1;
+                }
+                else
+                    $current_mnth++;
+            }
+
+
+            /*             * *main loop ends * */
+            ?>
+
+
+
+
+            </div>  
+
+
+            <!-- calendar code ends here -->	
+            <form name="myform" id="mws-validate" action = '<?php echo $this->url(array('controller' => 'myaccount', 'action' => 'processcal', 'ppty' => $this->ppty_id), 'default', true) ?>' method="post"  novalidate="novalidate" class="mws-form" enctype="multipart/form-data" >
+                <input type="hidden" name="step" id="step" value = "6"/> 
+
+                <div style='width:100%;'>
+                    <input class="mws-button floatR" type="submit" value="Next Step">
+                </div>    
+            </form> 	               
+            <?
+        }
+        elseif ($this->step == '7') //rental rates
+        {
+            if ($this->currency_set == '1')
+            {
+                $disabled = "";
+            }
+            else
+                $disabled = "disabled='disabled'";
+            ?>
+            <!-- step 7 starts -->
+
+            <span class="left_deal_head_notes">
+                <label> Prior to adding the rental prices for the property please read these important guidelines:</label>
+            </span>
+            <span class="left_deal_head_notes">
+                1. The minimum stay for a rental booking on our system is 7 nights - the maximum is 60 nights.
+            </span>
+            <span class="left_deal_head_notes">
+                2. The minimum stay for each property can be varied from 7 to 14 nights during each rate period - 
+                therefore making it easy to apply a higher minimum stay over peak holiday dates, you only need  
+            </span>
+            <span class="left_deal_head_notes">
+                3. We do not offer renters short stays of less than a week -<a style="text-decoration:none;">please divide your long stay rates</a> into 
+            </span>
+            <span class="left_deal_head_notes">
+                daily (per night) rates for the system to calculate prices.  NB: Average booking will be 10-14 nights.
+            </span>       
+            <span class="left_deal_head_notes">
+                4. Use our choice of Special Offers to encourage Late, Early Bird and Longer Stay Bookings and 
+            </span>
+            <span class="left_deal_head_notes">
+                other types of creative offers including Discounts and Free Nights.
+            </span>
+            <span class="left_deal_head_notes">
+                5. Use our Extras panel for optional (or compulsory) items such as pool heating, cleaning, etcâ€¦â€¦
+            </span>
+            <span class="left_deal_head_notes">
+                6. The total rental price quoted to potential customers is calculated from the nightly rates that you
+            </span>
+            <span class="left_deal_head_notes">
+                enter onto the system and will take into account any rental dates over different rate/minimum 
+            </span>
+            <span class="left_deal_head_notes">
+                stay periods.  NB: Taxes must be included in the rental rates so the price the customer sees is final.
+            </span>
+            <span class="left_deal_head_notes">
+                7. All prices on our system will be quoted in UK £'s - rates you enter in US $ or EU will be 
+            </span>
+            <span class="left_deal_head_notes">
+                converted into UK £'s using the latest currency rates of exchange.
+            </span>
+            <form name="myform0" id="mws-validate" method="post"  novalidate="novalidate" class="mws-form" >	
+                <div class="mws-form-inline">
+                    <div class="mws-form-row"><label style="width:250px;">Select Currency for Rental Rates <span class="red">*</span>:</label>
+                        <div class="mws-form-item small" style="margin-left:220px;"><select name= 'currency' id = 'currency' onchange="setcurrency();">
+                                <option value="">- - Select - -</option>
+                                <?
+                                foreach ($this->currencyData as $currval)
+                                {
+                                    if ($this->currency_val)
+                                    {
+                                        if ($this->currency_val == $currval['currency_code'])
+                                            $selected_c = "selected = 'selected'";
+                                        else
+                                            $selected_c = "";
+                                    }
+                                    else
+                                        $selected_c = "";
+                                    echo "<option " . $selected_c . " value = '" . $currval['currency_code'] . "'>" . $currval['currency_name'] . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div></div></div>
+                <br />
+            </form>
+
+            <div style="height:auto;"><!-- rental rate wrapper div-->
+                <form name="myform1" id="mws-validate1" method="post"  novalidate="novalidate" class="mws-form" >	
+                    <h5 style="border-bottom:#CCC dotted 1px;padding:4px;">Property Daily Rental Rates Panel:</h5><BR />
+                    <span class="left_deal_head_notes">Enter nightly gross rates inclusive of taxes and departure cleaning fees - for price periods.
+                        Rates entered must be rounded up into GBP £’s, US $ Dollars or EU € Euros - no . 's or .34 etc.
+                    </span>
+
+
+
+                    <div class="mws-form-col-2-8 alpha">
+                        <label>Date From:</label>
+                        <div class="mws-form-item small">
+                            <input <?= $disabled ?> type="text" name="date_from" id = "date_from" class="mws-textinput required" >
+                        </div>
+                    </div>
+                    <div class="mws-form-col-2-8">
+                        <label>Date To:</label>
+                        <div class="mws-form-item small">
+                            <input <?= $disabled ?> type="text" name="date_to" id = "date_to" class="mws-textinput required dateCheck" >
+                        </div>
+                    </div>
+                    <div class="mws-form-col-2-8">
+                        <label>Minimum Night Stay :</label>
+                        <div class="mws-form-item small">
+                            <select <?= $disabled ?>  name="nights" id ="nights" class="mws-textinput required" >
+                                <?
+                                for ($i = 7; $i <= 14; $i++)
+                                {
+                                    if ($i == 7)
+                                        $selected = "selected = 'selected'";
+                                    else
+                                        $selected = "";
+                                    echo "<option '" . $selected . "' value='" . $i . "'>" . $i . "</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mws-form-col-2-8 omega">
+                        <label>Daily Rate</label>
+                        <div class="mws-form-item small">
+                            <input <?= $disabled ?> class="mws-textinput required number" name="rate"  id = "rate" type="text">
+                        </div>
+                    </div>    
+
+                    <div class="mws-button-row" style="border:none;">
+                        <input <?= $disabled ?> type="submit" value="Update" class="mws-tooltip-n mws-button blue"  onClick="do_save_ppty()">
+                    </div>
+                </form>
+                <input type="hidden" name="cal_date" id = "cal_date">
+                <div style='margin-bottom:55px;'>
+                    <div class="rental_rate_blck">
+                        <label title="from">From</label>
+                        <label>To</label>
+                        <label>Minimum Night stay</label>
+                        <label>Daily Rate</label>
+                    </div>
+
+                    <div class="rental_rate_blck2" id = "rate_blck" style = 'display:inline-block;'>
+
+
+                    </div>
+
+
+                </div>
+
+                <div style="margin-bottom:40px;">
+                    <input type="checkbox" form="mws-validate" id="insurance" name="insurance" <?php echo $this->is_insured == '1' ? 'checked="checked"' : ''; ?> <?= $disabled ?> onclick="makepropertyinsurance()" > Is Property Home Insurance included in the Daily Rates?
+                </div>
+
+                <!-- extras panel starts -->
+                <h5>Extras:</h5>
+                <form name="myform2" id="mws-validate2" method="post"  novalidate="novalidate" class="mws-form" >	
+                    <input type="hidden" name="step_revert" value="7" /> <!-- jugaad -->
+                    <div class="mws-form-col-2-8 alpha">
+                        <label>Name Of Extras:</label>
+                        <div class="mws-form-item small">
+                            <input <?= $disabled ?> type="text" name="extra_name" id = "extra_name" class="mws-textinput required" maxLength = "50">
+                        </div>
+                    </div>
+                    <div class="mws-form-col-2-8">
+                        <label>Price:</label>
+                        <div class="mws-form-item small">
+                            <input <?= $disabled ?> type="text" name="extra_price" id = "extra_price" class="mws-textinput required number" >
+                        </div>
+                    </div>
+                    <div class="mws-form-col-2-8">
+                        <label>Type:</label>
+                        <div class="mws-form-item small">
+                            <select <?= $disabled ?> name="extra_type" id ="extra_type" class="mws-textinput required" >
+                                <option value="">- - Select - -</option>
+                                <option value="0">Optional</option>
+                                <option value="1">Compulsory</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mws-form-col-2-8">
+                        <label>Per:</label>
+                        <div class="mws-form-item small">
+                            <select <?= $disabled ?> name="stay_type" id ="stay_type" class="mws-textinput required" >
+                                <option value="">- - Select - -</option>
+                                <option value="0">Night</option>
+                                <option value="1">Stay</option>
+                            </select>
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="mws-button-row" style="border:none;">
+                        <input <?= $disabled ?> type="submit" value="Update" class="mws-tooltip-n mws-button blue"  onClick="do_save_extra()">
+                    </div>
+                </form>    
+
+                <div style="margin-bottom:55px;"><!-- display block of extras-->
+                    <div class="extras_blck">
+                        <label title="from">Name Of Extras</label>
+                        <label>Price</label>
+                        <label>Type</label>
+                        <label>Per</label>
+                    </div>
+
+                    <div class="extras_blck2" id = "extra_blck" style = 'display:inline-block;'>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- extras panel ends -->
+
+
+                <!-- Special Offers tab starts -->
+                <h5>Special offers:</h5><br />
+
+
+                <div id="layout">
+                    <div class="hgroupheader">
+                        <div class="cell spcl1" align="center">Special Offer Type</div>
+                        <div class="cell spcl2 promo" align="center">Promo Code</div>
+                        <div class="cell spcl2" align="center">Valid From (Arrive after)</div>
+                        <div class="cell spcl2" align="center">Valid Until (Leave by)</div>
+                        <div class="cell spcl3" align="center">Minimum Night Stay</div>
+                        <div class="cell spcl4" align="center">Discount Offer(%) <br />
+                            or Freebies</div>
+                        <div class="cell spcl2" align="center">Book By Date</div>
+                        <div class="cell spcl5" align="center">Activate</div>
+                    </div>
+                    <div class="scrollable">
+
+                        <?
+                        $i = 1;
+                        $offerArr = array();
+                        $archiveArr = array();
+                        foreach ($this->offerArr as $keys => $values)
+                        {
+
+                            //======== code for archiving offer starts ================//
+                            if (!empty($values['valid_to']) && strtotime($values['valid_to']) < time())
+                            {
+                                $archiveArr[$keys] = $values;
+                                continue;
+                            }
+                            //======== code for archiving offer ends ==================//
+
+
+                            if ($values['discount_type'] == 0)
+                            {
+                                $text = '%';
+                            }
+                            if ($values['discount_type'] == 1)
+                            {
+                                $text = ' Nights Free';
+                            }
+                            if ($values['discount_type'] == 2)
+                            {
+                                $text = 'Free Pool Heating';
+                            }
+                            if ($values['discount_type'] == 3)
+                            {
+                                $text = '7 Nights Free';
+                            }
+                            ?>
+
+                            <div class="hgroup">
+                                <div class="cell spcl1"  ><?= $values['type_name'] ?> <?= $offerArr[$values['type_name']]++ ?>
+                                    <?php
+                                    if ($values['discount_type'] == '1' && $values['free_nights_type'] == 'variable')
+                                    {
+                                        ?>
+                                        <br>
+                                        x = 
+                                        <select <?= $disabled ?> type="text" name="discount_offer<?= $i ?>" id = "discount_offer<?= $i ?>" class = "required" >
+
+                                            <option value="3" <?= $values['discount_offer'] == '3' ? 'selected="selected"' : '' ?>>4</option>
+                                            <option value="4" <?= $values['discount_offer'] == '4' ? 'selected="selected"' : '' ?>>5</option>
+                                            <option value="5" <?= $values['discount_offer'] == '5' ? 'selected="selected"' : '' ?>>6</option>
+                                            <option value="6" <?= $values['discount_offer'] == '6' ? 'selected="selected"' : '' ?>>7</option>
+                                        </select><?= $text == "%" ? $text : "" ?>
+
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                                <div class="cell spcl2 promo" id = 'promo<?= $i ?>' align="center"><?= $values['promo_code'] ?></div>
+                                <div class="cell spcl2" align="center"><input <?= $disabled ?> type="text" class = "mws-tooltip-n" name="valid_from<?= $i ?>" id="valid_from<?= $i ?>" onchange="mindate(this.value,'valid_to<?= $i ?>')" value = "<? if ($values['valid_from']) echo date('d-m-Y', strtotime($values['valid_from'])); ?>" title="<? if ($values['valid_from']) echo date('d-m-Y', strtotime($values['valid_from'])); else echo "Enter Valid From Date" ?>"/>
+                                    <label id = 'error_valid_from<?= $i ?>' for="valid_from<?= $i ?>" class = "error" style="display:none;">please choose date</label>
+                                </div>
+                                <div class="cell spcl2" align="center"><input <?= $disabled ?> type="text" class = "mws-tooltip-n" name="valid_to<?= $i ?>" id="valid_to<?= $i ?>" onchange="mindateforbook(this.value,'bookby<?= $i ?>')" value="<? if ($values['valid_to']) echo date('d-m-Y', strtotime($values['valid_to'])); ?>" title="<? if ($values['valid_to']) echo date('d-m-Y', strtotime($values['valid_to'])); else echo "Enter Valid Until Date"; ?>"/>
+                                    <label id = 'error_valid_to<?= $i ?>' for="valid_to<?= $i ?>" class = "error" style="display:none;">please choose date</label>
+                                </div>                                                
+                                <div class="cell spcl3" align="center"><?
+                    if ($values['min_nights_type'] == '0')
+                    {
+                                        ?>
+                                        <select <?= $disabled ?> name="min_stay<?= $i ?>" id = "min_stay<?= $i ?>">
+
+                                            <?
+                                            for ($tr = 7; $tr <= 14; $tr++)
+                                            {
+                                                if ($tr == $values['min_night'])
+                                                    echo "<option selected = 'selected'>" . $tr . "</option>";
+                                                else
+                                                    echo "<option >" . $tr . "</option>";
+                                            }
+                                            ?>
+
+                                        </select>
+
+                                        <?
+                                    }
+                                    else
+                                    {
+                                        echo $values['min_nights'] . " Nights";
+                                    }
+                                    ?>
+
+                                    <label id = 'error_min_stay<?= $i ?>' for="min_stay<?= $i ?>" class = "error" style="display:none;">Enter number only</label>		                       
+                                </div>                        
+                                <div class="cell spcl4" align="center"><?
+                    if ($values['discount_type'] != 2 && $values['discount_type'] != 3)
+                    {
+                        if ($values['discount_type'] == 1 && $values['free_nights_type'] == 'variable'):
+                                            ?>	
+                                            <div align="center" style="display:block;">
+                                                Max <input <?= $disabled ?> type="text" name="max_nights<?= $i ?>" id = "max_nights<?= $i ?>" value="<?= $values['max_night'] ?>" class = "required" /><?= $text == "%" ? $text : "" ?>
+                                            </div>
+                                            <?php
+                                        else:
+                                            ?>
+                                            <div align="center" style="display:block;">
+                                                <input <?= $disabled ?> type="text" name="discount_offer<?= $i ?>" id = "discount_offer<?= $i ?>" value="<?= $values['discount_offer'] ?>" class = "required" /><?= $text == "%" ? $text : "" ?>
+                                            </div>
+                                        <?
+                                        endif;
+                                    }
+                                    ?>
+                                    <label id = 'error_discount_offer<?= $i ?>' for="discount_offer<?= $i ?>" class = "error" style="display:none;">Enter numbers only</label>
+                                    <?= $text != "%" ? $text : "" ?>
+                                </div>                                            	
+                                <div class="cell spcl2" align="center"><input <?= $disabled ?> type="text" class = "mws-tooltip-n" name="bookby<?= $values['id'] ?>" id = "bookby<?= $i ?>" value = "<? if ($values['book_by']) echo date('d-m-Y', strtotime($values['book_by'])); ?>" title = "<? if ($values['book_by']) echo date('d-m-Y', strtotime($values['book_by'])); else echo "Enter Book By Date"; ?>"/>
+                                    <label id = 'error_bookby<?= $i ?>' for="bookby<?= $i ?>" class = "error" style="display:none;">Enter proper</label>
+                                </div>                                                
+                                <div class="cell spcl5" align="center">
+                                    <input type="hidden" name="spcl_offer_id<?= $i ?>" id = "spcl_offer_id<?= $i ?>" value="<?= $values['spcl_offer_id'] ?>"  />
+                                    <input type="hidden" name="offer_id<?= $i ?>" id = "offer_id<?= $i ?>" value="<?= $values['id'] ?>"  />
+                                    <input <?= $disabled ?> type="button" <? if ($values['activate']) echo "disabled='disabled'"; ?> class="mws-button black small mws-i-24 i-check mws-tooltip-n"  title="Click to activate this offer." onclick = 'checkvalid(<?= $i ?>)' value="+" >
+                                    <input <?= $disabled ?> type="button" <? if (!$values['activate']) echo "disabled='disabled'" ?> class="mws-button black small mws-i-24 i-cross mws-tooltip-n"  title="Click to de-activate this offer." onclick = "dactive(<?= $i ?>)" value="x" >                    
+                                </div>
+                            </div>        
+                            <script type="text/javascript">
+                                $("#valid_from<?= $i ?>").datepicker({
+                                    minDate: new Date(),
+                                    dateFormat: "dd/mm/yy" 
+                                });	
+                                                                                                                                                                									
+                                $("#valid_to<?= $i ?>").datepicker({
+                                    dateFormat: "dd/mm/yy" 
+                                });
+                                                                                                                                                                									
+                                var procesVal = $("#valid_to<?= $i ?>").val();
+                                                                                                                                                                									
+                                if(procesVal != "")
+                                {
+                                    procesVal = procesVal.split("-");
+                                                                                                                                                                										
+                                    if(procesVal.length < 2)
+                                        procesVal = procesVal.split("/");
+                                                                                                                                                                										
+                                                                                                                                                                										
+                                    $("#bookby<?= $i ?>").datepicker({
+                                        dateFormat: "dd/mm/yy",
+                                        maxDate: new Date(procesVal[2],parseInt(procesVal[1])-1,procesVal[0])  
+                                    });
+                                                                                                                                                                									
+                                }
+                                else
+                                    $("#bookby<?= $i ?>").datepicker({
+                                        dateFormat: "dd/mm/yy"
+                                    });
+                                                                                                                                                                									
+                                                                                                                                                                									
+                                                                                                                                                                									
+                            </script>
+                            <?
+                            $i++;
+                        }
+
+                        foreach ($archiveArr as $keys => $values)
+                        {
+
+                            if ($values['discount_type'] == 0)
+                            {
+                                $text = '%';
+                            }
+                            if ($values['discount_type'] == 1)
+                            {
+                                $text = ' Nights Free';
+                            }
+                            if ($values['discount_type'] == 2)
+                            {
+                                $text = 'Free Pool Heating';
+                            }
+                            if ($values['discount_type'] == 3)
+                            {
+                                $text = '7 Nights Free';
+                            }
+                            ?>
+
+                            <div class="hgroup" style="border-bottom:#CCC solid 1px;">
+                                <div class="cell spcl1"  ><?= $values['type_name'] ?> <?= $offerArr[$values['type_name']]++ ?>
+                                    <?php
+                                    if ($values['discount_type'] == '1' && $values['free_nights_type'] == 'variable')
+                                    {
+                                        ?>
+                                        <br>
+                                        x = 
+                                        <select <?= $disabled ?> type="text" name="discount_offer<?= $i ?>" id = "discount_offer<?= $i ?>" class = "required" >
+
+                                            <option value="3" <?= $values['discount_offer'] == '3' ? 'selected="selected"' : '' ?>>4</option>
+                                            <option value="4" <?= $values['discount_offer'] == '4' ? 'selected="selected"' : '' ?>>5</option>
+                                            <option value="5" <?= $values['discount_offer'] == '5' ? 'selected="selected"' : '' ?>>6</option>
+                                            <option value="6" <?= $values['discount_offer'] == '6' ? 'selected="selected"' : '' ?>>7</option>
+                                        </select><?= $text == "%" ? $text : "" ?>
+
+                                        <?php
+                                    }
+                                    ?> 
+
+
+                                </div>
+                                <div class="cell spcl2 promo" id = 'promo<?= $i ?>' align="center"><?= $values['promo_code'] ?></div>
+                                <div class="cell spcl2" align="center"><input <?= $disabled ?> type="text" class = "mws-tooltip-n" name="valid_from<?= $i ?>" id="valid_from<?= $i ?>" onchange="mindate(this.value,'valid_to<?= $i ?>')" value = "<? if ($values['valid_from']) echo date('d-m-Y', strtotime($values['valid_from'])); ?>" title="<? if ($values['valid_from']) echo date('d-m-Y', strtotime($values['valid_from'])); else echo "Enter Valid From Date"; ?>"/>
+                                    <label id = 'error_valid_from<?= $i ?>' for="valid_from<?= $i ?>" class = "error" style="display:none;">please choose date</label>
+                                </div>
+                                <div class="cell spcl2" align="center"><input <?= $disabled ?> type="text" class = "mws-tooltip-n"  name="valid_to<?= $i ?>" id="valid_to<?= $i ?>" onchange="mindateforbook(this.value,'bookby<?= $i ?>')" value="<? if ($values['valid_to']) echo date('d-m-Y', strtotime($values['valid_to'])); ?>" title="<? if ($values['valid_to']) echo date('d-m-Y', strtotime($values['valid_to'])); else echo "Enter Valid Until Date"; ?>"/>
+                                    <label id = 'error_valid_to<?= $i ?>' for="valid_to<?= $i ?>" class = "error" style="display:none;">please choose date</label>
+                                </div>                                                
+                                <div class="cell spcl3" align="center"><?
+                    if ($values['min_nights_type'] == '0')
+                    {
+                                        ?>
+                                        <select <?= $disabled ?> name="min_stay<?= $i ?>" id = "min_stay<?= $i ?>">
+                                            <?
+                                            for ($tr = 7; $tr <= 14; $tr++)
+                                            {
+                                                if ($tr == $values['min_night'])
+                                                    echo "<option selected = 'selected'>" . $tr . "</option>";
+                                                else
+                                                    echo "<option >" . $tr . "</option>";
+                                            }
+                                            ?>
+
+                                        </select>
+                                        <?
+                                    }
+                                    else
+                                    {
+                                        echo $values['min_nights'] . " Nights";
+                                    }
+                                    ?>
+
+                                    <label id = 'error_min_stay<?= $i ?>' for="min_stay<?= $i ?>" class = "error" style="display:none;">Enter number only</label>		                       
+                                </div>                        
+                                <div class="cell spcl4" align="center"><?
+                    if ($values['discount_type'] != 2 && $values['discount_type'] != 3)
+                    {
+                        if ($values['discount_type'] == 1 && $values['free_nights_type'] == 'variable'):
+                                            ?>	
+                                            <div align="center" style="display:block;">
+                                                Max <input <?= $disabled ?> type="text" name="max_nights<?= $i ?>" id = "max_nights<?= $i ?>" value="<?= $values['max_night'] ?>" class = "required" /><?= $text == "%" ? $text : "" ?>
+                                            </div>
+                                            <?php
+                                        else:
+                                            ?>
+                                            <div align="center" style="display:block;">
+                                                <input <?= $disabled ?> type="text" name="discount_offer<?= $i ?>" id = "discount_offer<?= $i ?>" value="<?= $values['discount_offer'] ?>" class = "required" /><?= $text == "%" ? $text : "" ?>
+                                            </div>
+                                        <?
+                                        endif;
+                                    }
+                                    ?>
+
+                                    <label id = 'error_discount_offer<?= $i ?>' for="discount_offer<?= $i ?>" class = "error" style="display:none;">Enter numbers only</label>
+                                    <?= $text != "%" ? $text : "" ?>
+                                </div>                                            	
+                                <div class="cell spcl2" align="center"><input <?= $disabled ?> type="text" class = "mws-tooltip-n"  name="bookby<?= $values['id'] ?>" id = "bookby<?= $i ?>" value = "<? if ($values['book_by']) echo date('d-m-Y', strtotime($values['book_by'])); ?>" title = "<? if ($values['book_by']) echo date('d-m-Y', strtotime($values['book_by'])); else echo "Enter Book By Date"; ?>"/>
+                                    <label id = 'error_bookby<?= $i ?>' for="bookby<?= $i ?>" class = "error" style="display:none;">Enter proper</label>
+                                </div>                                                
+                                <div class="cell spcl5" align="center">
+                                    <input type="hidden" name="spcl_offer_id<?= $i ?>" id = "spcl_offer_id<?= $i ?>" value="<?= $values['spcl_offer_id'] ?>"  />
+                                    <input type="hidden" name="offer_id<?= $i ?>" id = "offer_id<?= $i ?>" value="<?= $values['id'] ?>"  />
+                                    <input <?= $disabled ?> type="button" <? if ($values['activate']) echo "disabled='disabled'"; ?> class="mws-button black small mws-i-24 i-check mws-tooltip-n" title="Click to activate this offer." onclick = 'checkvalid(<?= $i ?>)' value="+">
+                                    <input <?= $disabled ?> type="button" <? if (!$values['activate']) echo "disabled='disabled'" ?> class="mws-button black small mws-i-24 i-cross mws-tooltip-n" title="Click to de-activate this offer." onclick = "dactive(<?= $i ?>)" value="x" >                    
+                                </div>
+                            </div>        
+                            <script type="text/javascript">
+                                $("#valid_from<?= $i ?>").datepicker({
+                                    minDate: new Date(),
+                                    dateFormat: "dd/mm/yy" 
+                                });	
+                                                                                                                                                                									
+                                $("#valid_to<?= $i ?>").datepicker({
+                                    dateFormat: "dd/mm/yy" 
+                                });
+                                                                                                                                                                									
+                                var procesVal = $("#valid_to<?= $i ?>").val();
+                                                                                                                                                                									
+                                if(procesVal != "")
+                                {
+                                    procesVal = procesVal.split("-");
+                                                                                                                                                                										
+                                    if(procesVal.length < 2)
+                                        procesVal = procesVal.split("/");
+                                                                                                                                                                										
+                                                                                                                                                                										
+                                    $("#bookby<?= $i ?>").datepicker({
+                                        dateFormat: "dd/mm/yy",
+                                        maxDate: new Date(procesVal[2],parseInt(procesVal[1])-1,procesVal[0])  
+                                    });
+                                                                                                                                                                									
+                                }
+                                else
+                                    $("#bookby<?= $i ?>").datepicker({
+                                        dateFormat: "dd/mm/yy"
+                                    });
+                                                                                                                                                                														
+                                                                                                                                                                									
+                            </script>
+                            <?
+                            $i++;
+                        }
+                        //pr($archiveArr);
+                        ?>
+                    </div>        
+
+                    <p style="margin-top:55px;float:left;">Property Notes: Please add here any special notes or comments regarding the rental rates.</p><br />   
+                    <form name="myform" id="mws-validate" method="post"  action ='<?php echo $this->url(array('controller' => 'myaccount', 'action' => 'processrental', 'ppty' => $this->ppty_id), 'default', true) ?>' novalidate="novalidate" class="mws-form" >
+                        <input type="hidden" name="step" value="7" />
+                        <input type="hidden" name="is_insured" id="is_insured" value="<?php echo $this->is_insured == '0' ? 'false' : 'true'; ?>">
+                        <div class="mws-form-item small">
+                            <textarea name="rental_ques" id="rental_ques" ><?= $this->rental_ques ?></textarea>
+                        </div>
+                        <input style="float:left;display:block;" type="submit"  class="mws-button large floatL" value="Save">
+                    </form>
+                    <!-- Special Offers tab ends -->
+                    <a style="clear:left;line-height:25px;" class="mws-button large box-sized mws-button-link floatR" href="<?php echo APPLICATION_URL; ?>myaccount/editproperty/ppty/<?php echo $this->ppty_id; ?>/step/8">Next Step</a>
+                </div><!-- renta rate wrapper div-->
+                <!-- step 7 ends -->
+
+
+                <?
+            }
+            elseif ($this->step == '8')
+            {
+                ?>
+                <div> <!-- step 8 starts-->
+
+
+
+
+
+                    <form name="myform" id="mws-validate" method="post"  novalidate="novalidate" class="mws-form" onsubmit = "checkreview();" >
+                        <div  class = "container_cal" > <!-- main wrapper div container -->
+
+                            <div class = 'container_cal_review_frm' >
+                                <div class="mws-form-inline"><div class="mws-form-row"><label>Name of Guest<span class="red">*</span>:</label><div class="mws-form-item medium"><?= $this->myform->full_name ?> </div></div></div>
+                                <span class="guide_note" >First Name and Surname or Nickname</span>
+                                <div class="mws-form-inline"><div class="mws-form-row"><label>Guest is From<span class="red">*</span>:</label><div class="mws-form-item medium"><?= $this->myform->location ?> </div></div></div>
+                                <span class="guide_note" >Location and Country</span>
+                                <div class="mws-form-inline"><div class="mws-form-row"><label>Check in date<span class="red">*</span>:</label><div class="mws-form-item medium"><?= $this->myform->check_in ?> </div></div></div>
+
+                                <div class="mws-form-inline"><div class="mws-form-row"><label>Customer Rating<span class="red">*</span>:</label><div class="mws-form-item medium"><?= $this->myform->rating ?> </div></div></div>
+                                <span class="guide_note" >A Rating of 10 is the highest and 1 is the lowest.</span>
+                                <div class="mws-form-inline"><div class="mws-form-row"><label>Review Headline<span class="red">*</span>:</label><div class="mws-form-item medium"><?= $this->myform->headline ?> </div></div></div>
+                                <span class="guide_note" >Quick Headline Summary for the Review</span>
+                                <div class="mws-form-inline"><div class="mws-form-row"><label>Comment(Top Tip):</label><div class="mws-form-item medium"><?= $this->myform->comment ?> </div></div></div>
+                                <span class="guide_note_txtarea" >Any tips about the property and/or location for future renters.</span>
+                                <div class="mws-form-inline"><div class="mws-form-row"><label>Review - Upto 1000 Characters <span class="red">*</span>:</label><div class="mws-form-item medium"><?= $this->myform->review ?> </div></div></div>        
+                                <span class="guide_note_txtarea">Detailed Renter Review</span>
+                                <div class="mws-button-row"> 
+                                    <?= $this->myform->step ?>
+                                    <input type="submit"  class="mws-button blue" value = 'Add Review' />
+                                </div>
+
+                            </div>
+
+                            <div class = 'container_cal_review_image' align="center">
+                                <img id = "profile_blck" src="<?= IMAGES_URL . "profile/" . $mySession->reviewImage ?>"  width="100%" height="150" onclick="$('#image').click()"/>
+                                <input type="file"  style = 'display:none;' name = 'image' id = "image" />
+                                <div id = 'image_upload'  class="btn" align="center" ><span style='font-weight:bold;'>Choose Photo</span></div> 
+                            </div>
+
+                        </div>
+                    </form>
+
+
+                    <div class = 'review_wrap'><!-- wrapper for reviews -->
+                        <?
+                        foreach ($this->reviewArr as $values)
+                        {
+                            if (!$values['owner_image'])
+                                $images = "no_owner_pic.jpg";
+                            else
+                                $images = $values['owner_image'];
+                            ?>
+                            <div style = 'margin-bottom:70px;'>
+                                <div class="revImg">
+                                    <img src="<?= IMAGES_URL ?>profile/<?= $images ?>" height='100' width="100%" />
+                                    <h4 align="center"><?= $values['guest_name'] ?></h4>
+                                    <p align="center">(<?= $values['location'] ?>)</p>
+                                </div>
+                                <div class = "review_bx">
+                                    <h5 style="border-bottom:#CCC dotted 1px; padding:5px;"><?= $values['headline'] ?><span class = 'posted_on'>Reviewed on <?= date('d-m-Y', strtotime($values['review_date'])) ?></span></h5>
+                                    <p>
+                                        <?= $values['review'] ?>
+                                    </p>
+                                    <p>
+                                        Comment(Top Tip):- <?= $values['comment'] ?>
+                                    </p>
+
+                                    <p class = "posted_on_left">
+                                        Check-in Date: <?= date('d-m-Y', strtotime($values['check_in'])) ?>
+                                    </p>
+                                    <p class = "posted_on_left">
+                                        Rating: <? rating_view10($values['rating']) ?>
+                                    </p>
+
+                                </div>
+
+                                <?
+                                if (!is_array($values['child']))
+                                {
+                                    ?>
+                                    <div class = "response_blck">
+                                        <div class="response_blck_img">
+                                            <img src="<?= IMAGES_URL ?><?= $values['image'] ?>" height="100" width="100%" />
+                                        </div>
+                                        <div class="response_blck_input" style = 'display:inline-block;'>
+                                            <form name="myform" id="mws-validate_<?= $values['review_id'] ?>"  method="post"  novalidate="novalidate" class="mws-form" onsubmit = "return replyreview(<?= $values['review_id'] ?>);">
+                                                <textarea   class = "required" maxlength = "300" name = "response_<?= $values['review_id'] ?>" id = "response_<?= $values['review_id'] ?>"></textarea>
+                                                <input type="submit"  class="mws-button grey" value = 'Reply' />
+                                            </form>                
+                                        </div>
+                                    </div>
+                                    <?
+                                }
+                                else
+                                {
+                                    ?>
+                                    <div class = "response_blck">
+                                        <div class="response_blck_img">
+                                            <img src="<?= IMAGES_URL ?><?= $values['image'] ?>" height="100" width="100%" />
+                                        </div>
+                                        <div class="response_blck_input" >
+                                            <div class="reply_blck">
+                                                <span class= 'posted_on'>Replied on <?= date('d-m-Y', strtotime($values['review_date'])) ?></span>                    
+                                                <p>
+                                                    <?= $values['child'][0]['comment'] ?>
+                                                </p>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <?
+                                }
+                                ?>
+                            </div>
+                            <?
+                        }
+                        ?>	
+                    </div>
+
+
+                    <form name="myform" id="mws-validate"  action = '<?php echo $this->url(array('controller' => 'myaccount', 'action' => 'processpage', 'ppty' => $this->ppty_id), 'default', true) ?>' method="post"  novalidate="novalidate" class="mws-form" >        
+                        <div class="mws-button-row"> 
+                            <input type="hidden" name = "step" value = "8" />
+                            <input type="submit"  class="mws-button" value = 'Next' />
+                        </div>
+                    </form>
+
+                </div><!-- step 8 ends -->
+
+                <?
+            }
+            elseif ($this->step == '9') //step 9 starts
+            {
+                ?>
+                <div><!-- step 9 content wrapper div -->
+
+                    <form name="myform" id="mws-validate" method="post"  action = '<?php echo $this->url(array('controller' => 'myaccount', 'action' => 'processpage', 'ppty' => $this->ppty_id), 'default', true) ?>' novalidate="novalidate" class="mws-form" enctype="multipart/form-data">
+
+                        <div ><!-- first div (first stage)-->
+
+                            <h4 style="border-bottom:#CCCCCC dotted 1px; font-size:14px;">Arrival Instruction</h4><br />
+
+                            <p style="font-weight:bold; font-size:13px;">Property Information (Will not be displayed on the website)</p> <!-- accomodation entries start -->
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Name(if applicable)</label><div class="mws-form-item small"><?= $this->myform->property_name ?> </div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Address:</label><div class="mws-form-item small"><div id='country_state'></div><?= $this->myform->address ?> </div></div></div>                    
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Telephone Number:</label><div class="mws-form-item small"><div id='state_city'></div><?= $this->myform->telephone ?> </div></div></div>                    
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Website:</label><div class="mws-form-item small"><div id='city_sub'></div><?= $this->myform->website ?> </div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Master Calendar Url:</label><div class="mws-form-item small"><div id='sub_local'></div><?= $this->myform->master_cal ?> </div></div></div>
+                            <div class="mws-button-row"> <input type="submit" value="Save" class="mws-button" /></div> 
+                            <!-- agent info starts -->
+
+
+                            <p style="font-weight:bold;font-size:13px">Property Management Information (Will not be displayed on the website)
+                                This information enables us to make quick contact with your local representatives, if required, during any of our clients stay at your property. We can also keep them up to date with bookings.
+                            </p> <!-- Agent details entries start -->
+                 <!--              <div class="mws-form-inline"><div class="mws-form-row"><label>Company Name:</label><div class="mws-form-item small"><?= $this->myform->company_name ?> </div></div></div>-->
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Agent Name:</label><div class="mws-form-item small"><?= $this->myform->company_name ?> </div></div></div>	
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Contact Person:</label><div class="mws-form-item small"><?= $this->myform->agent_name ?> </div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Address:</label><div class="mws-form-item small"><?= $this->myform->agent_address ?> </div></div></div>	
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Telephone Number:</label><div class="mws-form-item small"><?= $this->myform->agent_telephone ?> </div></div></div>		       
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Emergency Telephone Number:</label><div class="mws-form-item small"><div id='state_city'></div><?= $this->myform->emergency ?> </div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Email Address:</label><div class="mws-form-item small"><?= $this->myform->agent_email ?> </div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Website:</label><div class="mws-form-item small"><?= $this->myform->agent_website ?> </div></div></div>		       	      
+                            <div class="mws-button-row"> <input type="submit" value="Save" class="mws-button" /></div> 
+
+
+                            <p style="font-weight:bold; border-bottom:#CCC dotted 1px">Instructions</p>  <!-- instructions starts-->
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Directions to the property:</label><div class="mws-form-item small"><?= $this->myform->direction_property ?> </div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Key Collection Instructions:</label><div class="mws-form-item small"><?= $this->myform->key_instruction ?> </div></div></div>
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Late Arrival Instructions:</label><div class="mws-form-item small"><?= $this->myform->late_instruction ?> </div></div></div>	
+                            <div class="mws-button-row" style="padding:10px 170px;"> <input type="submit" value="Save" class="mws-button" /></div> 
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Arrival Instructions:</label><div class="mws-form-item small"><?= $this->myform->arrival_instruction ?> </div></div></div>		       
+                            <input type="button" id = "arrUp" value="upload" class="mws-button" />
+
+                            <div class="mws-form-inline"><div class="mws-form-row"><label>Instruction Files:</label><div class="mws-form-item small"> 
+                                        <?
+                                        $flag_instruction = 0;
+                                        ?>		 
+                                        <ul style = "list-style-type:none;float:left;">
+                                            <li>
+                                                <?
+                                                if ($this->arrival)
+                                                {
+                                                    ?>
+
+                                                    <a  style = "color:#EC1C24" target = '_blank' href="<?= APPLICATION_URL ?>uploads/instructions/<?= $this->arrival ?>">View Instruction 1 </a> or <a  style = "color:#EC1C24"  onclick = "deleteInstruction(1);" href="javascript:void(0);">Delete</a>	     
+
+                                                    <?
+                                                    $flag_instruction = 1;
+                                                }
+                                                ?>	
+                                            </li>
+                                            <li>
+                                                <?
+                                                if ($this->arrival1)
+                                                {
+                                                    ?>
+
+                                                    <a  style = "color:#EC1C24" target = '_blank' href="<?= APPLICATION_URL ?>uploads/instructions/<?= $this->arrival1 ?>">View Instruction 2</a> or <a  style = "color:#EC1C24" onclick = "deleteInstruction(2);"  href="javascript:void(0)">Delete</a>	     
+
+                                                    <?
+                                                    $flag_instruction = 1;
+                                                }
+                                                ?>	
+                                            </li>
+                                            <li>
+                                                <?
+                                                if ($this->arrival2)
+                                                {
+                                                    ?>
+
+                                                    <a  style = "color:#EC1C24" target = '_blank' href="<?= APPLICATION_URL ?>uploads/instructions/<?= $this->arrival2 ?>">View Instruction 3</a> or <a  style = "color:#EC1C24" onclick = "deleteInstruction(3);"  href="javascript:void(0)">Delete</a>
+
+                                                    <?
+                                                    $flag_instruction = 1;
+                                                }
+                                                ?>	
+                                            </li>
+                                            <?
+                                            if ($flag_instruction == '0')
+                                                echo "<li class='red'>No Instruction File Uploaded</li>";
+                                            ?>
+
+
+                                        </ul>
+
+                                    </div></div></div>
+                            <?= $this->myform->step ?>
+
+
+
+
+
+
+
+                        </div><!-- first div (first stage) ends-->
+                    </form>
+
+                </div> <!-- step 9 content wrapper div ends -->
+                <?
+            }
+            elseif ($this->step == '10')
+            {
+
+                if ($this->status_2 && $this->status_3 && $this->status_4 && $this->status_5 && $this->status_6 && $this->status_7)
+                {
+                    ?>
+                    <h5 class = 'activate_txt'>
+                        Thanks for confirming that your property is now ready to be published onto the website.<br><br>
+                        We will give it the quick 'once over' and get it up and running! If we have any queries we will contact you. Please remember to do regular updates to keep your calendar up to date and if you can return frequently, once a day if you can, to utilise the Calendar Update button that will be great!
+                        <br><br>
+                        We will get to work to market your property and hopefully confirm some bookings for you.
+                    </h5>
+                    <center>
+                        <a target="_blank" class="mws-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" href="<?= APPLICATION_URL ?>myaccount/preview/ppty/<?= $mySession->property_id ?>" role="button" aria-disabled="false"><span class="ui-button-text">Preview</span></a>
+                    </center>
+                    <?
+                }
+                else
+                {
+                    ?>
+                    <h5 class = 'activate_txt' align="center">
+                        When Steps 1 - 7 are completed (ticks will show after each Step no.) the property will automatically Activate. Please note that when you make future updates they will publish automatically to your property on the website.
+                    </h5>
+                    <?
+                }
+            }
+        }
+//condition for displaying steps ends
+    ?>
+
+    <script language="javascript">
+        function AddOptiontoListBox(listBoxId,Value,Text)
+        {
+            var elSel = document.getElementById(listBoxId);	
+            var opt = document.createElement("option");
+            elSel.options.add(opt);
+            opt.text=Text;
+            opt.value=Value;
+        }
+        function RemoveItems(optinoId)
+        {
+            var elSel = document.getElementById(optinoId);
+            for (i = elSel.length - 1; i>0; i--) {
+                elSel.remove(i);   
+            }
+        }
+ 
+        function ChangeCountry()
+        {
+            document.getElementById('DisplayCountry').style.display="none";
+            document.getElementById('ChooseCountry').style.display="block";
+        }
+
+        function getCountryState(countryId)
+        {
+            $('#country_state').html("<img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20' >");
+            $.ajax({ url: "<?= APPLICATION_URL . "signup/getstatebycountry" ?>",
+                type: "POST",
+                async: false,
+                cache: false,
+                data: ({countryId:countryId}),
+                success: function(data)
+                {	
+                    EmptyListbox('state_id');
+                    AddOptiontoListBox('state_id','','- - State - -');
+                    data = $.trim(data);
+                    if(data != '')
+                    {
+
+                        var ArrData=data.split("***");
+		
+                        if(ArrData.length>0)
+                        {
+                            for(var i=0;i<ArrData.length;i++)
+                            {
+                                var mySplit=ArrData[i].split("|||");
+                                var OptionValue=mySplit[0];
+                                var OptionText=mySplit[1];
+                                AddOptiontoListBox('state_id',OptionValue,OptionText);
+                            }
+                        }
+			
+			
+                    }
+		
+		
+                    $('#country_state').text("");
+                }
+		
+            });	
+	
+	
+        }
+        function getStateCity(stateId)
+        {
+            $('#state_city').html("<img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20' >");
+            $.ajax({ url: "<?= APPLICATION_URL . "signup/getcitiesbystate" ?>",
+                type: "POST",
+                data: ({stateId:stateId}),
+                success: function(data)
+                {
+
+                    EmptyListbox('city_id');
+                    AddOptiontoListBox('city_id','','- - City - -');
+                    data = $.trim(data);
+                    if(data!="")
+                    {
+                        var ArrData=data.split("***");
+                        if(ArrData.length>0)
+                        {
+                            for(var i=0;i<ArrData.length;i++)
+                            {
+                                var mySplit=ArrData[i].split("|||");
+                                var OptionValue=mySplit[0];
+                                var OptionText=mySplit[1];
+                                AddOptiontoListBox('city_id',OptionValue,OptionText);
+                            }
+		
+                        }
+                    }
+		
+                    $('#state_city').text("");
+                }
+            });	
+
+        }
+
+        function getCitySub(cityId)
+        {
+            $('#city_sub').html("<img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20' >");
+            $.ajax({ url: "<?= APPLICATION_URL . "signup/getsubareabycity" ?>",
+                type: "POST",
+                data: ({cityId:cityId}),
+                success: function(data)
+                {
+
+                    EmptyListbox('sub_area');
+                    AddOptiontoListBox('sub_area','','- - Sub Area - -');
+                    data = $.trim(data);
+                    if(data!="")
+                    {
+                        var ArrData=data.split("***");
+                        if(ArrData.length>0)
+                        {
+                            for(var i=0;i<ArrData.length;i++)
+                            {
+                                var mySplit=ArrData[i].split("|||");
+                                var OptionValue=mySplit[0];
+                                var OptionText=mySplit[1];
+                                AddOptiontoListBox('sub_area',OptionValue,OptionText);
+                            }
+		
+                        }
+                    }
+		
+                    $('#city_sub').text("");
+                }
+            });	
+
+        }
+
+        function getSubLocal(subId)
+        {
+            $('#sub_local').html("<img src = '<?= IMAGES_URL ?>black-001-loading.gif' width = '20' height = '20' >");
+            $.ajax({ url: "<?= APPLICATION_URL . "signup/getlocalareabysub" ?>",
+                type: "POST",
+                data: ({subId:subId}),
+                success: function(data)
+                {
+
+                    EmptyListbox('local_area');
+                    AddOptiontoListBox('local_area','','- - Local Area - -');
+                    data = $.trim(data);
+                    if(data!="")
+                    {
+                        var ArrData=data.split("***");
+                        if(ArrData.length>0)
+                        {
+                            for(var i=0;i<ArrData.length;i++)
+                            {
+                                var mySplit=ArrData[i].split("|||");
+                                var OptionValue=mySplit[0];
+                                var OptionText=mySplit[1];
+                                AddOptiontoListBox('local_area',OptionValue,OptionText);
+                            }
+		
+                        }
+                    }
+		
+                    $('#sub_local').text("");
+                }
+            });	
+
+        }
+    </script>

@@ -1,0 +1,68 @@
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-check"><?= $this->pageHeading ?></span>
+    </div>
+    <div class="mws-panel-body">
+        <form name="myform" id="mws-validate" action="" method="post" novalidate="novalidate" class="mws-form">
+
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+            <div class="mws-form-inline">
+                <div class="mws-form-row">
+                    <label>Select Page :</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->page_name ?>
+                    </div>
+                </div>
+
+                <div class="mws-form-row">
+                    <label>Page Title:</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->title ?>
+                    </div>
+                </div>
+
+                <div class="mws-form-row">
+                    <label>Meta Keywords :</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->meta_keyword?>
+                    </div>
+                </div>
+
+                <div class="mws-form-row">
+                    <label>Meta Description :</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->meta_description ?>
+                    </div>
+                </div>
+            </div>
+            <div class="mws-button-row">
+                <input type="submit" class="mws-button red" value="Submit">
+            </div>
+        </form>
+    </div>    	
+</div>
+
+<script type="text/javascript">
+    function getmetadata(Name)
+    {
+        $("#title").val("");
+        $("#meta_keyword").val("");
+        $("#meta_description").val("");
+        $.ajax({
+            type: "POST",
+            url: "<?= APPLICATION_URL_ADMIN ?>system/getmetadata",
+            data: ({Name: Name}),
+            dataType: 'json',
+            cache: false,
+            success: function(data)
+            {
+                $('#title').val($.trim(data.title));
+                $('#meta_keyword').val(data.keyword);
+                $('#meta_description').val(data.description);
+            }
+        });
+
+    }
+
+
+</script>

@@ -1,0 +1,220 @@
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-table-1"><?= $this->pageHeading ?></span>
+    </div>
+
+    <div class="mws-panel-body">
+        <div class="mws-panel-toolbar top clearfix ">
+            <ul>
+                <!--<li><a class="mws-ic-16 ic-accept" href="<?= APPLICATION_URL_ADMIN ?>property/addamenity" title="Add">Add</a></li>-->
+                <li><a class="mws-ic-16 ic-cross" href="javascript:void(0)" title="Delete" onclick="deleteitem()">Delete</a></li>
+                <?php
+                    if ($this->inhouse)
+                    {
+                        ?>
+                        <li><a class="mws-ic-16 ic-arrow-right" href="javascript:void(0)" title="Move" onclick="moveitem()">Move</a></li>
+                        <?php
+                    }
+                ?>
+				<li>
+				<input class="mws-ic-16 ic-arrow-right <?php echo $this->inhouse?'inhouse':''; ?>" type="checkbox" name="exludeitems" id="exludeitems" value='1' onclick="" />
+				Exclude Suspended Properties
+				<!--<a class="mws-ic-16 ic-arrow-right" href="javascript:void(0)" title="Move" onclick="exludeitems()">Exclude Suspended Properties </a>-->
+				</li>
+            </ul>
+        </div>
+        <!--<table class="mws-table">-->
+        <table class="<?php echo $this->inhouse?'mws-datatable-fn-server':'mws-datatable-fn-server-ppty'; ?> mws-table" id="propertyexlude">
+            <thead>
+                <tr>
+                    <th width="3%">S.No</th>
+                    <th width="2%"><input type="checkbox" name="deletebcchk" id="deletebcchk" onclick="if (event.stopPropagation) {
+                        event.stopPropagation();
+                    }
+                    event.cancelBubble = true; return checkall(this)" /></th>
+                    <th width="15%">Property No.</th>
+                    <?php
+                        if ($this->inhouse)
+                        {
+                            ?>
+                            <th width="20%">Supplier</th>
+                            <th width="20%">Ref No.</th>
+                            <?php
+                        }
+                        else
+                        {
+                            ?>
+                            <th width="20%">Property Owner</th>
+                            <?php
+                        }
+                    ?>
+                    <th width="20%">Property Type</th>
+                    <th width="5%">Date added</th>
+                    <th width="5%">Status</th>
+					<!--<th width="15%">Exclude Suspended Properties </th> -->
+                    <th width="5%">Edit</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>    	
+</div>
+<script>
+function deleteitem()
+{
+    var r= "";
+    var s="";
+    var selected=false;
+    var checkedEl = $('table.mws-table tbody input:checkbox:checked:visible:first');
+    if(checkedEl.length)
+    {    selected = true;
+                
+        $('table.mws-table tbody input:checkbox:checked:visible').each(function(index,el){
+            r += $(this).val()+"|";   
+        });   
+    }
+        
+    r += "0";
+    if(selected){
+        var confirmation = confirm("Are you sure want to delete ?");
+        if(confirmation!=true){
+            return false;
+        }	
+	
+        $.ajax({ url: "<?= APPLICATION_URL_ADMIN . "property/deleteproperty" ?>",
+            type: "POST",
+            data: ({Id:r}),
+            success: function(data){			
+			
+			
+                alert('Selected records have been deleted successfully.');
+			
+                window.location.href=window.location.href;
+            }});
+    } else {
+        alert('Please choose a record to delete.');
+    }
+}
+
+function moveitem()
+{
+    var r= "";
+    var s="";
+    var selected=false;
+    var checkedEl = $('table.mws-table tbody input:checkbox:checked:visible:first');
+	
+    if(checkedEl.length)
+    {    selected = true;
+        $('table.mws-table tbody input:checkbox:checked:visible').each(function(index,el){
+            r += $(this).val()+"|";   
+        });   
+    }
+        
+    r += '0';
+    if(selected){
+        var confirmation = confirm("Are you sure want to move?");
+		
+        if(confirmation!=true){
+            return false;
+        }	
+	
+        $.ajax({ url: "<?= APPLICATION_URL_ADMIN . "inhouse/moveproperty" ?>",
+            type: "POST",
+            data: ({Id:r}),
+            success: function(data){			
+			
+			
+                alert('Selected records have been moved successfully.');
+			
+                window.location.href=window.location.href;
+            }});
+    } else {
+        alert('Please choose a record to move.');
+    }
+}
+
+
+function checkall(thisid)
+{
+        
+    var mainEl = $('table.mws-table input:checkbox:visible:first')[0];
+    var checkedEl = $('table.mws-table tbody input:checkbox:visible');
+    
+    checkedEl.each(function(index,el){
+
+        //console.log(mainEl.checked);
+        if(mainEl.checked)
+            el.checked = true;
+        else
+            el.checked = false;    
+    });   
+    
+
+}
+
+function changestatus(Id,Status)
+{
+    $.ajax({ 
+        type: "POST", 
+        url: "<?= APPLICATION_URL_ADMIN ?>property/changepptystatus", 
+        data: ({Id:Id,Status:Status}),
+        cache: false, 
+        success: function(data){				 
+            window.location.href=window.location.href;
+        }
+    });
+}
+
+function changespclstatus(Id,Status)
+{
+
+
+$.ajax({ 
+    type: "POST", 
+    url: "<?= APPLICATION_URL_ADMIN ?>property/changespclstatus", 
+    data: ({Id:Id,Status:Status}),
+    cache: false, 
+    success: function(data){				 
+        window.location.href=window.location.href;
+    }
+});
+}
+
+function changepstatus(Id,Status)
+{
+$.ajax({ 
+    type: "POST", 
+    url: "<?= APPLICATION_URL_ADMIN ?>property/changepopularstatus", 
+    data: ({Id:Id,Status:Status}),
+    cache: false, 
+    success: function(data){				 
+        window.location.href=window.location.href;
+    }
+});
+	
+}
+
+function exludeitems(Status)
+{
+$.ajax({ 
+    type: "POST", 
+    url: "<?= APPLICATION_URL_ADMIN ?>property/getexcludeproperties", 
+    data: ({Status:Status}),
+    cache: false, 
+    success: function(data){
+		if(Status == 1)
+		{
+			$("#exludeitems").val(0);
+		}else{
+		$("#exludeitems").val(1);
+		}
+		$("#propertyexlude").html(data);
+        //window.location.href=window.location.href;
+    }
+});
+	
+}
+
+
+
+</script>

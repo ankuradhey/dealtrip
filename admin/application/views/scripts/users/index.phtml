@@ -1,0 +1,133 @@
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-table-1"><?=$this->pageHeading?></span>
+    </div>
+
+    <div class="mws-panel-body">
+        <div class="mws-panel-toolbar top clearfix ">
+            <ul>
+                <li><a class="mws-ic-16 ic-accept" href="<?=APPLICATION_URL_ADMIN?>users/adduser/uType/<?=$this->uType?>" title="Add">Add</a></li>
+                <li><a class="mws-ic-16 ic-cross" href="javascript:void(0)" title="Delete" onclick="deleteitem()">Delete</a></li>
+            </ul>
+        </div>
+        <!--<table class="mws-table">-->
+         <table class="mws-datatable-fn mws-table">
+            <thead>
+                <tr>
+                    <th width="5%">S.No</th>
+                    <th width="5%"><input type="checkbox" name="deletebcchk" id="deletebcchk" onclick="return checkall(this)" /></th>
+                    <th width="20%">Email Address</th>
+                    <th width="15%">Name</th>
+                    <th width="15%">Date Joined</th>
+                    <th width="15%">Country Name</th>
+                    <th width="5%">Status</th>
+                    <th width="5%">Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?
+                $i=0;
+                foreach($this->ResData as $row)
+                {
+                    $start++;$i++;
+                    if($row['user_status']==1){ $image ='tick.png';  }
+                    if($row['user_status']==0){ $image ='cross.png';  } 
+
+
+                    if($cClass=="gradeX odd")
+                        {$cClass="gradeX even";}
+                    else
+                        {$cClass="gradeX odd";}	
+                    ?>
+                        <tr class="gradeX">
+                            <td><?=$i;?></td>
+                            <td>
+                                <input name='check<?=$i;?>' id='check<?=$i;?>' value='<?=$row['user_id'];?>' 
+                                    onchange='return check_check("bcdel","deletebcchk")' type='checkbox'>
+                                    
+                                <script>
+                                    $(document).ready(function(){
+                                        $('#bcdel').html(''); 
+                                        document.getElementById('deletebcchk').checked = false;
+                                    })
+                                </script>
+                            </td>
+                          <td><?=$row['email_address'];?></td>
+                            <td><?=$row['first_name']." ".$row['last_name'];?></td>
+                             <td><?=date('d-m-Y',strtotime($row['date_joined']));?></td>
+                            <!-- <td><?=$row['address'];?></td>-->
+                              <td><?=$row['country_name'];?></td>
+                                <td>
+                                 <a id='<?=$start;?>' onclick='changestatus("<?=$row['user_id'];?>","<?=$row['user_status'];?>")' href="javascript:void(0)" >
+                                    <img src="<?=APPLICATION_URL_ADMIN;?>css/icons/32/<?=$image;?>"   border='0' height="16" width="16" title='Change Status' alt='Change Status'>
+                                 </a>
+                                  
+                            </td>
+                            <td>
+                                <a href="<?=APPLICATION_URL_ADMIN;?>users/edituser/userId/<?=$row['user_id'];?>/uType/<?=$this->uType?>" style="text-decoration:none;">
+                                        <img src="<?=APPLICATION_URL_ADMIN;?>css/icons/32/application_form_edit.png" height="16" width="16"   border='0' title='Edit' alt='Edit'>
+                                </a>
+                                <a href="<?=APPLICATION_URL_ADMIN;?>users/changepassword/userId/<?=$row['user_id'];?>/uType/<?=$this->uType?>" style="text-decoration:none;">
+                                        <img src="<?=APPLICATION_URL_ADMIN;?>css/icons/32/application_key.png" height="16" width="16"   border='0' title='Change Password' alt='Change Password'>
+                                </a>
+                            </td>
+                          
+                        </tr>
+                    <?
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>    	
+</div>
+<script>
+function deleteitem()
+{
+	var r= "";
+	var s="";
+	var selected=false;
+	for(var i=1;document.getElementById('check'+i);i++){
+		if(document.getElementById('check'+i).checked==true){	
+			r += document.getElementById('check'+i).value+"|";
+			selected = true;
+		}
+	}	
+	
+	r += '0';
+	if(selected){
+		var confirmation = confirm("Are you sure want to delete ?");
+		if(confirmation!=true){
+			return false;
+		}	
+		$.ajax({ url: "<?=APPLICATION_URL_ADMIN."users/deleteuser"?>",
+		type: "POST",
+		data: ({Id:r}),
+		success: function(data){			
+			 window.location.href=window.location.href;
+		}});
+	} else {
+		alert('Please choose a record to delete.');
+	}
+}
+function changestatus(Id,Status)
+{
+    $.ajax({ 
+				type: "POST", 
+				url: "<?=APPLICATION_URL_ADMIN?>users/changeuserstatus", 
+				data: ({Id:Id,Status:Status}),
+				cache: false, 
+				success: function(data){				 
+				  window.location.href=window.location.href;
+			    }
+		  });
+}
+ 
+function checkall(thisid)
+{
+  for(var i=1;document.getElementById('check'+i);i++)
+  	{
+  		if(document.getElementById(thisid.id).checked==true){document.getElementById('check'+i).checked = true;}
+  		if(document.getElementById(thisid.id).checked==false){document.getElementById('check'+i).checked = false;}
+	}	
+}
+</script>

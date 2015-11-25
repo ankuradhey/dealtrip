@@ -1,0 +1,90 @@
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header"><span class="mws-i-24 i-check"><?= $this->pageHeading ?></span></div>
+    <div class="mws-panel-body">
+        <form name="myform" id="mws-validate" action="<?= $this->url(array('controller' => 'property', 'action' => 'editattribute', 'attrId' => $this->attrId), 'default', true) ?>" method="post" novalidate="novalidate" class="mws-form">
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+            <div class="mws-form-inline">
+                <div class="mws-form-row">
+                    <label>Atrribute name :</label>
+                    <div class="mws-form-item large">
+                        <input type="text" class="mws-textinput required" value="<?php echo $this->attrData['attribute_name']; ?>" id="attribute_name" name="attribute_name">
+                    </div>
+                </div>
+            </div>
+            <div class="mws-form-inline">
+                <div class="mws-form-row">
+                    <label>Status :</label>
+                    <div class="mws-form-item large">
+                        <label style="white-space: nowrap;">
+                            <input name="attribute_status" id="mandatory-0" value="0" <?php echo $this->attrData['attribute_status']=='1'?:'checked="checked"'; ?> class="mws-textinput required" type="radio">
+                            Disable
+                        </label>
+                        <label style="white-space: nowrap;">
+                            <input name="attribute_status" id="mandatory-1" value="1" <?php echo $this->attrData['attribute_status']=='0'?:'checked="checked"'; ?> class="mws-textinput required" type="radio">
+                            Enable
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="mws-button-row"><input type="submit" tabindex="14" value="Submit" class="mws-button red" /></div>
+        </form>
+    </div>    	
+</div> 
+
+<script type="text/javascript">
+
+    /** if radio or combo box is selected then number of options is asked **/
+    function displayoption(value)
+    {
+
+        var x = 0;
+        $.ajax({url: "<?= APPLICATION_URL_ADMIN . "property/getoptions" ?>",
+            type: "POST",
+            data: ({Id: value}),
+            async: false,
+            success: function(data)
+            {
+
+                data = $.trim(data);
+
+                x = data;
+
+
+            }
+        });
+
+
+        if (x == 1)
+            $("#no_of_opt").show();
+        else
+        {
+            $("#no_of_opt").hide();
+            for (var c = 1; c <= 53; c++)
+            {
+                $("#opt" + c).hide();
+            }
+        }
+    }
+
+
+    function addoptions(value)
+    {
+
+        for (var c = 1; c <= 53; c++)
+        {
+            $("#opt" + c).hide();
+        }
+
+        for (var c = 1; c <= value; c++)
+        {
+            $("#opt" + c).show();
+        }
+
+    }
+
+
+    $(document).ready(function(e) {
+        displayoption($("#input_type").val());
+        addoptions($("#no_of_options").val());
+    });
+</script>

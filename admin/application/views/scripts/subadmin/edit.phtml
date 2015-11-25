@@ -1,0 +1,81 @@
+<?php
+	global $mySession;
+	$db=new Db();
+	
+?>
+
+
+
+
+
+
+
+
+<table align="center" border="0" width="100%" cellpadding="0" cellspacing="0" id="main-content">
+<tr>
+	<td class="content-box">
+    	<table cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+            <tr>
+                <td align="left" class="content-box-header"><h3><?=$this->pageTitle?></h3></td>
+            </tr>
+            <tr>
+                <td align="left" valign="top">&nbsp;</td>
+            </tr>
+            <tr>
+                <td align="center" valign="middle">
+                 <form name="myform" id="myform" 
+                 	action="<?php echo $this->url(array('controller'=>'subadmin', 'action'=>'update','subsID'=> $this->subsID), 'default', true)?>"
+                     method="post" enctype="multipart/form-data">
+                    <table align="center" border="0" width="100%" cellpadding="2" cellspacing="2">
+                        <tr>
+                            <td class="form_text">First Name :</td>
+                            <td><?=$this->myform->first_name?></td>
+                        </tr>
+                
+                        <tr>
+                            <td class="form_text">Last Name :</td>
+                            <td><?=$this->myform->last_name?></td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="form_text">User Name :</td>
+                            <td><?=$this->myform->username?></td>
+                        </tr>
+                
+                
+                        <tr>
+                            <td class="form_text">Email address :</td>
+                            <td><?=$this->myform->emailID?></td>
+                        </tr>
+                
+                         <tr>
+                            <td class="form_text">Password :</td>
+                            <td><?=$this->myform->password?></td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="form_text">Status :</td>
+                            <td><?=$this->myform->status?></td>
+                        </tr>
+						
+						    <tr>
+                            <td class="form_text">Priviledges :</td>
+                            <td><?=$this->myform->priviledges?></td>
+                        </tr>
+						
+						 
+						
+						
+						
+	                    <tr>
+                            <td align="left" valign="top">&nbsp;</td>
+                            <td align="left" valign="top"><input type="submit" name="Submit" id="Submit" value="Submit" class="submit_btn" /></td>
+                        </tr>
+                    </table>
+                 </form>
+                </td>
+            </tr>
+		</table>
+     </td>
+</tr>
+</table>

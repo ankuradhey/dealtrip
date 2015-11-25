@@ -1,0 +1,552 @@
+<script src="<?=JS_URL?>jquery.validate.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+error_flag = 0;
+
+$(document).ready(function(e) {
+
+
+error_flag = 0;
+
+jQuery.validator.addMethod("alpha", function(value, element) {
+return this.optional(element) || value == value.match(/^[a-zA-Z]+$/);
+},"Only Characters Allowed.");	
+
+jQuery.validator.addMethod("noSpace", function(value, element) { 
+    return value.indexOf(" ") < 0 && value != ""; 
+  }, "Space are not allowed");
+
+	// validate signup form on keyup and submit
+	var validator = $("#myform").validate({
+
+	rules: {
+			username:{
+				required: true,
+
+				
+			},
+			first_name:{
+				required:true,
+				alpha:true
+				
+			},
+			last_name:{
+				alpha:true
+			},
+			zipcode:{
+				required:true,
+				minlength:5,
+				maxlength:5
+			},
+			password: {
+				required: true
+
+			},
+			email_address:{
+				required: true,
+				email:true	
+			},
+			password_c:{
+				required:true,
+				equalTo: "#password"
+    	
+			},
+			
+			country_id:{
+				required:true	
+			},
+			state_id:{
+				required:true	
+			},
+			city_id:{
+				required:true	
+			},
+			phone_number:{
+				
+			digits:true,
+			minlength:10,
+			maxlength:10	
+			},
+			
+			webaddress:{
+				url:true	
+			},
+			address:{
+			required:true	
+			}
+			
+		},
+		messages: {
+			username: {
+				required: "Please enter username"
+				
+			},
+			first_name:{
+				required:"Please enter first name",
+				alpha:"Please enter proper first name"
+			},
+			last_name:{
+				alpha:"Please enter proper last name"
+			},
+			zipcode:{
+				required: "Please enter zip code",
+				minlength: jQuery.format("Zip Code needs to be  {0} characters"),
+				maxlength: jQuery.format("Zip Code needs to be {0} characters")
+			}
+			,
+			password:{
+				required: "Please enter password"
+			},
+			email_address:{
+				required: "Please enter email id"	,
+				email: "Please enter valid email id"
+			},
+			password_c:{
+				required: "Please enter confirm password",
+				equalTo: "Password you entered doesnot matches"	
+			},
+			country_id:{
+				required: "Please select country"	
+			},
+			state_id:{
+				required: "Please select State"	
+			},
+			city_id:{
+				required: "Please select City"	
+			},
+			phone_number:{
+				digits:"please enter proper phone number",
+				minlength: "please enter proper phone number (10 digits)",
+				maxlength: "please enter proper phone number (10 digits)"
+			},
+			webaddress:{
+				url:"please enter correct Web Address"	
+			},
+			address:{
+				required:"Please enter address"	
+			}
+			
+			
+		},
+		
+	
+		
+		// set this class to error-divs to indicate valid fields
+		success: function(label){
+			
+		
+		},
+		 
+		 submitHandler: function(form) {
+     		
+		
+				
+
+					if(checkuser() && checkemailid())
+					{	
+						 $.ajax({ 
+								type: "POST", 
+								url: "<?=APPLICATION_URL?>signup/process", 
+								data: ({username: $("#myform").serialize()}),
+								cache: false, 
+								async:false,
+								success: function(data){	
+			
+									if(!isNaN(data))
+									{	
+										$("#success").show();
+										$("#regForm").hide();
+									}
+									else
+									$("p#loginError").text("Regstration Error");
+								}
+			 			 });	
+
+					}
+					else
+					alert('failed');
+				
+		}
+	});
+	
+	
+
+
+});
+	
+	
+	
+
+
+function checkuser()
+{
+	var s = false;
+	//$("#username").val($.trim($("#username").val()));
+	if($("#username").val() != "")
+	{	
+			$("#username").val($("#username").val().replace(/\s/g, ""));
+	
+		$("#username_error").html("<img src = '<?=IMAGES_URL?>black-001-loading.gif' width = '20px' height = '20px'>");
+	
+		 $.ajax({ 
+						type: "POST", 
+						url: "<?=APPLICATION_URL?>signup/checkvaliduser", 
+						data: ({username:$("#username").val()}),
+						cache: false, 
+						async:false,
+						success: function(data){	
+	
+							if(isNaN(data))
+							{	
+								$("#username_error").text("available");
+								s = true;
+								return true;
+							}
+							else
+							{	$("#username_error").text("not available");
+								error_flag = 1;
+								s = false;
+								return false;
+							}
+						}
+				  });	
+	
+		return s;	
+
+	}
+}
+
+
+function checkimage()
+{
+		var r = false;
+		if($("#photo").val() != "")
+		{		
+			 $("#photo_error").html("<img src = '<?=IMAGES_URL?>black-001-loading.gif' width = '20px' height = '20px'>");
+			 $.ajax({ 
+							type: "POST", 
+							url: "<?=APPLICATION_URL?>signup/checkvalidphoto", 
+							data: ({image:$("#photo").val()}),
+							cache: false,
+							async:false, 
+							success: function(data){	
+		
+								if(isNaN(data))
+								{	
+									$("#photo_error").text("not valid photo");
+									error_flag = 1;
+									r = false;
+									return false;
+								}
+								else
+								{	$("#photo_error").text("valid photo");
+									r = true;
+									return true;
+								}
+							}
+					  });	
+			
+		}
+		else
+		return true;
+	
+		return r;
+}
+
+
+function checkemailid()
+{
+	var t = false;
+	$("#email_error").html("<img src = '<?=IMAGES_URL?>black-001-loading.gif' width = '20px' height = '20px'>");
+	 $.ajax({ 
+					type: "POST", 
+					url: "<?=APPLICATION_URL?>signup/checkvalidemail", 
+					data: ({email:$("#email_address").val()}),
+					cache: false, 
+					async:false,
+					success: function(data){	
+
+						if(!isNaN(data))
+						{	
+							$("#email_error").text("already registered");
+							error_flag = 1;
+							t = false;
+							return false;
+						}
+						else
+						{	$("#email_error").text("valid");
+							t = true;
+							return true;
+						}
+					}
+			  });	
+	
+	return t;
+}
+
+
+</script>
+
+
+
+
+
+<h1><?=$this->pageTitle?></h1>
+
+<div id ="regForm">
+
+<form name="myform" id="myform" method="post" enctype="multipart/form-data">
+<p id = 'loginError'>
+
+</p> 
+
+<div class ='register_form'>
+
+	<div class = 'reg'>Username:<span class = 'compuls'>*</span></div>
+    
+    <?=$this->myform->username?><span id = 'username_error'></span>
+    
+</div>
+<br />
+
+<div class ='register_form'>
+
+	<div class = 'reg'>First Name:<span class = 'compuls'>*</span></div>
+    
+    <?=$this->myform->first_name?>
+    
+</div>    
+    <br />
+
+<div class ='register_form'>    
+    <div class = 'reg'>Last Name:</div>
+    
+    <?=$this->myform->last_name?>
+</div>
+
+	<br />
+
+<div class ='register_form'>
+	<div class = 'reg'>Gender:</div> 
+        <?=$this->myform->sex?> 
+</div>
+
+    
+	<br />
+<div class ='register_form'>
+	<div class = 'reg'>Mail Address:<span class = 'compuls'>*</span ></div>
+     <?=$this->myform->email_address?><span id="email_error"></span>
+</div>    
+
+    <br />
+<div class ='register_form'>
+	<div class = 'reg'>Password:<span class = 'compuls'>*</span ></div>
+    <?=$this->myform->password?>
+</div>    
+    <br />
+<div class ='register_form'>
+	<div class = 'reg'>Confirm Password:<span class = 'compuls'>*</span ></div>
+    <?=$this->myform->password_c?>
+</div>    
+ 
+    <br />
+<div class ='register_form'>
+   <div class = 'reg'>Country:<span class = 'compuls'>*</span></div>
+   <?=$this->myform->country_id?>
+</div>   
+    <br />
+<div class ='register_form'>
+	<div class = 'reg'>State:<span class = 'compuls'>*</span ></div>
+	<?=$this->myform->state_id?>
+</div>
+    <br />
+
+<div class ='register_form'>
+	    <div class = 'reg'>City:<span class = 'compuls'>*</span ></div>
+        <?=$this->myform->city_id?>	
+</div>
+    <br />
+<div class ='register_form'>    
+	<div class = 'reg'>Address:<span class = 'compuls'>*</span></div>
+    <?=$this->myform->address?>	
+</div>    
+    <br />
+<div class ='register_form'>    
+    <div class = 'reg'>Zip Code:<span class = 'compuls'>*</span></div>
+    <?=$this->myform->zipcode?>
+
+</div>    
+    <br />
+<div class ='register_form'>    
+    <div class = 'reg'>Phone Number:</div>
+    <?=$this->myform->phone_number?>
+</div>
+<br />
+<div class ='register_form'>    
+    <div class = 'reg'>Web Address:</div>
+    <?=$this->myform->webaddress?>
+</div>
+<br />
+<div class ='register_form'>    
+    <div class = 'reg'>Profile Pic:</div>
+    <?=$this->myform->photo?><span id = 'photo_error'></span>
+</div>
+
+	<input type="submit" name="Sign Up" id="Sign Up" value="Sign Up" class="myButton"  size="50"/></td>
+</form>
+
+</div>
+
+<div id = "success" style = 'display:none;'>
+
+Successfully Registered
+</div>
+
+<script language="javascript">
+function AddOptiontoListBox(listBoxId,Value,Text)
+{
+	var elSel = document.getElementById(listBoxId);	
+	var opt = document.createElement("option");
+	elSel.options.add(opt);
+	opt.text=Text;
+	opt.value=Value;
+}
+function RemoveItems(optinoId)
+{
+  var elSel = document.getElementById(optinoId);
+	for (i = elSel.length - 1; i>0; i--) {
+		elSel.remove(i);   
+	}
+}
+function SettingDob()
+{
+	var monthValue=document.getElementById('dob_month').value;
+	var yearValue=document.getElementById('dob_year').value;
+	var dayValue=document.getElementById('dob_day').value;
+	var totDay=31;
+	if(monthValue=='04' || monthValue=='06' || monthValue=='09' || monthValue=='11') 
+	{
+		totDay=30;
+	}
+	else if(monthValue=='02')
+	{
+		if(yearValue%4=='1')
+		{
+		totDay=28;
+		}
+		else
+		{
+		totDay=29;
+		}
+	}
+	else
+	{
+		totDay=31;
+	}
+	RemoveItems('dob_day');
+	var valText;
+	for(var i=1;i<=totDay;i++)
+	{
+		valText=i;
+		if(i<=9)
+		{
+		valText="0"+i;
+		}
+		AddOptiontoListBox('dob_day',valText,valText)
+	}
+	document.getElementById('dob_day').value=dayValue;
+}
+function ChangeCountry()
+{
+	document.getElementById('DisplayCountry').style.display="none";
+	document.getElementById('ChooseCountry').style.display="block";
+}
+
+function getCountryState(countryId)
+{
+
+	$.ajax({ url: "<?=APPLICATION_URL."signup/getstatebycountry"?>",
+	type: "POST",
+	data: ({countryId:countryId}),
+	success: function(data)
+	{	
+		
+		
+		EmptyListbox('state_id');
+		AddOptiontoListBox('state_id','','- - State - -');
+		data = $.trim(data);
+		if(data != '')
+		{
+
+			var ArrData=data.split("***");
+		
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('state_id',OptionValue,OptionText);
+				}
+			}
+		}
+		
+	}
+	
+	});	
+}
+function getStateCity(stateId)
+{
+	
+	$.ajax({ url: "<?=APPLICATION_URL."signup/getcitiesbystate"?>",
+	type: "POST",
+	data: ({stateId:stateId}),
+	success: function(data)
+	{
+
+		EmptyListbox('city_id');
+		AddOptiontoListBox('city_id','','- - City - -');
+		data = $.trim(data);
+		if(data!="")
+		{
+			var ArrData=data.split("***");
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('city_id',OptionValue,OptionText);
+				}
+		
+			}
+		}
+		
+	}
+	});	
+}
+function checkLen(charlen)
+{	var mb= document.getElementById('phone_number').value;
+	//alert(mb.length);
+	
+	if(mb.length<3)
+	{
+		return charlen;
+	}
+	else if(mb.length==3 || mb.length==7 )
+	{	
+		var dashchar="-";
+		var charlen1=charlen+dashchar;
+		var charlen2=document.getElementById('phone_number').value=charlen1;
+		//var charlen2=charlen1.join("-");
+			//alert(charlen2);
+			return charlen1;
+			//return charlen1;
+	}
+	
+
+}
+</script>

@@ -1,0 +1,163 @@
+<?
+	global $mySession;
+?>
+<script type="text/javascript">
+var dataArray = [];
+$(document).ready(function(e) {
+	
+	$("#check_in").datepicker({
+			
+		});
+	
+	
+	
+	
+    $("#image").bind("change",function(e){
+		
+		$(this).one('change',function(){ 	
+		 var files = $("#image")[0].files[0];
+		// $("#comment").val(print_r(file));
+		 var fileReader = new FileReader();
+				
+				// When the filereader loads initiate a function
+				fileReader.onload = (function(files) {
+					
+					return function(e) {
+						
+						dataArray.push({name : files.name, value : this.result});
+
+						}; 
+					
+				})(files);
+				
+			// For data URI purposes
+			fileReader.readAsDataURL(files);
+		 
+		$.each(dataArray, function(index, file) {	
+		alert('sdf') ;
+		
+		});
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 if (!files.type.match('image.*')){
+			
+			alert("image only");
+		 }
+
+		
+		});
+		
+	}); //onchange bind
+
+	$('#image_upload').click(function() {
+
+		$("#loading").show();
+
+		$.each(dataArray, function(index, file) {	
+			
+			
+
+			$.ajax({
+				
+				type: 'POST',
+				url: 'ownerimageupload',
+				async:false,
+				data: ({name:file.name,value:file.value}),
+				success: function(data){
+				window.location.href = window.location;
+				}
+			});
+
+		});
+});
+
+
+
+
+
+
+
+}); //onload
+
+
+function checkreview()
+{
+	if($("#mws-validate").valid())
+	{
+			
+		$.ajax({
+				
+				type: 'POST',
+				url: '<?=APPLICATION_URL?>myaccount/savereview',
+				async:false,
+				data: ({Name:$("#full_name").val(),
+						From:$("#location").val(),
+						Check_in:$("#check_in").val(), 
+						Rating:$("#rating").val(),
+						Headline:$("#headline").val(),
+						Comment:$("#comment").val(),												 						
+						Review:$("#review").val()						
+					   }),
+				success: function(data){
+				data = $.trim(data);
+
+				window.location.href = window.location;
+				}
+			});
+		
+			
+	
+	}
+}
+
+
+</script>
+
+	<div> 
+
+	        
+
+
+            
+<form name="myform" id="mws-validate" method="post"  novalidate="novalidate" class="mws-form" onsubmit = "checkreview();" >
+    <div  class = "container_cal" style="display:inline-block"> <!-- main wrapper div container -->
+    
+        <div style="width:80%;float:left;display:inline-block">
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Name of Guest<span class="red">*</span>:</label><div class="mws-form-item large" style="width:308px; position:absolute;"><?=$this->myform->full_name?> </div></div></div>
+            <span class="guide_note" >First Name and Surname or Nickname</span>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Guest is From<span class="red">*</span>:</label><div class="mws-form-item large" style="width:308px; position:absolute;"><?=$this->myform->location?> </div></div></div>
+                        <span class="guide_note" >Location and Country</span>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Check in date<span class="red">*</span>:</label><div class="mws-form-item large" style="width:308px; position:absolute;"><?=$this->myform->check_in?> </div></div></div>
+                        <span class="guide_note" >A Rating of 10 is the highest and 1 is the lowest.</span>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Customer Rating<span class="red">*</span>:</label><div class="mws-form-item large" style="width:297px; position:absolute;"><?=$this->myform->rating?> </div></div></div>
+                        <span class="guide_note" >A Rating of 10 is the highest and 1 is the lowest.</span>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Review Headline<span class="red">*</span>:</label><div class="mws-form-item large" style="width:299px; position:absolute;"><?=$this->myform->headline?> </div></div></div>
+                        <span class="guide_note" >Quick Headline Summary for the Review</span>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Comment(Top Tip)<span class="red">*</span>:</label><div class="mws-form-item large" ><?=$this->myform->comment?> </div></div></div>
+                        <span class="guide_note_txtarea" >Any tips about the property and/or location for future renters.</span>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Review - Upto 1000 Characters <span class="red">*</span>:</label><div class="mws-form-item large"><?=$this->myform->review?> </div></div></div>        
+                        <span class="guide_note_txtarea">Detailed Renter Review</span>
+            <div class="mws-button-row1"> 
+            <?=$this->myform->step?>
+                <input type="submit"  class="mws-button blue" value = 'Add a review' />
+            </div>
+
+        </div>
+        
+        <div style="width:19%;height:210px;float:left;margin-top:10px;">
+        	<img id = "profile_blck" src="<?=APPLICATION_URL?>image.php?image=<?=IMAGES_URL."profile/".$mySession->reviewImage?>&height=150&width=150"  /><br /><br />
+            <div>
+            <input type="file" name = 'image' id = "image"  /></div>
+            <div id = 'image_upload' class="mws-i-24 i-upload mws-button blue small" ><span style='font-weight:bold;margin-left:30px;'>Upload</span></div> 
+        </div>
+    
+    </div>
+</form>
+
+</div>

@@ -1,0 +1,155 @@
+<?
+global $mySession;
+?>
+<script type="text/javascript">
+$(document).ready(function(e) {
+ jQuery.validator.addMethod("equals", function(value, element) { 
+    return ($("#password").val() == value); 
+  }, "Password mismatches");
+});
+</script>
+<?
+ 
+
+if($this->varsuccess==0)
+ 
+{
+?> 
+    
+    <div class="mws-panel-body">
+        <form name="myform" id="mws-validate"  method="post" novalidate="novalidate" class="mws-form" enctype="multipart/form-data" >
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+            
+            <div id = "loading" class = 'loading'></div>
+            
+            <div class="mws-form-message"><span class="red">*</span> Denotes the Mandatory Information to set up a Customer Account.</div>
+           <div class="mws-form-inline"><div class="mws-form-row"><label>Title:</label><div class="mws-form-item small"><?=$this->myform->title?></div></div></div>
+           <!-- <div class="mws-form-inline"><div class="mws-form-row"><label>Username :</label><div class="mws-form-item small"><?=$this->myform->username?></div></div></div>-->
+           <div class="mws-form-inline"><div class="mws-form-row"><label>First Name<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->first_name?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Surname<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->last_name?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Email Address<span class="red">*</span>:</label><div class="mws-form-item small"><?=$this->myform->email_address?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Confirm Email Address<span class="red">*</span>:</label><div class="mws-form-item small"><?=$this->myform->cemail_address?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Password<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->password?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Confirm Password<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->password_c?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Street Address<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->address?></div></div></div>
+			<div class="mws-form-inline"><div class="mws-form-row"><label>City/Location<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->city_id?></div></div></div>
+ 			<div class="mws-form-inline"><div class="mws-form-row"><label>State/Region/Area<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->state_id?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Country<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->country_id?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Zip/Postal Code<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->zipcode?></div></div></div>
+			<div class="mws-form-inline"><div class="mws-form-row"><label>Home Telephone<span class="red">*</span>:</label><div class="mws-form-item small"><?=$this->myform->home_number?></div></div></div>           
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Work Telephone:</label><div class="mws-form-item small"><?=$this->myform->work_number?></div></div></div>           
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Mobile Telephone:</label><div class="mws-form-item small"><?=$this->myform->mobile_number?></div></div></div>           
+
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Personal Web Link :</label><div class="mws-form-item small"><?=$this->myform->webaddress?></div></div></div>
+            <div class="mws-form-inline" ><div class="mws-form-row"><label>Profile Photo :</label><div  class="mws-form-item small"><?=$this->myform->photo?></div></div></div>
+			<div class="mws-form-inline"><div class="mws-form-row"><label>&nbsp;</label><div  class="mws-form-item small left_deal_head_notes_register" style="float:none;width:auto;">Please note your photo will automatically upload when you click to Submit the form.</div></div></div>
+            <div class="mws-form-item small agreeCheck" >
+             <input type = "checkbox"  value="1" id = "agree" name = "agree" class = "required"  /><span>I agree to the <a class= "link" target='_blank' href = '<?=APPLICATION_URL?>contents/pages/slug/agency-terms-of-business' >Customer Terms & Conditions</a> and <a target='_blank' class= "link" href = '<?=APPLICATION_URL?>contents/pages/slug/privacy-policy' >Privacy Policy</a> of Deal A Trip. </span>
+			 <label class = "error" id = 'checkBox' for = "agree" style="display:none;background:none;color:#F63611">This field is required</label>
+            </div>
+            
+            <div class="mws-button-row2">
+                <input type="submit" value="Submit" class="mws-button" />
+            </div>
+        </form>
+ 	</div>
+
+
+
+
+<script language="javascript">
+function AddOptiontoListBox(listBoxId,Value,Text)
+{
+	var elSel = document.getElementById(listBoxId);	
+	var opt = document.createElement("option");
+	elSel.options.add(opt);
+	opt.text=Text;
+	opt.value=Value;
+}
+function RemoveItems(optinoId)
+{
+  var elSel = document.getElementById(optinoId);
+	for (i = elSel.length - 1; i>0; i--) {
+		elSel.remove(i);   
+	}
+}
+ 
+function ChangeCountry()
+{
+	document.getElementById('DisplayCountry').style.display="none";
+	document.getElementById('ChooseCountry').style.display="block";
+}
+
+function getCountryState(countryId)
+{
+
+	$.ajax({ url: "<?=APPLICATION_URL."signup/getstatebycountry"?>",
+	type: "POST",
+	data: ({countryId:countryId}),
+	success: function(data)
+	{	
+		
+		
+		EmptyListbox('state_id');
+		AddOptiontoListBox('state_id','','- - State - -');
+		data = $.trim(data);
+		if(data != '')
+		{
+
+			var ArrData=data.split("***");
+		
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('state_id',OptionValue,OptionText);
+				}
+			}
+		}
+		
+	}
+	
+	});	
+}
+function getStateCity(stateId)
+{
+	
+	$.ajax({ url: "<?=APPLICATION_URL."signup/getcitiesbystate"?>",
+	type: "POST",
+	data: ({stateId:stateId}),
+	success: function(data)
+	{
+
+		EmptyListbox('city_id');
+		AddOptiontoListBox('city_id','','- - City - -');
+		data = $.trim(data);
+		if(data!="")
+		{
+			var ArrData=data.split("***");
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('city_id',OptionValue,OptionText);
+				}
+		
+			}
+		}
+		
+	}
+	});	
+
+}
+
+
+
+</script>
+<?
+}
+?>

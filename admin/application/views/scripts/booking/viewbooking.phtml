@@ -1,0 +1,383 @@
+<!-- Panels Start -->
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-polaroids"><?= $this->pageHeading ?></span>
+    </div>
+
+    <div class="mws-panel-body">
+        <div class="mws-panel-toolbar top clearfix " style="float:right;">
+            <ul>
+                <li><a class="mws-ic-16 ic-arrow-undo" href="<?= APPLICATION_URL_ADMIN ?>booking/index" title="Back">Back</a></li>
+            </ul>
+        </div>
+
+
+        <div class="mws-panel-content" >
+
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <th width="15%"><b>Size of party</b></th>
+                    <th>&nbsp;:&nbsp;</th>
+                    <td><label> <?= $this->bookingData[0]['adult'] ?>
+                            Adults,
+                            <?= $this->bookingData[0]['children'] ?>  Children,
+                            <?= $this->bookingData[0]['infants'] ?> Infants
+                            <?
+                            $member = $this->bookingData[0]['adult'] + $this->bookingData[0]['children'];
+                            ?></label></td>
+                </tr>
+
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <th width="15%"><b>Property No</b></th>
+                    <th>&nbsp;:&nbsp;</th>
+                    <td><label> <?= $this->bookingData[0]['propertycode'] ?></label></td>
+                </tr>
+
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <th><strong>User Information</strong></th>
+                    <th>:</th>
+                    <td>
+                        <table cellpadding="10" cellspacing="10">
+                            <tr>
+                                <td>Name:</td>
+                                <td><?
+                                    switch ($this->bookingData[0]['title']) {
+                                        case '0': echo "&nbsp;Mr. ";
+                                            break;
+                                        case '1': echo "&nbsp;Mrs. ";
+                                            break;
+                                        case '2': echo "&nbsp;Miss. ";
+                                            break;
+                                        case '3': echo "&nbsp;Ms. ";
+                                            break;
+                                        case '4': echo "&nbsp;Dr. ";
+                                            break;
+                                    } echo $this->bookingData[0]['first_name'] . " " . $this->bookingData[0]['last_name']
+                                    ?></td>
+                            </tr>
+                            <tr>
+                                <td>Email :</td>
+                                <td>&nbsp;<? echo $this->bookingData[0]['email_address']; ?></td>
+                            </tr>
+                            <tr>
+                                <td>Street Address:</td>
+                                <td>&nbsp;<? echo $this->bookingData[0]['address']; ?></td>
+                            </tr>
+                            <tr>
+                                <td>City/Location:</td>
+                                <td>&nbsp;<? echo $this->bookingData[0]['city_id']; ?></td>
+                            </tr>
+                            <tr>
+                                <td>State/Region/Area:</td>
+                                <td>&nbsp;<? echo $this->bookingData[0]['state_id']; ?></td>
+                            </tr>
+                            <tr>
+                                <td>Country:</td>
+                                <td>&nbsp;<? echo $this->bookingData[0]['state_id']; ?></td>
+                            </tr>
+                            <tr>
+                                <td>Zip/Postal Code:</td>
+                                <td>&nbsp;<? echo $this->bookingData[0]['zipcode']; ?></td>
+                            </tr>
+                            <tr>
+                                <td>Home Telephone:</td>
+                                <td>&nbsp;<? echo $this->bookingData[0]['home_number']; ?></td>
+                            </tr>
+                            <tr>
+                                <td>Work Telephone:</td>
+                                <td>&nbsp;<? echo $this->bookingData[0]['work_number']; ?></td>
+                            </tr>
+                            <tr>
+                                <td>Mobile Telephone:</td>
+                                <td>&nbsp;<? echo $this->bookingData[0]['mobile_number']; ?></td>
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <th><strong>Extras</strong></th>
+                    <th>:</th>
+                    <td>
+<?
+if (count($this->extraData) > 0) {
+    ?>
+                            <table style="width:100%;">
+                                <thead>
+                                    <tr> 
+                                        <td style="width:25%;"><strong>Property Extra</strong></td>
+                                        <td style="width:20%;"><strong>Cost</strong></td>
+                                        <td style="width:27%;"><strong>Optional/Compulsory</strong></td>
+                                        <td style="width:28%;"><strong>Per Night/Stay</strong></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+    <?
+    foreach ($this->extraData as $values) {
+        ?>	 
+                                        <tr>
+                                            <td><?= $values['option_name'] ?></td>
+                                            <td>&pound;<?= round($values['option_price']) ?></td>
+                                            <td><?= $values['option_status'] == '1' ? "Compulsory" : "Optional" ?></td>
+                                            <td><?= $values['stay_type'] == '0' ? "Night" : "Stay" ?></td>
+                                        </tr>	
+                                <?
+                            }
+                            ?>
+                                </tbody>
+                            </table>
+                            <?
+                        }
+                        else
+                            echo "No Extras";
+                        ?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <th><strong>Special Offers</strong></th>
+                    <th>:</th>
+                    <td>
+<?
+if ($this->bookingData[0]['type_name']) {
+    ?>
+                            <table style="width:100%;">
+                                <thead>
+                                    <tr> 
+                                        <td style="width:25%;"><strong>Special Offer Name</strong></td>
+                                        <td style="width:20%;"><strong>Discount Offers or Freebies</strong></td>
+                                        <!--<td style="width:27%;"><strong>Optional/Compulsory</strong></td>
+                                        <td style="width:28%;"><strong>Per Night/Stay</strong></td>-->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><?= $this->bookingData[0]['type_name'] ?></td>
+                                        <td><?
+                                            switch ($this->bookingData[0]['discount_type']) {
+                                                case '0': echo "(" . $this->bookingData[0]['promo_code'] . ") " . $this->bookingData[0]['discount_offer'] . "%";
+                                                    break;
+                                                case '1': echo "(" . $this->bookingData[0]['promo_code'] . ") " . $this->minrate . " x " . $this->bookingData[0]['discount_offer'];
+                                                    break;
+                                                case '2': echo "(" . $this->bookingData[0]['promo_code'] . ") " . "Free Pool Heating";
+                                                    break;
+                                                case '3': echo "(" . $this->bookingData[0]['promo_code'] . ") " . $this->bookingData[0]['id'] == '6' ? "33.3%" : "25%";
+                                                    break;
+                                            }
+                                            ?>
+                                        </td>
+                                    </tr>	
+
+                                </tbody>
+                            </table>
+    <?
+}
+else
+    echo "No Special Offer";
+?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <th><b>Cost Details:</b></th>
+                    <th>:</th>
+                    <td>
+                        <table width ="50%">
+                            <tr>
+                                <td>Cost of Holiday Rental: </td>
+                                <td>&pound;<?= round($this->bookingData[0]['rental_amt']) ?></td>
+                            </tr>
+                            <tr>
+                                <td>Special Offer Discount/Freebie</td>
+                                <td>  <?
+                                    $cost = $this->bookingData[0]['rental_amt'];
+                                    switch ($this->bookingData[0]['discount_type']) {
+                                        case '0': echo "(" . $this->bookingData[0]['promo_code'] . ") " . $this->bookingData[0]['discount_offer'] . "%";
+                                            $cost = round($this->bookingData[0]['rental_amt'] - $this->bookingData[0]['rental_amt'] * ($this->bookingData[0]['discount_offer'] / 100));
+                                            break;
+                                        case '1': echo "(" . $this->bookingData[0]['promo_code'] . ") " . $this->minrate . " x " . $this->bookingData[0]['discount_offer'];
+                                            $cost = round($this->bookingData[0]['rental_amt'] - $this->minrate * $this->bookingData[0]['discount_offer']);
+                                            break;
+                                        case '2': echo "Free Pool Heating";
+                                            break;
+                                        case '3': if ($this->bookingData[$i]['id'] == '6') {
+                                                echo "(" . $this->bookingData[0]['promo_code'] . ") " . "33.3%";
+                                                $cost = round($this->bookingData[0]['rental_amt'] - 0.333 * $this->bookingData[0]['rental_amt']);
+                                            } else {
+                                                echo "(" . $this->bookingData[0]['promo_code'] . ") 25%";
+                                                $cost = round($this->bookingData[0]['rental_amt'] - 0.25 * $this->bookingData[0]['rental_amt']);
+                                            }
+                                            break;
+                                        default: echo "N/A";
+                                    }
+                                    ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Revised Cost of Holiday Rental:</td>
+                                <td>&pound;<?= round($cost) ?></td>
+                            </tr>
+                            <tr>
+                                <td>Cost of Property Extras: </td>
+                                <td>&pound;
+<?
+$cost += round(calculate_book_extras($this->bookingData[0]['booking_id']));
+echo round(calculate_book_extras($this->bookingData[0]['booking_id']));
+?></td>
+                            </tr>
+                            <tr>
+                                <td>Total Cost of Holiday Rental:</td>
+                                <td>&pound;<?= round($cost) ?></td>
+                            </tr>
+                        </table>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <th><b>Check-in Date</b></th>
+                    <th>:</th>
+                    <td><label><?= date('d F Y', strtotime($this->bookingData[0]['date_from'])) ?></label></td>
+                </tr>
+
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <th><b>No Of Nights</b></th>
+                    <th>:</th>
+                    <td><label><?= dateDiff($this->bookingData[0]['date_from'], $this->bookingData[0]['date_to']) ?></label></td>
+                </tr>
+
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <th><b>Departure Date</b></th>
+                    <th>:</th>
+                    <td><label><?= date('d F Y', strtotime($this->bookingData[0]['date_to'])) ?></label></td>
+                </tr>
+
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <th><b>Property Availability</b></th>
+                    <th>:</th>
+                    <td><label><?
+                            if ($this->bookingData[0]['booking_type'] == 0) {
+                                echo "Available";
+                            } else {
+                                echo "On Request";
+                            }
+                            ?>
+<?= $this->booking_message ?></label>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <th><b>Payment Information</b></th>
+                    <th>:</th>
+                    <td>
+                        <table width="50%">
+                            <?
+                            if ($this->bookingData[0]['booking_type'] == '0'):
+                                if ($this->bookingData[0]['paid_status'] == '1') {
+                                    ?>
+                                    <tr>
+                                        <td>Deposit Payment(20%):</td>
+                                        <td>&pound;<? echo round(0.2 * $cost);
+                            $cost = round(0.2 * $cost); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fee for credit and debit cards(2.9%):</td>
+                                        <td>&pound;<? echo round(0.029 * $cost);
+                            $cost = round(0.029 * $cost) + $cost; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Amount Paid:</td>
+                                        <td>&pound;<?= $cost ?></td>
+                                    </tr>
+
+
+                                <?
+                                } else {
+                                    ?>		
+                                    <tr>
+                                        <?php
+                                                    if($this->bookingData[0]['telephonic']){
+                                                    ?>
+                                                        <td>Fee for credit and debit cards:</td>
+                                                        <td>&pound;<span id="card_fee"><?= round($this->bookingData[0]['card_amount']); ?></span>
+                                                        </td>
+                                                    <?php
+                                                    }else{
+                                                    ?>
+                                                        <td>Fee for credit and debit cards(2.9%):</td>
+                                                        <td>&pound;<span id="card_fee"><?= round(0.029 * $cost); ?></span>
+                                                        </td>
+                                                    <?php
+                                    $cost = round(0.029 * $cost + $cost); 
+                                                    }?>
+                                    </tr>
+                                    <tr>
+                                        <td>Amount Paid:</td>
+                                        <?php
+                                        if ($this->bookingData[0]['telephonic']) {
+                                            ?>
+                                            <td>&pound;<span id="amt_pait"><?php echo $this->bookingData[0]['amount_paid']; ?></span>
+                                            </td>
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <td>&pound;<?= $cost ?></td>
+                                            <?php
+                                        }
+                                        ?>
+                                    </tr>
+                                <?
+                                }
+                            endif;
+                            ?>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>            
+
+
+        </div>
+    </div>
+</div>
+
+<!-- Panels End -->

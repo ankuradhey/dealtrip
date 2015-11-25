@@ -1,0 +1,653 @@
+<?
+    global $mySession;
+?>
+<script type="text/javascript" src="<?= JS_URL ?>tweets.js"></script>
+<script type="text/javascript">
+    next = 0;
+    intvlID = 1;
+    total = <?= $this->countSpcl ?>;
+    totalLatest = <?= $this->count_latest_ppty ?>;
+    counter = _reviewCounter = _popularCounter = _latestCounter = 1;
+    totalPopular = <?= $this->countpopular ?>;
+    totalReview = <?= $this->countreview ?>;
+
+
+    function propertyslides()
+    {
+
+        $("#inner_tab" + this.intvlID).load("<?= APPLICATION_URL ?>index/fetchproperty/tab/" + this.intvlID + "/counter/" + counter).fadeIn("slow");
+
+        switch (parseInt(this.intvlID))
+        {
+            case 1:
+                if (_latestCounter < Math.ceil(totalLatest / 6))
+                    _latestCounter++;
+                else
+                    _latestCounter = 1;
+                counter = _latestCounter;
+                break;
+            case 2:
+                if (_popularCounter < Math.ceil(totalPopular / 6))
+                    _popularCounter++;
+                else
+                    _popularCounter = 1;
+                counter = _popularCounter;
+                break;
+            case 3:
+                if (_reviewCounter < Math.ceil(totalReview / 6))
+                    _reviewCounter++;
+                else
+                    _reviewCounter = 1;
+                counter = _reviewCounter;
+                break;
+        }
+
+    }
+
+
+    m1 = setInterval(propertyslides, 10000);
+
+
+    $(document).ready(function(e) {
+        var arr = [];
+        var m1, m2, m3;
+        var fb;
+        //loading special offers
+        //        $(".home_right_box_wrap").html("<div align = 'center'><img src='<?= IMAGES_URL ?>black-001-loading.gif'></div>");
+        //        $(".home_right_box_wrap").load("<?= APPLICATION_URL ?>index/spclofferppty");
+
+        jQuery.support.cors = true;
+
+        $.ajax({
+            url: "https://graph.facebook.com/339035742863583?fields=feed&access_token=180457415429694|DtsNBp5gyBj3jv8WRPI84c4OFUg",
+            type: "GET",
+            async: false,
+            dataType: 'jsonp',
+            success: function(data) {
+
+
+
+
+
+                var len = (data['feed']['data']).length;
+
+                for (var i = 0; i < 6; i++)
+                {
+                    fb = data['feed']['data'][i]['from']['id'];
+                    var fb_message = data['feed']['data'][i]['message'];
+                    if (i == 3)
+                        $(".left_facebook").append("<div class = 'left_facebook_clmn noborder'><div class='floatL'><img src = 'https://graph.facebook.com/" + fb + "/picture?type=square' alt='facebook image'></div><div class = 'left_facebook_dis_fb'>" + fb_message.substr(0, 75) + "<a class='link' target = '_blank' href = 'https://www.facebook.com/339035742863583'>&nbsp;read more...</a></div></div>");
+                    else
+                    if (fb_message)
+                        $(".left_facebook").append("<div class = 'left_facebook_clmn'><div class='floatL'><img src = 'https://graph.facebook.com/" + fb + "/picture?type=square' alt='facebook image'></div><div class = 'left_facebook_dis_fb'>" + fb_message.substr(0, 75) + "<a class='link' target = '_blank' href = 'https://www.facebook.com/339035742863583'>&nbsp;read more...</a></div></div>");
+                }
+
+
+
+
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+                pollServlet();
+
+                alert('Unexpected server error ' + errorThrown);
+            }
+
+        });
+
+
+    });
+
+</script>
+
+
+
+
+
+<script type="text/javascript">
+
+    function pollServlet()
+    {
+        $.getJSON("https://graph.facebook.com/339035742863583?fields=feed&access_token=180457415429694|DtsNBp5gyBj3jv8WRPI84c4OFUg", function(data) {
+            //print_r(data);
+
+            var array = $.map(data, function(k, v) {
+                return [k];
+            });
+
+            /*console.log(array[1]['data'].length);
+             
+             console.log(array[1]['data'][0]['message']);
+             */
+            len = array[1]['data'].length;
+
+            for (var i = 0; i < len; i++)
+            {
+                fb = array[1]['data'][i]['from']['id'];
+                var fb_message = array[1]['data'][i]['message'];
+                if (fb_message)
+                    $(".left_facebook").append("<div class = 'left_facebook_clmn'><div class='floatL'><img src = 'https://graph.facebook.com/" + fb + "/picture?type=square alt='facebook image'></div><div class = 'left_facebook_dis_fb'>" + fb_message.substr(0, 46) + "<a class='link' target = '_blank' href = 'https://www.facebook.com/339035742863583'>&nbsp;read more...</a></div></div>");
+            }
+
+            //	var len = Object.keys(data[0]['feed']['data']).length;
+            //alert(len);
+
+
+        });
+
+
+
+    }
+
+    function processTab(id)
+    {
+        var i = 1;
+        $(".home_servic_tab ul li a").each(function(index, element) {
+            $(this).removeClass("active");
+            $("#inner_tab" + i).addClass("noactive");
+
+            i++;
+        });
+
+        this.intvlID = id;
+
+        $("#tab" + id).addClass("active");
+
+        $("#inner_tab" + id).removeClass("noactive");
+
+        clearTimeout(m1);
+
+        m1 = setInterval(propertyslides, 10000);
+
+    }
+
+    function loadspclOffr(d)
+    {
+
+        if (d == 1 && this.next < this.total - 1)
+            this.next = this.next + 1;
+        else if (d == 0 && this.next > 0)
+            this.next = this.next - 1;
+        $(".home_right_box_wrap").html("<div align = 'center'><img src='<?= IMAGES_URL ?>black-001-loading.gif' alt='loading'></div>");
+        $(".home_right_box_wrap").load("<?= APPLICATION_URL ?>index/spclofferppty/next/" + this.next);
+    }
+</script>
+
+<div class="home_services">
+    <!--  <div class="home_servic_left">-->
+    <div class="home_servic_tab">
+        <ul>
+            <li><a id = 'tab1' href="javascript:void(0)" class="active" onclick = 'processTab("1");'>Latest Properties</a></li>
+            <li><a id = 'tab2' href="javascript:void(0)" onclick = 'processTab("2");'>Popular Properties</a></li>
+            <li><a id =  'tab3' href="javascript:void(0)" onclick = 'processTab("3");'>Latest Reviews</a></li>
+        </ul> 
+    </div>
+
+    <div class="tab_content"><!-- properties display tab-->
+
+        <div id = "inner_tab1" class="tab_content_inner"><!-- tab 1 starts here-->
+            <?
+                $i = 1;
+
+                foreach ($this->pptyArr as $values)
+                {
+//                    if ($i % 3 != 0)
+//                        $class = "class='tab_conten_clmn'";
+//                    else
+//                        $class = "class='tab_conten_clmn2'";
+
+                    $class = "class='tab_conten_clmn'";
+                    ?>
+                    <div <?= $class ?>>
+                        <div class="tab_box_text">
+                            <div class="tab_box_pic"><?= ppty_image_display($values['image_name']) ?></div>
+                            <div class="tab_box_detail">
+                                <div class="tab_box_heading"><?= $values['property_title'] ?></div>
+                                <!--<div class="tab_box_dis"><?= substr($values['brief_desc'], 0, 200) ?></div>-->
+                                <div class="tab_box_dis"><?= $values['brief_desc']; ?></div>
+                                <?php
+                                $url = APPLICATION_URL . "holiday-rentals/" . $values['country_name'] . "/" . $values['state_name'] . "/" . $values['city_name'] . "/";
+                                if (!empty($values['sub_area']))
+                                {
+                                    $url .= $values['sub_area_name'] . "/";
+
+                                    if (!empty($values['local_area_name']))
+                                        $url .= $values['local_area_name'] . "/";
+                                }
+
+                                $url .= $values['bedrooms'] . " Beds " . $values['bathrooms'] . " Bath " . $values['ptyle_name'] . "/" . $values['propertycode'];
+                                ?>  
+                                <div class="tab_box_more"><a href="<?= $url ?>">read more&nbsp;&gt;&gt;</a></div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <?
+                    $i++;
+                }
+
+                if (count($this->pptyArr) == 0)
+                {
+                    for ($i = 1; $i <= 6; $i++)
+                    {
+                        if ($i % 3 != 0)
+                            $class = "class='tab_conten_clmn'";
+                        else
+                            $class = "class='tab_conten_clmn2'";
+                        ?>		
+
+                        <div <?= $class ?>>
+                            <div class="tab_box_text">
+                                <!--<div class="tab_box_pic"></div>-->
+                                <div class="tab_box_detail">
+                                    <div class="tab_box_heading">&nbsp;</div>
+                                    <div class="tab_box_dis">&nbsp;</div>
+                                    <div class="tab_box_more">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <?
+                    }
+                }
+            ?> 
+
+
+        </div>
+
+        <div id = "inner_tab2" class = "tab_content_inner noactive"><!-- tab2 starts here -->
+
+            <?
+                $i = 1;
+
+                foreach ($this->popularArr as $values)
+                {
+//                    if ($i % 3 != 0)
+//                        $class = "class='tab_conten_clmn'";
+//                    else
+//                        $class = "class='tab_conten_clmn2'";
+
+                    $class = "class='tab_conten_clmn'";
+                    ?>
+                    <div <?= $class ?>>
+                        <div class="tab_box_text">
+                            <div class="tab_box_pic"><?= ppty_image_display($values['image_name']) ?></div>
+                            <div class="tab_box_detail">
+                                <div class="tab_box_heading"><?= $values['property_title'] ?></div>
+                                <!--<div class="tab_box_dis"><?= substr($values['brief_desc'], 0, 200) ?></div>-->
+                                <div class="tab_box_dis"><?= $values['brief_desc']; ?></div>
+                                <?php
+                                $url = APPLICATION_URL . "holiday-rentals/" . $values['country_name'] . "/" . $values['state_name'] . "/" . $values['city_name'] . "/";
+                                if (!empty($values['sub_area']))
+                                {
+                                    $url .= $values['sub_area_name'] . "/";
+
+                                    if (!empty($values['local_area_name']))
+                                        $url .= $values['local_area_name'] . "/";
+                                }
+
+                                $url .= $values['bedrooms'] . " Beds " . $values['bathrooms'] . " Bath " . $values['ptyle_name'] . "/" . $values['propertycode'];
+                                ?>
+                                <div class="tab_box_more"><a href="<?= $url ?>">read more&nbsp;&gt;&gt;</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <?
+                    $i++;
+                }
+
+                if (count($this->popularArr) == 0)
+                {
+                    for ($i = 1; $i <= 6; $i++)
+                    {
+//                        if ($i % 3 != 0)
+//                            $class = "class='tab_conten_clmn'";
+//                        else
+//                            $class = "class='tab_conten_clmn2'";
+
+                        $class = "class='tab_conten_clmn'";
+                        ?>		
+
+                        <div <?= $class ?>>
+                            <div class="tab_box_text">
+                                <!--<div class="tab_box_pic"></div>-->
+                                <div class="tab_box_detail">
+                                    <div class="tab_box_heading">&nbsp;</div>
+                                    <div class="tab_box_dis">&nbsp;</div>
+                                    <div class="tab_box_more">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <?
+                    }
+                }
+            ?> 
+
+
+
+
+
+
+        </div><!-- tab3 starts here-->
+
+
+        <div id = "inner_tab3" class = "tab_content_inner noactive"><!-- tab2 starts here -->
+
+            <?
+                $i = 1;
+
+
+                foreach ($this->reviewArr as $values)
+                {
+//                    if ($i % 3 != 0)
+//                        $class = "class='tab_conten_clmn'";
+//                    else
+//                        $class = "class='tab_conten_clmn2'";
+
+                    $class = "class='tab_conten_clmn'";
+                    ?>
+                    <div <?= $class ?>>
+                        <div class="tab_box_text">
+                            <div class="tab_box_pic"><?= ppty_image_display($values['image_name']) ?></div>
+                            <div class="tab_box_detail">
+                                <div class="tab_box_heading"><?= $values['property_title'] ?></div>
+                                <!--<div class="tab_box_dis"><?= substr($values['brief_desc'], 0, 150) ?></div>-->
+                                <div class="tab_box_dis"><?= $values['brief_desc']; ?></div>
+                                <?php
+                                $url = APPLICATION_URL . "holiday-rentals/" . $values['country_name'] . "/" . $values['state_name'] . "/" . $values['city_name'] . "/";
+                                if (!empty($values['sub_area']))
+                                {
+                                    $url .= $values['sub_area_name'] . "/";
+
+                                    if (!empty($values['local_area_name']))
+                                        $url .= $values['local_area_name'] . "/";
+                                }
+
+                                $url .= $values['bedrooms'] . " Beds " . $values['bathrooms'] . " Bath " . $values['ptyle_name'] . "/" . $values['propertycode'];
+                                ?>
+                                <div class="tab_box_more"><a href="<?= $url ?>">read more&nbsp;&gt;&gt;</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <?
+                    $i++;
+                }
+
+                if (count($this->popularArr) == 0)
+                {
+                    for ($i = 1; $i <= 6; $i++)
+                    {
+//                        if ($i % 3 != 0)
+//                            $class = "class='tab_conten_clmn'";
+//                        else
+//                            $class = "class='tab_conten_clmn2'";
+
+                        $class = "class='tab_conten_clmn'";
+                        ?>		
+
+                        <div <?= $class ?>>
+                            <div class="tab_box_text">
+                                <!--<div class="tab_box_pic"></div>-->
+                                <div class="tab_box_detail">
+                                    <div class="tab_box_heading">&nbsp;</div>
+                                    <div class="tab_box_dis">&nbsp;</div>
+                                    <div class="tab_box_more">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <?
+                    }
+                }
+            ?> 
+
+
+
+
+
+
+        </div><!-- tab3 ends here-->
+
+    </div> 
+    <!-- properties display tabs-->
+
+
+    <div class="left_dis_wrap">
+        <div class="left_deal_main">
+            <div class="left_panel_heading">Deal a Trip Tweets</div>
+            <?php
+                require "twitter.php";
+            ?>
+
+        </div>
+
+        <div class="left_facebook">
+            <div class="left_panel_heading">Facebook</div>
+
+            <!--FACEOOK FEEDS-->
+
+        </div>
+    </div>
+    <!--  </div>--> <!-- home services left ends -->
+    <!--  <div class="home_servic_right">-->
+
+    <div class="right_dis_wrap">
+        <div class="home_right_heading">Special Offers</div>
+        <div class="home_right_box_wrap"><!--  home right box wrap starts-->
+
+            <!--- SPECIAL OFFERS-->
+            <ul id="vertical-ticker">
+                <?php
+                    foreach ($this->specialArr as $values)
+                    {
+                        $class = "class='home_right_box'";
+
+                        if ($values['image_name'] != "")
+                            $image = $values['image_name'];
+                        else
+                            $image = DEFAULT_PHOTO;
+
+                        echo '<li>';
+                        echo '<div ' . $class . ' >
+				  <div class="home_right_pic"><img src = "' . APPLICATION_URL . 'image.php?image=' . IMAGES_URL . "property/" . $image . '&width=71&height=69" alt="' . $image . '"></div>
+				  <div class="home_right_detail">';
+
+                        $url = APPLICATION_URL . "holiday-rentals/" . $values['country_name'] . "/" . $values['state_name'] . "/" . $values['city_name'] . "/";
+                        if (!empty($values['sub_area']))
+                        {
+                            $url .= $values['sub_area_name'] . "/";
+
+                            if (!empty($values['local_area_name']))
+                                $url .= $values['local_area_name'] . "/";
+                        }
+
+                        $url .= $values['bedrooms'] . " Beds " . $values['bathrooms'] . " Bath " . $values['ptyle_name'] . "/" . $values['propertycode'];
+
+                        echo'<div class="home_right_head"><a href="' . $url . '">' . $values['property_title'] . '</a></div>
+					<div class="home_right_dis">' . substr($values['brief_desc'], 0, 60) . '</div>
+				  </div>
+				</div>';
+                        echo '</li>';
+                    }
+                ?>
+            </ul>
+
+        </div><!-- home right box wrap ends-->
+
+        <div class="hr_arrow"><a id = 'spcl_prev' href="javascript:void(0);" onclick="loadspclOffr('0')"><img src="<?= IMAGES_URL; ?>hr_left_arrow.png" width="26" height="17" alt="left arrow"></a>&nbsp;&nbsp;<a href="javascript:void(0);" id = 'spcl_next' onclick="loadspclOffr('1')"><img src="<?= IMAGES_URL; ?>hr_right_arrow.png" width="26" height="17" alt="right arrow"></a></div>
+        <!--  </div>--><!-- home services right-->
+
+
+    </div>
+    <div class="destination_wrap">
+
+        <div class="desti_right">
+            <div class="desti_right_head">Book with confidence</div>
+            <div class="desti_right_text">
+                <div class="desti_right_text_child">
+                    <img src="<?= APPLICATION_URL ?>image.php?image=images/best_price.jpg&height=50&width=50" />
+                    <h4>LOWEST PRICE GUARANTEE</h4>
+                    <span>We offer fantastic savings and are never knowingly undersold.  If you do find a lower price then we will match it as long as it is a 'like for like' published price.</span>
+                </div>  
+                <div class="desti_right_text_child">
+                    <img src="<?= APPLICATION_URL ?>image.php?image=images/financial_guarantee.jpg&height=50&width=50" alt="Finanacial Guarantee"/>
+                    <h4>FINANCIAL SECURITY</h4>
+                    <span>We accept payment by most major debit and credit cards when you will be fully financially protected.  We are bonded by our Merchant Suppliers.</span>
+                </div>  
+
+
+            </div>
+        </div>
+
+
+        <div class="desti_right">
+            <div class="desti_right_head">&nbsp;</div>
+            <div class="desti_right_text">
+                <div class="desti_right_text_child">
+                    <img src="<?= APPLICATION_URL ?>image.php?image=images/best_price.jpg&height=50&width=50" alt="Best Price"/>
+                    <h4>FREEDOM & FLEXIBILITY</h4>            
+                    <span>We have thousands of self-catering properties available to be booked instantly on-line &ndash; you can arrive any day and stay as long as you want to!</span>
+                </div>  
+                <div class="desti_right_text_child">
+                    <img src="<?= APPLICATION_URL ?>image.php?image=images/best_price.jpg&height=50&width=50" alt="best price"/>
+                    <h4>NO HIDDEN EXTRAS</h4>            
+                    <span >All our prices are inclusive of tax and there are no hidden extras.  If there are any resort or departure fees they are quoted on the property page.</span>
+                </div>    
+
+            </div>
+        </div>
+    </div>
+    <div class="client_panel_wrap">
+        <div class="client_panel_left">
+            <div class="client_left_row">
+                <div class="client_left_title">Products</div>
+                <div class="client_left_links"><a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["holiday_rentals"]; ?>">Holiday Rentals</a>&nbsp;&nbsp; |
+                    &nbsp;&nbsp;  <a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["special_offers"]; ?>">Special Offers</a>&nbsp;&nbsp;  |    
+                    &nbsp;&nbsp;  <a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["hotels"]; ?>">Hotels</a>&nbsp;&nbsp;  |     	      
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["holidays"]; ?>">Holidays</a>&nbsp;&nbsp; |
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["flight_"]; ?>">Flights</a>    
+                </div>
+          <!--      &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/transfers">Transfers</a></div>-->
+            </div>
+
+            <div class="client_left_row">
+                <div class="client_left_title">Extras</div>
+                <div class="client_left_links">
+                    <a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["car_van"]; ?>">Car & Van Hire </a>&nbsp;&nbsp;    |
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["transfers"]; ?>">Transfers</a>&nbsp;&nbsp;    |    
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["airport_parking"]; ?>">UK Airport Hotels & Parking</a>&nbsp;&nbsp;    |    
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["attractions"]; ?>">Attractions</a> &nbsp;&nbsp;|
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["insurance"]; ?>">Insurance</a></div>
+            </div>
+
+            <div class="client_left_row">
+                <div class="client_left_title">Customers</div>
+                <div class="client_left_links">
+                    <a href="<?= APPLICATION_URL ?>signin">Customer Login</a>&nbsp;&nbsp;    |    
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["manage_booking"]; ?>">Manage Your Booking</a> &nbsp;&nbsp;|
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["booking_info"]; ?>">Booking Information</a> &nbsp;&nbsp;|      
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["customer_FAQ"]; ?>">Customer FAQs</a>&nbsp;&nbsp;|
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["agency_terms_of_business"]; ?>">Agency Terms Of Business</a>    
+                </div>
+            </div>
+
+            <div class="client_left_row">
+                <div class="client_left_title">Owners</div>
+                <div class="client_left_links"><a href="<?= APPLICATION_URL ?>signin/login">Owner Login</a>&nbsp;&nbsp;    | 
+                    &nbsp;&nbsp;<?
+                        if ($mySession->LoggedUserType == '2')
+                        {
+                            ?><a href="<?= APPLICATION_URL ?>myaccount/addproperty">Add your property</a> <?
+                        }
+                        else
+                        {
+                            ?> <a href="<?= APPLICATION_URL ?>signup/ownerregistration">Add your property</a><? } ?> &nbsp;&nbsp;|
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["owner_info"]; ?>">Owner Information</a>&nbsp;&nbsp;|
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["owner_faq"]; ?>">Owner FAQs</a>&nbsp;&nbsp;|      
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["owner_terms_of_business"]; ?>">Owner Terms Of Business</a>    
+                </div>
+            </div>
+
+
+            <div class="client_left_row">
+                <div class="client_left_title">General</div>
+                <div class="client_left_links">
+                    <a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["book_with_confidence"]; ?>">Book With Confidence </a>&nbsp;&nbsp;    |
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["privacy_policy"]; ?>">Privacy Policy</a>&nbsp;&nbsp;    |    
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["contact_us"]; ?>">Contact Us</a>&nbsp;&nbsp;    |    
+                   <!-- &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/total_financial">Total Financial Protection</a> &nbsp;&nbsp;|-->
+                    &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["our_use"]; ?>">Our use of Cookies&nbsp;&nbsp; |<br>
+                        &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["total_financial_"]; ?>">Financial Protection&nbsp;&nbsp; |
+                            &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $this->staticLinks["blog"]; ?>">Deal A Trip Blog</a>
+                            <?php
+                                if (!empty($this->generalLinks))
+                                {
+                                    foreach ($this->generalLinks as $s_key => $s_value)
+                                    {
+                                        ?>
+                                        | &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/<?php echo $s_value["synonyms"]; ?>"><?php echo $s_value["page_title"]; ?></a>
+                                        <?php
+                                    }
+                                }
+                            ?>
+                            </div>      
+                            </div>
+                            </div>
+
+                            <!--<div class="client_left_row">
+                              <div class="client_left_title">Help</div>
+                              <div class="client_left_links"><a href="<?= APPLICATION_URL ?>contents/pages/slug/customer_info">Customer Information</a>&nbsp;&nbsp;    |
+                              &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/contact_us">Contact Us</a>&nbsp;&nbsp;    |    
+                              &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/faq">Frequently Asked Questions</a> &nbsp;&nbsp;|
+                              &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/booking_info">Group Bookings</a></div>
+                            </div>
+                            
+                            <div class="client_left_row">
+                              <div class="client_left_title">More</div>
+                              <div class="client_left_links"><a href="<?= APPLICATION_URL ?>contents/pages/slug/manage_booking">Manage Your Booking </a>&nbsp;&nbsp;    |
+                              &nbsp;&nbsp;<a href="#">Review Your Property</a>&nbsp;&nbsp;    |    
+                              &nbsp;&nbsp;<a href="<?
+                                if ($mySession->uType == '2')
+                                    echo APPLICATION_URL . "myaccount/addproperty";
+                                else
+                                    echo APPLICATION_URL . "signup/ownerregistration";
+                            ?>">Add Your Property</a> &nbsp;&nbsp;|
+                              &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/careers">Careers</a>&nbsp;&nbsp;|
+                              &nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>contents/pages/slug/blog">Travel Republic Blog</a></div>
+                            </div>
+                          </div>-->
+                            <div class="client_panel_right">
+
+                                <div style="text-align: left" class="column2 dis_con-02 ">
+                                    Payments fully protected by Credit and Debit Cards <b class="greenbold">BOOK WITH CONFIDENCE</b>
+                                    <br />
+                                    <img style="margin: 5px 0;" src="<?= IMAGES_URL ?>payment-types.gif" alt="payment types"><br>
+                                    Credit Card Surcharge is 2.9% Debit Cards no fee
+                                </div>
+                                <div style="text-align: left" class="column2 dis_con-02 padleft ">
+                                    <b class="greenbold">Price Promise: </b>We will never knowingly be undersold on a 'like for like' sale.<br>
+                                    <img style="margin: 5px 0;" src="<?= IMAGES_URL ?>thawte-seal-2007-2009.gif" alt="seal">
+                                </div>
+
+                            </div>
+                            </div>
+
+
+                            <div id="fb-root"></div>
+
+                            <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id))
+            return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>

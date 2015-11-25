@@ -1,0 +1,228 @@
+<style>
+
+._link{text-decoration:none;color:#000;}
+.padding-0 td ,th
+{
+	padding:5px 2px 5px 6px !important;
+	text-transform:capitalize !important;
+}
+
+ul.mws-summary li 
+{
+	color:#000000;
+	text-transform:capitalize;
+	font-weight:bold;
+}
+
+ul.mws-summary li span 
+{
+	text-align:left;
+	padding:2px 4px 2px 4px;
+	width:auto !important;
+}
+
+.label-success, .badge-success {
+    background-color: #669533;
+}
+.label {
+    border-radius: 3px 3px 3px 3px;
+   padding: 1px 4px 3px;
+   float:right;
+}
+
+.label, .badge {
+   
+    color: #FFFFFF;
+    font-size: 10.998px;
+    font-weight: bold;
+    line-height: 14px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    vertical-align: baseline;
+    white-space: nowrap;
+}
+
+
+.label-important, .badge-important {
+    background-color: #BD4247;
+}
+
+</style>
+ 
+ 
+ <div class="mws-panel grid_8">
+    <!--Total User's -->             
+    <a class="mws-report" href="<?=APPLICATION_URL_ADMIN?>dashboard#customer">
+        <span class="mws-report-icon mws-ic ic-group"></span>
+        <span class="mws-report-content">
+            <span class="mws-report-title">Total Users</span>
+            <span class="mws-report-value"><?=$this->userCount[0]['_count'];?></span>
+        </span>
+    </a> <!--  USERS-->
+    
+    <!-- User Owners -->
+     <a class="mws-report" href="<?=APPLICATION_URL_ADMIN?>dashboard#owner">
+        <span class="mws-report-icon mws-ic ic-group"></span>
+        <span class="mws-report-content">
+            <span class="mws-report-title">Owner's</span>
+            <span class="mws-report-value"><?=$this->userCountOwner[0]['_count'];?></span>
+        </span>
+    </a> <!--  USERS-->
+
+	 <!-- User Customner -->
+	  <a class="mws-report" href="<?=APPLICATION_URL_ADMIN?>dashboard#customer">
+        <span class="mws-report-icon mws-ic ic-group"></span>
+        <span class="mws-report-content">
+            <span class="mws-report-title">Customer's</span>
+            <span class="mws-report-value"><?=$this->userCountCustomer[0]['_count'];?></span>
+        </span>
+    </a> <!--  USERS-->
+ </div>
+ 
+ 
+ <div class="mws-panel grid_8">   
+     
+     <!-- Property -->
+	  <a class="mws-report" href="<?=APPLICATION_URL_ADMIN?>dashboard#property">
+        <span class="mws-report-icon mws-ic ic-house"></span>
+        <span class="mws-report-content">
+            <span class="mws-report-title">Total Properties</span>
+            <span class="mws-report-value"><?=$this->pptyCount[0]['_count'];?></span>
+        </span>
+    </a> <!--  property-->
+    
+    <!-- Property -->
+	  <a class="mws-report" href="<?=APPLICATION_URL_ADMIN?>dashboard#bookedproperty">
+        <span class="mws-report-icon mws-ic ic-house-link"></span>
+        <span class="mws-report-content">
+            <span class="mws-report-title">Booked Properties</span>
+            <span class="mws-report-value"><?=$this->bookpptyCount[0]['_count'];?></span>
+        </span>
+    </a> <!--  property-->
+    
+</div>
+
+
+<div class="mws-panel grid_8">   
+     
+     <!-- Property -->
+	  <a class="mws-report" href="<?=APPLICATION_URL_ADMIN?>dashboard#review">
+        <span class="mws-report-icon mws-ic ic-microphone" ></span>
+        <span class="mws-report-content">
+            <span class="mws-report-title" title="Total Reviews and Comments">Total Reviews and Comments</span>
+            <span class="mws-report-value"><?=$this->pptyCount[0]['_count'];?></span>
+        </span>
+    </a> <!--  property-->
+    
+    
+</div>
+
+
+</div>
+
+	
+<!-- Recent Users -->
+
+<div class="mws-panel grid_4 mws-collapsible" id ="customer">
+            <div class="mws-panel-header">
+                <span class="mws-i-24 i-books-2">Recently Joined Customers</span>
+            </div>
+            <div class="mws-panel-body">
+                <ul class="mws-summary">
+                 <? $i=0; foreach($this->recentUsers1 as $user) { ?>
+                    <li>
+                    	<? if($user['user_status']=='1'){ ?>
+	                    <font class="label label-success" style="margin-top:8px;">Activated</font>
+                        <? } else { ?>
+                        <font class="label label-important" style="margin-top:8px;">Deactivated</font>
+                        <? } ?>
+                        <a style="text-decoration:none;color:#000;" href="<?=APPLICATION_URL_ADMIN?>users/edituser/userId/<?=$user['user_id']?>/uType/1"><span><img  src="<?=APPLICATION_URL?>image.php?image=<?=IMAGES_URL?><?=$user['image']?>&height=30&width=30" /></span> <?=$user['first_name'].' '.$user['last_name']?></a>
+                    </li>
+                    <? } ?>
+                </ul>
+            </div>
+    </div>
+    
+    <div class="mws-panel grid_4  mws-collapsible" id ="owner">
+            <div class="mws-panel-header">
+                <span class="mws-i-24 i-books-2">Recently Joined Owners</span>
+            </div>
+            <div class="mws-panel-body">
+                <ul class="mws-summary">
+                 <? foreach($this->recentUsers2 as $user) {  ?>
+                    <li>
+                    	<? if($user['user_status']=='1'){ ?>
+	                    <font class="label label-success" style="margin-top:8px;">Activated</font>
+                        <? } else { ?>
+                        <font class="label label-important" style="margin-top:8px;">Deactivated</font>
+                        <? } ?>
+                   <a style="text-decoration:none;color:#000;" href="<?=APPLICATION_URL_ADMIN?>users/edituser/userId/<?=$user['user_id']?>/uType/2" ><span><img  src="<?=APPLICATION_URL?>image.php?image=<?=IMAGES_URL?><?=$user['image']?$user['image']:"customer_pic.png"?>&height=30&width=30" /></span> <?=$user['first_name'].' '.$user['last_name']?></a>
+                    </li>
+                    <? } ?>
+                </ul>
+            </div>
+    </div>
+
+<div class="mws-panel grid_4  mws-collapsible" id ="property">
+            <div class="mws-panel-header">
+                <span class="mws-i-24 i-books-2">New Properties</span>
+            </div>
+            <div class="mws-panel-body">
+                <ul class="mws-summary">
+                 <? $i=0; foreach($this->pptyArr as $user) { if($i==10)break; ?>
+                    <li>
+                    	<? if($user['status']=='3'){ ?>
+	                    <font class="label label-success" style="margin-top:8px;">Activated</font>
+                        <? } else { ?>
+                        <font class="label label-important" style="margin-top:8px;">Deactivated</font>
+                        <? } ?>
+                       <a style="text-decoration:none;color:#000;" href="<?=APPLICATION_URL_ADMIN?>property/editproperty/pptyId/<?=$user['id']?>/step/0"><span><img  src="<?=APPLICATION_URL?>image.php?image=<?=IMAGES_URL?>property/<?=$user['image_name']?$user['image_name']:"generic.jpg"?>&height=30&width=30" /></span> <?=substr($user['property_title'],0,30)?></a>
+                    </li>
+                    <? } ?>
+                </ul>
+            </div>
+    </div>
+ 
+ 
+ <div class="mws-panel grid_4  mws-collapsible" id ="bookedproperty">
+            <div class="mws-panel-header">
+                <span class="mws-i-24 i-books-2">Recently Booked Properties</span>
+            </div>
+            <div class="mws-panel-body">
+                <ul class="mws-summary">
+                 <? $i=0; foreach($this->bookArr as $user) { if($i==10)break; ?>
+                    <li>
+                    	<? if($user['booking_type']=='0'){ ?>
+	                    <font class="label label-success" style="margin-top:8px;">Available</font>
+                        <? } else { ?>
+                        <font class="label label-important" style="margin-top:8px;">On Request</font>
+                        <? } ?>
+                        <a style="text-decoration:none;color:#000;" href="<?=APPLICATION_URL_ADMIN?>property/editproperty/pptyId/<?=$user['id']?>/step/0"><span><img  src="<?=APPLICATION_URL?>image.php?image=<?=IMAGES_URL?>property/<?=$user['image_name']?$user['image_name']:"generic.jpg"?>&height=30&width=30" /></span> <?=substr($user['property_title'],0,30)?></a>
+                    </li>
+                    <? } ?>
+                </ul>
+            </div>
+    </div>
+
+
+<div class="mws-panel grid_4  mws-collapsible" id ="review">
+            <div class="mws-panel-header">
+                <span class="mws-i-24 i-books-2">New Reviews & Comments</span>
+            </div>
+            <div class="mws-panel-body">
+                <ul class="mws-summary">
+                 <? $i=0; foreach($this->reviewArr as $user) { if($i==10)break; ?>
+                    <li>
+                        <a class="_link"  href="<?=APPLICATION_URL_ADMIN?>property/editreview/reviewId/<?=$user['review_id']?>"><img  src="<?=APPLICATION_URL?>image.php?image=<?=IMAGES_URL?>profile/<?=$user['guest_image']?$user['guest_image']:"customer_pic.png"?>&height=30&width=30" /></span> <?=substr($user['headline'],0,30)?></a>
+                   </li>
+                    <? } ?>
+                </ul>
+            </div>
+    </div>
+	
+
+    
+
+    
+    
+
+</div>

@@ -1,0 +1,163 @@
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-table-1"><?=$this->pageHeading?></span>
+    </div>
+
+    <div class="mws-panel-body">
+        <!--<table class="mws-table">-->
+         <table class="mws-datatable-fn mws-table">
+            <thead>
+                <tr>
+                    <th width="3%">S.No</th>
+                    <th width="2%"><input type="checkbox" name="deletebcchk" id="deletebcchk" onclick="return checkall(this)" /></th>
+                    <th width="3%">Property No.</th>
+                    <th width="10%">Property Type</th>
+                    <th width="30%">Property Title</th>
+                    <th width="10%">Date Deleted</th>
+                   	<th width="10%">Activate</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?
+                $i=0;
+				$j=1;
+                foreach($this->ResData as $row)
+                {
+                    $start++;$i++;
+                     
+					 
+					 if($row['is_spcl']==1){ $image ='tick.png';}
+
+ 	                 if($row['is_spcl']==0){ $image ='cross.png';  } 
+					 
+					 if($row['is_popular'] == 1){$image1 = 'tick.png';}
+					 if($row['is_popular'] == 0){$image1 = 'cross.png';}					 
+					 
+					 
+					 if($cClass=="gradeX odd")
+                        {$cClass="gradeX even";}
+                    else
+                        {$cClass="gradeX odd";}	
+                    ?>
+                        <tr class="gradeX">
+                            <td style="text-align:center"><?=$i;?></td>
+                            <td style="text-align:center">
+                             <input name='check<?=$j;?>' id='check<?=$j;?>' value='<?=$row['id'];?>' 
+                                    onchange='return check_check("bcdel","deletebcchk")' type='checkbox'>
+                                    
+                                <script> 
+                                    $(document).ready(function(){
+                                        $('#bcdel').html(''); 
+                                        document.getElementById('deletebcchk').checked = false;
+                                    });
+                                </script>
+                            </td>
+                            <td><?=$row['propertycode']?></td>
+                            <td><?=$row['ptyle_name']?></td>                            
+                            <td><?=$row['property_title']?></td>                            
+                             <td><?=$row['date_deleted']?></td>                            
+                                 <!--<td><a id='<?=$start;?>' onclick='changestatus("<?=$row['id'];?>","<?=$row['status'];?>")' href="javascript:void(0)" >
+                                    <img src="<?=APPLICATION_URL_ADMIN;?>css/icons/32/<?=$image;?>"    border='0' height="16" width="16" title='Change Status' alt='Change Status'>
+                                 </a></td>-->
+                            <td>
+                                <a id='<?=$start;?>' onclick='changepstatus("<?=$row['id'];?>")' href="javascript:void(0)" >
+                                      <img src="<?=APPLICATION_URL_ADMIN;?>css/icons/32/tick.png"  border='0' height="16" width="16" title='Change Status' alt='Change Status'>
+                                </a>
+                            </td>
+                           
+                        </tr>
+                    <?
+					$j++;
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>    	
+</div>
+<script>
+function deleteitem()
+{
+	var r= "";
+	var s="";
+	var selected=false;
+	for(var i=1;document.getElementById('check'+i);i++){
+		if(document.getElementById('check'+i).checked==true){	
+			r += document.getElementById('check'+i).value+"|";
+			selected = true;
+		}
+	}	
+	
+	r += '0';
+	if(selected){
+		var confirmation = confirm("Are you sure want to delete ?");
+		if(confirmation!=true){
+			return false;
+		}	
+	
+		$.ajax({ url: "<?=APPLICATION_URL_ADMIN."property/deleteproperty"?>",
+		type: "POST",
+		data: ({Id:r}),
+		success: function(data){			
+			
+			
+			alert('Selected records have been deleted successfully.');
+			
+		window.location.href=window.location.href;
+		}});
+	} else {
+		alert('Please choose a record to delete.');
+	}
+}
+
+
+function checkall(thisid)
+{
+  for(var i=1;document.getElementById('check'+i);i++)
+  	{
+  		if(document.getElementById(thisid.id).checked==true){document.getElementById('check'+i).checked = true;}
+  		if(document.getElementById(thisid.id).checked==false){document.getElementById('check'+i).checked = false;}
+	}	
+}
+
+function changestatus(Id,Status)
+{
+    $.ajax({ 
+				type: "POST", 
+				url: "<?=APPLICATION_URL_ADMIN?>property/changepptystatus", 
+				data: ({Id:Id,Status:Status}),
+				cache: false, 
+				success: function(data){				 
+				  window.location.href=window.location.href;
+			    }
+		  });
+}
+
+function changespclstatus(Id,Status)
+{
+
+
+    $.ajax({ 
+				type: "POST", 
+				url: "<?=APPLICATION_URL_ADMIN?>property/changespclstatus", 
+				data: ({Id:Id,Status:Status}),
+				cache: false, 
+				success: function(data){				 
+				  window.location.href=window.location.href;
+			    }
+		  });
+}
+
+function changepstatus(Id,Status)
+{
+	$.ajax({ 
+				type: "POST", 
+				url: "<?=APPLICATION_URL_ADMIN?>property/reactivate", 
+				data: ({Id:Id,Status:Status}),
+				cache: false, 
+				success: function(data){				 
+				  window.location.href=window.location.href;
+			    }
+		  });
+	
+}
+</script>

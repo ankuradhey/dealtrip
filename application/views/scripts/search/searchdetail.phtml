@@ -1,0 +1,1498 @@
+<?php
+    global $mySession;
+?>
+<script type="text/javascript" src="<?= JS_URL ?>jquery.easing.1.3.js"></script>
+<link href="<?= CSS_URL ?>bx_styles/bx_styles.css" rel="stylesheet" />
+<link href="<?= CSS_URL ?>style2.css" rel="stylesheet" />
+<script type="text/javascript" src="<?= JS_URL ?>jquery.bxslider.min.js"></script>
+<script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>js/jquery-ui.js"></script>
+<style>
+    /*.bxslider
+    {
+            transform:none !important;	
+    }
+    */
+    .bxslider li
+    {
+        width:128px !important;	
+    }
+    .mws-form-inline
+    {
+        display:inline !important;	
+    }
+</style>
+<?
+    if ($this->tab == '3')
+    {
+        ?>
+        <script type="text/javascript" src="<?= JS_URL ?>main.js"></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+        <?
+    }
+?>
+
+<script type="text/javascript">
+
+    dateFrom = {};
+
+    blockClass = "";
+
+    flag_book = 0;
+
+
+
+    $(document).ready(function(e) {
+
+
+
+
+        $("#check_in").datepicker({
+            maxDate: new Date()
+        });
+
+        var s = $('.bxslider').bxSlider({
+            autoControls: false,
+            adaptiveHeight: true,
+            pager: false,
+            controls: false,
+            infiniteLoop: false,
+            easing: 'ease-in-out'
+
+
+        });
+
+
+
+
+        $('#nexts').click(function() {
+
+            s.goToNextSlide();
+            return false;
+        });
+
+        $('#prevs').click(function() {
+
+            s.goToPrevSlide();
+            return false;
+        });
+
+        $(".pager").css("width", "90px");
+
+
+
+    });  //document.ready ends
+
+
+    function replyreview(id)
+    {
+        if ($("#mws-validate1").valid())
+        {
+            $.ajax({
+                type: 'POST',
+                url: '<?= APPLICATION_URL ?>myaccount/savereviewreply/ppty/<?= $this->ppty_id ?>',
+                async: false,
+                data: ({Comment: $("#response_" + id).val(), Id: id}),
+                success: function(data) {
+                    data = $.trim(data);
+                    window.location.href = window.location;
+                }
+            });
+        }
+
+        return false;
+    }
+
+
+    function checkreview()
+    {
+        if ($("#mws-validate").valid())
+        {
+
+            $.ajax({
+                type: 'POST',
+                url: '<?= APPLICATION_URL ?>search/savereview/ppty/<?= $this->ppty_id ?>',
+                async: false,
+                data: ({Check_in: $("#check_in").val(),
+                    Rating: $("#rating").val(),
+                    Headline: $("#headline").val(),
+                    Comment: $("#comment").val(),
+                    Review: $("#review").val()
+                }),
+                success: function(data) {
+                    data = $.trim(data);
+
+
+                    //window.location.href = window.location;
+                }
+            });
+
+
+
+        }
+    }
+
+
+
+    function bookNow()
+    {
+
+        if ($.trim($("#dateFrom").val()) != "" || $.trim($("#dateTo").val()) != "")
+        {
+            //checking for maximum number of members
+
+            if (parseInt($("#adults").val()) + parseInt($("#children").val()) > $('select#adults option:last').val())
+            {
+                alert("Members exceeded the limit");
+            }
+            else if ($("#adults").val() == 0 && $("#children").val() == 0)
+            {
+                alert("Please choose the number of members");
+
+            }
+            else
+                $("#booking").submit();
+
+
+
+        }
+        else
+        {
+            alert('Please choose the Check-in and Check-out dates');
+            return false;
+        }
+
+    }
+
+
+
+
+
+</script>
+
+<style type="text/css">
+    .pager{width:90px !important;}
+</style>
+
+<div class="pDetail-breadcrumb">
+    <?php
+        $breadCrumbArray = $this->breadCrumbArray;
+        $property_no = $this->propertyData[0]['propertycode'];
+        echo breadcrumb_trail($breadCrumbArray['country_name'], $breadCrumbArray['state_name'], $breadCrumbArray['city_name'], $breadCrumbArray['sub_area_name'], $breadCrumbArray['local_area_name'], $property_no);
+        echo breadcrumb_trail_text($breadCrumbArray['country_name'], $breadCrumbArray['state_name'], $breadCrumbArray['city_name'], $breadCrumbArray['sub_area_name'], $breadCrumbArray['local_area_name']);
+    ?>
+</div>
+
+<div class = "mContent">
+    <div class="aContent" align="left">
+        <span style="color:#fff"><h1 class="font-15">&nbsp;<?= substr($this->propertyData[0]['property_title'], 0, 500) ?>...</h1></span>
+    </div>
+    <ul class="customAttribs">
+        <?php
+            foreach($this->customAttrib as $custom){
+                ?>
+            <li><?php echo $custom['attribute_name']?:$custom['ans_custom_value']; ?></li>
+            <?php
+            }
+        ?>
+    </ul>
+    <div class="iContent" align="center">
+        <div class = 'imgContent' align="center"  <?= count($this->galleryData) > 0 ? "" : "style='height:475px;'" ?>> 
+            <?
+                if ($this->galleryData[0]['image_name'])
+                {
+                    if (is_special_offer($this->propertyData[0]['id']))
+                    {
+                        ?>
+                        <div style="position:absolute;margin-left: -5px;margin-top: -9px;" >
+                            <img src="<?= IMAGES_URL ?>offer.png" style="box-shadow:none;" width="70" height="70"/>
+                        </div>
+
+
+                        <?
+                    }
+                    ?>
+                    <img id = 'mImg' src = '<?= APPLICATION_URL ?>image.php?image=<?= IMAGES_URL ?>property/<?= $this->galleryData[0]['image_name'] ?>&height=350&width=440' >
+                    <div class="bx-caption">
+                        <span><?= $this->galleryData[0]['image_title'] ? $this->galleryData[0]['image_title'] : "No Caption Set" ?></span>
+                    </div>
+                    <?
+                }
+                else
+                {
+
+                    if (is_special_offer($this->propertyData[0]['id']))
+                    {
+                        ?>
+                        <div style="position:absolute;margin-left: -5px;margin-top: -9px;" >
+                            <img src="<?= IMAGES_URL ?>offer.png" style="box-shadow:none;" width="100" height="100"/>		 
+                        </div>	
+
+                        <?
+                    }
+                    ?>
+
+                    <img id = 'mImg' src = '<?= APPLICATION_URL ?>image.php?image=<?= IMAGES_URL ?>property/generic.jpg&height=475&width=440' >
+
+                    <?
+                }
+            ?>	
+        </div>
+
+        <?
+            if ($this->galleryData[0]['image_name']):
+                ?>   
+                <div class="previewImages" >
+                    <div class="previousSearch">
+                        <a href="#" id="prevs"><img src="<?= IMAGES_URL; ?>left_slide_arrwo.png" width="32" height="32"></a>
+                    </div>
+                    <div class="slider_images_list">
+                        <ul class="bxslider" >
+                            <?
+                            foreach ($this->galleryData as $values)
+                            {
+                                echo "<li><img src = '" . APPLICATION_URL . "image.php?image=" . IMAGES_URL . "property/" . $values['image_name'] . "&height=90&width=90' onmouseover = '$(&quot;#mImg&quot;).attr(&quot;src&quot;,this.src.replace(&quot;&height=90&width=90&quot;,&quot;&height=350&width=440&quot;)); $(&quot;.bx-caption&quot;).text(this.title)' title = '" . ($values['image_title'] ? $values['image_title'] : "No Caption set") . "'></li>";
+                            }
+                            ?>
+                        </ul>
+                    </div>
+                    <div class = "nextSearch">
+                        <a href="#" id="nexts"><img src="<?= IMAGES_URL; ?>right_slide_arrwo.png" width="32" height="32"></a>
+                    </div>
+
+                </div>
+                <?
+            endif;
+        ?>
+    </div>
+
+    <div class = "rContent">
+        <h4 class="floatL mgT10 green"><?= $this->propertyData[0]['ptyle_name'] ?></h4>
+        <!--<p style='float:right;margin-top:10px;border-bottom:#CCCCCC dotted 1px'>&nbsp;&nbsp;Property no:&nbsp;&nbsp;<span class = 'ppty_no'><?= $this->propertyData[0]['propertycode'] ?></span></p>-->
+        <span class="bedroomDetail" style="width: auto;float: right;" >  <?= $this->propertyData[0]['bedrooms']; ?> Bed <?= $this->propertyData[0]['bathrooms']; ?> Bath - Sleeps <?= $this->propertyData[0]['maximum_occupancy']; ?></span>	
+        <h3 class = 'desc seo-header-tag' style="padding:10px;font-size:16px;">
+            <?= $this->propertyData[0]['brief_desc'] ?>
+        </h3>
+        <?php
+            if ($this->propertyData[0]['is_insured'] == '1')
+            {
+                ?>
+                <h4 class="floatL mgT10 green" style="width: 100%;">Accidental Property Protection Home Insurance Included</h4>
+                <?php
+            }
+        ?>
+
+        <div class = 'rytPrview' >
+
+            <div class="one_line">
+                <span class="floatL"><?= rating_views($this->propertyData[0]['star_rating'], 'star_ranks'); ?></span>
+                <div class="search_price floatR bold" ><strong>From &pound;<?
+        $rate = explode('.', $this->prate);
+        echo $rate[0]
+        ?> for <?= ceil($this->nights) ?> nights</strong></div>
+            </div>	            
+
+            <div class="one_line">
+                <span class="floatL">Calendar Accuracy: </span>
+                <div class="floatR">
+                    <?php
+                        if ($this->propertyData[0]['cal_default'] == '1')
+                        {
+                            ?>
+                            Availability is '<a href="#" class="mws-tooltip-n" title="Contact us to check availability">On Request</a>'
+                            <?php
+                        }
+                        elseif ($this->propertyData[0]['xml_subscriber_id'] > 0 || $this->propertyData[0]['user_id'] == '11')
+                        {
+                            ?>
+                            100% - Updated '<a href="#" class="mws-tooltip-n" title="Instant Online Booking with Payment Protection">Live</a>'
+                            <?php
+                        }
+                        else
+                        {
+                            ?>
+                            Date of last update (
+                            <?php
+                            if (!empty($this->propertyData[0]['date_calendar_modified']))
+                                echo date('d F Y', strtotime($this->propertyData[0]['date_calendar_modified']));
+                            else
+                                echo date('d F Y', strtotime($this->propertyData[0]['date_added']));
+                            ?>
+                            )
+                            <?php
+                        }
+                    ?>
+                </div>
+            </div>
+
+            <div class="one_line review-text-color">   
+                Reviews (<span class = 'green'><?= review_count($this->propertyData[0]['id']) ?></span>) 
+                <?php
+                    $avg_customer_rating = avg_customer_rating($this->propertyData[0]['id']);
+                    if ($avg_customer_rating != '0/10')
+                    {
+                        ?>
+                        <span class = "crating" style="width:auto;padding:0">Customer Rating: <span class = 'yellow'><?= $avg_customer_rating; ?></span> </span>	  
+                        <?php
+                    }
+                ?>
+            </div>			
+
+            <!--            <div class="one_line">   
+                            <span class="floatL review-text-color">Online Booking Status:</span> 
+                            <div  class="floatR" style="background-color:#0274D3;color:#fff;"><span class="floatL mws-tooltip-e" style="padding: 5px;" title="<?= cal_availability($this->propertyData[0]['id'], 1) ?>">Book Now</span>
+            <?= cal_availability($this->propertyData[0]['id'], 0) == '2' ? '<img style="padding-top: 5px;" class = "floatL" src="' . IMAGES_URL . 'check_available.png" width="25" height="22">' : '<img style="padding-top: 5px;" class = "floatL" src="' . IMAGES_URL . 'question-balloon_yellow.png" width="25" height="22">' ?>
+                            </div>	  
+                        </div>				-->
+
+        </div>
+
+        <div class="propertButtons">
+            <div class="detailBtn">
+                <div class = 'btn floatR mws-tooltip-e' align="center"><a rel="nofollow" href="<?= APPLICATION_URL ?>booking/index/ppty/<?= $this->propertyData[0]['id'] ?>/step/1/datefrom/<?= $this->Datefrom ?>/dateto/<?= $this->Datefrom ? (dateDiff($this->Datefrom, $this->dateto) + 1) : 7 ?>" class="BookPropertyButton"><span class="floatL">Book Now</span><?= cal_availability($this->propertyData[0]['id'], 0) == '2' ? '<img class = "floatL" src="' . IMAGES_URL . 'check_available.png" width="25" height="22">' : '<img class = "floatL" src="' . IMAGES_URL . 'question-balloon_yellow.png" width="25" height="22">' ?></a></div>
+            </div>
+
+            <div class="new-green-gradient-btn">
+                <a href="<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?> <?= $this->propertyData[0]['bedrooms'] . "-Beds-" . $this->propertyData[0]['bathrooms'] . "-Bath-" . $this->propertyData[0]['ptyle_name'] . "/" ?><?= $this->propertyData[0]['propertycode'] ?>/rental/<?= ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto) : '') ?>#reach" >Check Prices</a>
+            </div>
+            <div class="detailBtn">
+                <div class = 'btn floatR mws-tooltip-e' align="center"><a href="<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?> " class="BookPropertyButton"><span class="floatL" style="height:22px;">Location Info</span></a></div>
+            </div>
+            <div class="new-green-gradient-btn">
+                <a href="<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?> <?= $this->propertyData[0]['bedrooms'] . "-Beds-" . $this->propertyData[0]['bathrooms'] . "-Bath-" . $this->propertyData[0]['ptyle_name'] . "/" ?><?= $this->propertyData[0]['propertycode'] ?>/availability/<?= ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto) : '') ?>#reach" >Check Availability</a>
+            </div>
+        </div>
+
+
+        <!--
+                <div class="bookBtn">
+                    <div class = 'bookNow' align="center"><a href="<?= APPLICATION_URL ?>booking/index/ppty/<?= $this->propertyData[0]['id'] ?>/step/1/datefrom/<?= $this->Datefrom ?>/dateto/<?= $this->Datefrom ? (dateDiff($this->Datefrom, $this->dateto) + 1) : 7 ?>" class="BookPropertyButton"><span class="floatL">Book Now</span><?= cal_availability($this->propertyData[0]['id'], 0) == '2' ? '<img class = "floatL" src="' . IMAGES_URL . 'check_available.png" width="25" height="22">' : '<img class = "floatL" src="' . IMAGES_URL . 'question-balloon_yellow.png" width="25" height="22">' ?></a></div>
+                    <div class = 'checkPrices' align="center"><a href="<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?> <?= $this->propertyData[0]['bedrooms'] . " Beds " . $this->propertyData[0]['bathrooms'] . " Bath " . $this->propertyData[0]['ptyle_name'] . "/" ?><?= $this->propertyData[0]['propertycode'] ?>/rental/<?= ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto) : '') ?>#reach" >Check Prices</a></div>
+                    <div class = 'checkAvailability' align="center"><a href="<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?> <?= $this->propertyData[0]['bedrooms'] . " Beds " . $this->propertyData[0]['bathrooms'] . " Bath " . $this->propertyData[0]['ptyle_name'] . "/" ?><?= $this->propertyData[0]['propertycode'] ?>/availability/<?= ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto) : '') ?>#reach" >Check Availability</a></div>
+                </div>	-->
+
+        <div class = "mrytPrview">
+
+
+        </div>
+
+        <div style="clear: both;float: right;padding-top: 22px;">
+            <!-- AddThis Button BEGIN -->
+            <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+                <a class="addthis_button_facebook"></a>
+                <a class="addthis_button_twitter"></a>
+                <a class="addthis_button_pinterest_share"></a>
+                <a class="addthis_button_google_plusone_share"></a>
+                <a class="addthis_button_email"></a>
+                <a class="addthis_button_compact"></a><a class="addthis_counter addthis_bubble_style"></a>
+            </div>
+            <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-525124772e13082f"></script>
+            <!-- AddThis Button END -->
+        </div>
+
+
+    </div>
+</div>
+
+<div id = "reach" class="clear" name = "reach"></div>
+<? ?>
+
+<div class = "mContent_blw_result">
+    <div id = "property-nav_result">
+        <ul>
+            <li id = "ppty_tab_1" <?= $this->ppty_tab1 ?>><a href = "<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?><?= $this->propertyData[0]['bedrooms'] . "-Beds-" . $this->propertyData[0]['bathrooms'] . "-Bath-" . $this->propertyData[0]['ptyle_url']; ?>/<?= $this->propertyData[0]['propertycode'] ?>/overview/<?= ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto) : '') ?>#reach">Overview(Home)</a></li>
+            <li id = "ppty_tab_2" <?= $this->ppty_tab2 ?>><a href = "<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?><?= $this->propertyData[0]['bedrooms'] . "-Beds-" . $this->propertyData[0]['bathrooms'] . "-Bath-" . $this->propertyData[0]['ptyle_url']; ?>/<?= $this->propertyData[0]['propertycode'] ?>/specification/<?= ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto) : '') ?>#reach" >Property Specfication</a></li>            
+            <li id = "ppty_tab_3" <?= $this->ppty_tab3 ?> ><a href = "<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?><?= $this->propertyData[0]['bedrooms'] . "-Beds-" . $this->propertyData[0]['bathrooms'] . "-Bath-" . $this->propertyData[0]['ptyle_url']; ?>/<?= $this->propertyData[0]['propertycode'] ?>/location/<?= ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto) : '') ?>#reach" onclick="show_location();">Location</a></li>
+            <li id = "ppty_tab_4" <?= $this->ppty_tab4 ?>><a href = "<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?><?= $this->propertyData[0]['bedrooms'] . "-Beds-" . $this->propertyData[0]['bathrooms'] . "-Bath-" . $this->propertyData[0]['ptyle_url']; ?>/<?= $this->propertyData[0]['propertycode'] ?>/availability/<?= ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto) : '') ?>#reach" >Availability Calendar</a></li>            
+            <li id = "ppty_tab_5" <?= $this->ppty_tab5 ?>><a href = "<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?><?= $this->propertyData[0]['bedrooms'] . "-Beds-" . $this->propertyData[0]['bathrooms'] . "-Bath-" . $this->propertyData[0]['ptyle_url']; ?>/<?= $this->propertyData[0]['propertycode'] ?>/rental/<?= ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto) : '') ?>#reach" >Rental Rates</a></li>            
+            <li id = "ppty_tab_6" <?= $this->ppty_tab6 ?>><a href = "<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?><?= $this->propertyData[0]['bedrooms'] . "-Beds-" . $this->propertyData[0]['bathrooms'] . "-Bath-" . $this->propertyData[0]['ptyle_url']; ?>/<?= $this->propertyData[0]['propertycode'] ?>/photo-gallery/<?= ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto) : '') ?>#reach" >Photo Gallery</a></li>            
+            <li id = "ppty_tab_7" <?= $this->ppty_tab7 ?>><a href = "<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?><?= $this->propertyData[0]['bedrooms'] . "-Beds-" . $this->propertyData[0]['bathrooms'] . "-Bath-" . $this->propertyData[0]['ptyle_url']; ?>/<?= $this->propertyData[0]['propertycode'] ?>/reviews/<?= ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto) : '') ?>#reach">Reviews</a></li>
+            <li id = "ppty_tab_8" <?= $this->ppty_tab8 ?>><a href = "<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?><?= $this->propertyData[0]['bedrooms'] . "-Beds-" . $this->propertyData[0]['bathrooms'] . "-Bath-" . $this->propertyData[0]['ptyle_url']; ?>/<?= $this->propertyData[0]['propertycode'] ?>/question/<?= ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto) : '') ?>#reach">Ask a Question</a></li>
+
+        </ul>
+
+
+
+    </div>
+</div>	
+<div id = "ppty_tabs" style="float:left;width:100%;">
+    <?
+        if ($this->tab == '1')
+        {
+            ?>
+                    <p style="padding: 10px 18px;"><?= substr($this->propertyData[0]['property_title'], 0, 500) ?>...</p>
+
+            <div class="propertyOverviewTab">
+
+                <div class = "typeProperty"><!-- row 1 starts(Destination Levels)-->
+                    <div class = "property-overview-row-frame">
+
+                        <div class="property-overview-row-title">
+                            Location of Property
+                        </div>
+
+                        <div class="property-overview-row-info">
+                            <h3 class="seo-header-tag" style="font-size:16px;"><ul>
+                                <li>
+                                    <span id="PropertyTypeLabel">
+                                        <?
+                                        if ($this->propertyData[0]['local_area_name'])
+                                            echo $this->propertyData[0]['local_area_name'] . "&nbsp;&raquo;&nbsp;";
+                                        if ($this->propertyData[0]['sub_area_name'])
+                                            echo $this->propertyData[0]['sub_area_name'] . "&nbsp;&raquo;&nbsp;";
+                                        if ($this->propertyData[0]['city_name'])
+                                            echo $this->propertyData[0]['city_name'] . "&nbsp;&raquo;&nbsp;";
+                                        if ($this->propertyData[0]['state_name'])
+                                            echo $this->propertyData[0]['state_name'] . "&nbsp;&raquo;&nbsp;";
+                                        echo $this->propertyData[0]['country_name'];
+                                        ?>
+                                    </span>
+                                </li>
+                            </ul>
+                            </h3>
+                        </div>
+
+                    </div>
+
+                </div><!-- row 1 ends -->
+
+                <div class = "typeProperty"><!-- row 2 starts(type of property)-->
+                    <div class = "property-overview-row-frame">
+
+                        <div class="property-overview-row-title">
+                            Size of Property
+                        </div>
+
+                        <div class="property-overview-row-info">
+                            <ul  class="amenities" style="list-style-type:disc;">
+                                <li class="first">
+                                    <span id="PropertyTypeLabel"><?= $this->propertyData[0]['bedrooms'] . " " . "Bedrooms" ?></span>
+                                </li>
+                                <li>
+                                    <span id="PropertyTypeLabel"><?= $this->propertyData[0]['bathrooms'] . " " . "Bathrooms" ?></span>
+                                </li>
+                                <li >
+                                    <span id="PropertyTypeLabel"><?= $this->propertyData[0]['en_bedrooms'] . " " . "En-Suite Bathrooms " ?></span>
+                                </li>                        
+                                <li>
+                                    <span id="PropertyTypeLabel"><?= "Sleeps up to " . $this->propertyData[0]['maximum_occupancy'] ?></span>
+                                </li>                                                  
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div><!-- row 2 ends -->
+
+
+
+
+
+                <div class = "typeProperty"><!-- row 3 starts(type of property)-->
+                    <div class = "property-overview-row-frame">
+
+                        <div class="property-overview-row-title">
+                            Type of Property
+                        </div>
+
+                        <div class="property-overview-row-info">
+                            <ul>
+                                <li>
+                                    <span id="PropertyTypeLabel"><?= $this->propertyData[0]['ptyle_name'] ?></span>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div><!-- row 3 ends -->
+
+
+                <div class = "typeProperty"><!-- row 4 starts(type of property)-->
+                    <div class = "property-overview-row-frame">
+
+                        <div class="property-overview-row-title">
+                            The Property
+                        </div>
+
+                        <div class="property-overview-row-info">
+                            <ul>
+                                <li>
+                                    <span id="PropertyTypeLabel"><?= $this->propertyData[0]['property_title'] ?></span>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div><!-- row 4 ends -->
+
+                <div class = "typeProperty"><!-- row 5 starts(property summary)-->
+                    <div class = "property-overview-row-frame">
+
+                        <div class="property-overview-row-title">
+                            Property Description
+                        </div>
+
+                        <div class="property-overview-row-info">
+                            <ul>
+                                <li>
+                                    <span id="PropertyTypeLabel"><?= $this->propertyData[0]['brief_desc'] ?></span>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div><!-- row 5 ends -->
+
+
+                <div class = "typeProperty"><!-- row 6 starts(short description)-->
+                    <div class = "property-overview-row-frame">
+
+                        <div class="property-overview-row-title">
+                            The Location
+                        </div>
+
+                        <div class="property-overview-row-info">
+                            <ul>
+                                <li>
+                                    <span id="PropertyTypeLabel"><?= nl2br($this->propertyData[0]['big_desc']) ?></span>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div><!-- row 6 ends -->
+
+
+
+
+
+
+                <div class = "typeProperty"><!-- row 4 starts(Amenities starts)-->
+                    <div class = "property-overview-row-frame">
+
+                        <div class="property-overview-row-title">
+                            On-Site Features & Leisure Amenities
+                        </div>
+
+                        <div class="property-overview-row-info">
+                            <ul class = "amenities">
+
+                                <?
+                                foreach ($this->amenityData as $values)
+                                {
+                                    echo "<li>" . $values['title'] . "</li>";
+                                }
+                                ?>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div><!-- row 4 ends -->
+
+            </div>
+            <?
+        }
+        if ($this->tab == '2')
+        {
+            ?>
+
+
+            <?
+            $heading = "";
+            $counter = count($this->specArr);
+            ?>
+            <p style="padding: 10px 18px;"><?= substr($this->propertyData[0]['property_title'], 0, 500) ?>...</p>
+            <?php
+            if (count($this->specArr) == 0)
+            {
+                echo '<div class="propertyOverviewTab">';
+                echo "<center>No Property Specification Found</center>";
+                echo '</div>';
+            }
+
+            foreach ($this->specArr as $keys => $values)
+            {
+
+                /* $counter--;	
+
+                  if($values['question'] != $heading)
+                  {
+
+
+                  if($heading != "" )
+                  {
+
+                  echo "</ul></div></div></div>";
+                  }
+                 */
+
+                if ($keys != 0 && count($values['answer'][0]) > 0)
+                {
+                    echo '</div><div id = "ppty_tabs" style="float:left;width:100%;margin-top:10px;">';
+                    echo "<label class = 'cat_head' >" . $values['category'] . "</label>";
+                }
+                ?>		
+
+                <div class="propertyOverviewTab">
+                    <div class = "typeProperty"><!-- row 1 starts(short description)-->
+                        <?
+                        for ($k = 0, $n = 0; $k < count($values['ques']); $k++):
+                            if (isset($values['answer'][$k]))
+                            {
+                                ++$n;
+                                if ($n < count($values['ques']))
+                                    $border_class = "class='property-overview-row-frame'";
+                                else
+                                    $border_class = "class='property-overview-row-frame-no'";
+
+                                $new_count = count($values['answer']);
+                                if ($k == ($new_count - 1))
+                                    $border_class = "class='property-overview-row-frame-no'";
+
+                                if ($values['ticklist'][$k] == '0')
+                                    $ul_style = "";
+                                else
+                                    $ul_style = "class='amenities'";
+                                ?>
+
+                                <div <?= $border_class ?>>
+
+                                    <div class="property-overview-row-title">
+                                        <span class="spec_ques"><?= $values['ques'][$k] ?></span>
+                                    </div>
+
+                                    <div class="property-overview-row-info">
+
+
+
+                                        <ul <?= $ul_style ?>>
+                                            <?
+                                            for ($t = 0; $t < count($values['answer'][$k]); $t++)
+                                            {
+                                                ?>
+                                                <li>
+                                                    <span id="PropertyTypeLabel"><?= $values['answer'][$k][$t] ?></span>
+                                                </li>
+                                                <?
+                                            }
+                                            ?>
+
+                                        </ul>
+                                    </div>
+
+                                </div>
+                                <?
+                            }
+                        endfor;
+                        ?>         
+                    </div>           
+
+
+                </div>
+
+                <?
+                /* 		if($counter == 0)
+                  echo "</ul></div></div></div>";
+
+                  }
+                  else
+                  {
+
+                  ?>
+                  <li>
+                  <span id="PropertyTypeLabel"><?=$values['option']?></span>
+                  </li>
+
+                  <?
+
+                  if($counter == 0)
+                  echo "</ul></div></div></div>";
+
+
+                  } // end else condition
+
+                  $heading = $values['question']; */
+            }// end foreach
+            ?>
+
+            <?
+        }//end tab 2
+
+
+        if ($this->tab == '3')
+        {
+            ?>
+
+
+
+            <div class = "ppty_location" style="display:none;">
+                <div class="mws-form-item large"><input type="hidden" name="latitude" id = "latitude" value = "<?= $this->propertyData[0]['cletitude'] ?>"/><input type="hidden" name = "longitude" id ="longitude" value = "<?= $this->propertyData[0]['clongitude'] ?>"/></div>
+            </div>
+            <p style="padding: 10px 18px;"><?= substr($this->propertyData[0]['property_title'], 0, 500) ?>...</p>
+            <div id="map_canvas" style="width:96%;margin: auto;" align="center"></div>
+            <!--<br />-->  
+            <p style="margin-bottom: 5%;padding: 0 18px;">Please note the location marker displayed on the map is approximate.</p>
+
+
+
+
+            <!-- checkboxes for point of interests -->
+            <span style="font-weight:bold; padding-left:25px">Check boxes to view local points of interest and services</span>
+            <div class = "check_bx">
+
+
+                <!-- transport checkbox -->
+                <div class = "checkbox_block">
+                    <input type="checkbox" name="transport"  id = "transport"/><label for="transport" style="padding-left:15px">Transport</label>
+
+                    <div style="margin-left:200px;">
+                        <img src="http://maps.gstatic.com/mapfiles/place_api/icons/airport-71.png" height="20" width="20"/>
+                        <img src="http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png" height="20" width="20"/>
+                        <img src="http://maps.gstatic.com/mapfiles/place_api/icons/travel_agent-71.png" height="20" width="20"/>
+                    </div>
+
+                </div>
+
+                <!-- bars and restaurants checkbox -->
+                <div class = "checkbox_block">
+                    <input type="checkbox" name="bars"  id = "bars"/><label for="bars" style="padding-left:15px">Bars and restaurants</label>
+
+                    <div style="margin-left:200px;">
+                        <img src="http://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png" height="20" width="20" />
+                        <img src="http://maps.gstatic.com/mapfiles/place_api/icons/restaurant-71.png" height="20" width="20" />
+                        <img src="http://maps.gstatic.com/mapfiles/place_api/icons/bar-71.png" height="20" width="20" />
+
+                    </div>
+
+                </div>
+
+                <!-- Tourist Attraction checkbox -->
+                <div class = "checkbox_block">
+                    <input type="checkbox" name="tourist"  id = "tourist"/><label for="tourist" style="padding-left:15px">Tourist Attractions </label>
+
+                    <div style="margin-left:200px;">
+                        <img src="http://maps.gstatic.com/mapfiles/place_api/icons/museum-71.png" height="20" width="20" />
+                        <img src="http://maps.gstatic.com/mapfiles/place_api/icons/art_gallery-71.png" height="20" width="20" />
+                        <img src="http://maps.gstatic.com/mapfiles/place_api/icons/camping-71.png" height="20" width="20" />
+                    </div>
+
+                </div>
+
+                <!-- shopping -->
+                <div class = "checkbox_block">
+                    <input type="checkbox" name="shopping"  id = "shopping"/><label for="shopping" style="padding-left:15px">Shopping</label>
+
+                    <div style="margin-left:200px;">
+                        <img src="http://maps.gstatic.com/mapfiles/place_api/icons/shopping-71.png" height="20" width="20" />
+                        <img src="http://maps.gstatic.com/mapfiles/place_api/icons/jewelry-71.png" height="20" width="20" />
+                        <img src="http://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png" height="20" width="20" />
+                        <img src="http://maps.gstatic.com/mapfiles/place_api/icons/electronics-71.png" height="20" width="20" />
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class = "typeProperty"><!-- row 2 starts(type of property)-->
+                <div class = "property-overview-row-frame">
+
+                    <div class="property-overview-row-title">
+                        Nearest Airport 1:
+                    </div>
+
+                    <div class="property-overview-row-info">
+                        <ul>
+                            <li>
+                                <span id="PropertyTypeLabel"><?= $this->propertyData[0]['airport1'] ?></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!-- row 2 ends --> 
+
+
+            <div class = "typeProperty"><!-- row 2 starts(type of property)-->
+                <div class = "property-overview-row-frame">
+
+                    <div class="property-overview-row-title">
+                        Distance from the Property(Miles):
+                    </div>
+
+                    <div class="property-overview-row-info">
+                        <ul>
+                            <li>
+                                <span id="PropertyTypeLabel"><?= $this->propertyData[0]['distance_airport1'] ?></span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div><!-- row 2 ends -->  
+
+            <div class = "typeProperty"><!-- row 3 starts-->
+                <div class = "property-overview-row-frame">
+
+                    <div class="property-overview-row-title">
+                        Nearest Airport 2:
+                    </div>
+
+                    <div class="property-overview-row-info">
+                        <ul>
+                            <li>
+                                <span id="PropertyTypeLabel"><?= $this->propertyData[0]['airport2'] ?></span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div><!-- row 2 ends -->  
+
+
+            <div class = "typeProperty"><!-- row 3 starts-->
+                <div class = "property-overview-row-frame">
+
+                    <div class="property-overview-row-title">
+                        Distance from the Property(Miles):
+                    </div>
+
+                    <div class="property-overview-row-info">
+                        <ul>
+                            <li>
+                                <span id="PropertyTypeLabel"><?= $this->propertyData[0]['distance_airport2'] ?></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div><!-- row 2 ends -->    
+
+
+
+
+
+
+
+
+
+
+
+            <?
+        }
+        if ($this->tab == '4')
+        {
+            ?>	
+            <p style="padding: 10px 18px;"><?= substr($this->propertyData[0]['property_title'], 0, 500) ?>...</p>
+            <?
+            //$curr_url = APPLICATION_URL."property/preview/".;
+            //echo 
+            
+            if ($this->nexts == '1')
+            {
+                //$prevurl = APPLICATION_URL."search/searchdetail/ppty/".$this->ppty_id."/property/".$this->property."/cal/0#reach";
+                $prevurl = APPLICATION_URL . "holiday-rentals/" . $this->propertyData[0]['country_name'] . "/" . $this->propertyData[0]['state_name'] . "/" . $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') . $this->propertyData[0]['bedrooms'] . " Beds " . $this->propertyData[0]['bathrooms'] . " Bath " . $this->propertyData[0]['ptyle_name'] . "/" . $this->propertyData[0]['propertycode'] . "/availability/" . ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto . '&cal=1') : '?cal=0') . "#reach";
+                $nexturl = "javascript:void(0)";
+                $nextText = "Previous";
+                $current_year = date('Y') + 1;
+                $current_mnth = $mnth_display = date('m');
+                $next_style = "style = 'width:86%;'";
+            }
+            else
+            {
+                $prevurl = "javascript:void(0)";
+                //$nexturl = APPLICATION_URL."search/searchdetail/ppty/".$this->ppty_id."/property/".$this->property."/cal/1#reach";
+                $nexturl = APPLICATION_URL . "holiday-rentals/" . $this->propertyData[0]['country_name'] . "/" . $this->propertyData[0]['state_name'] . "/" . $this->propertyData[0]['city_name'] . "/" . ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') . $this->propertyData[0]['bedrooms'] . " Beds " . $this->propertyData[0]['bathrooms'] . " Bath " . $this->propertyData[0]['ptyle_name'] . "/" . $this->propertyData[0]['propertycode'] . "/availability/" . ($this->Datefrom ? ('?datefrom=' . $this->Datefrom . '&dateto=' . $this->dateto . '&cal=1') : '?cal=1') . "#reach";
+                $nextText = "Next";
+                $current_year = date('Y');
+                $current_mnth = $mnth_display = date('m');
+                $next_style = "style = 'margin-bottom:20px;width:86%'";
+                $next_btn = "style = 'float:right'";
+            }
+
+            $week = array('S', 'M', 'T', 'W', 'T', 'F', 'S');
+            ?>
+
+
+
+            <p style="margin:10px;">
+                <span style="float:left;font-weight:bold;">Colour Codes:&nbsp;</span>
+            <div style="height:20px;width:20px;background-color:#99CCFF;float:left;">
+            </div>	<label style='float:left;margin:0 10px;'>Available</label>
+            <div style="height:20px;width:20px;background-color:yellow;float:left;">
+            </div>	<label style='float:left;margin:0 10px;'>On Request</label>
+            <div style="height:20px;width:20px;background-color:#CC3300;float:left;">
+            </div>	<label style='float:left;margin:0 10px;'>Booked</label><br />
+        </p>
+        <br />
+
+        <div class = 'cal_Tab' style="width:100%;">
+
+            <div>
+                <div class = 'calPrev' >
+                    <a href = "<?= $prevurl ?>"><input class="mws-button black small" type="button" value="Prev"></a>	
+                </div>
+
+                <div class = 'calNext'>
+                    <a href = "<?= $nexturl ?>" style="float:right;"><input class="mws-button black small" type="button" value="Next"></a>	
+                </div>
+
+            </div>
+
+            <br />
+            <br />
+
+
+            <?
+            for ($t = 1; $t <= 12; $t++) /*             * *main loop* */
+            {
+                ?>    
+
+
+                <div class = 'calendar_box' id = "<?= $t ?>"><!-- first calendar box-->
+                    <div class = 'calendar_head'>
+                        <label><?= date('F Y', mktime(0, 0, 0, $current_mnth, 1, $current_year)) ?></label>
+                    </div>	
+                    <?
+                    for ($w = 0; $w < 7; $w++)
+                    {
+                        ?>	
+                        <div class = 'week_block' align="center"><!--smaller blocks of week-->
+                            <label><?= $week[$w] ?></label>
+                        </div>
+                        <?
+                    }
+                    //if($t == 10)
+                    //echo date('w',mktime(0, 0, 0, $current_mnth,1,$current_year)); 
+                    for ($i = 0, $k = 1; $i < 42; $i++)
+                    {
+                        $block_class = 'date_block';
+
+                        if ($this->propertyData[0]['cal_default'] == '0')
+                            $block_class = 'date_block3';
+                        if ($this->cal_default == '1')
+                            $block_class = 'date_block2';
+
+                        for ($s = 0; $s < count($this->calArr); $s++)
+                        {
+
+
+                            //checking from database that if user has specified the status of the dates
+                            if (date('Y-m-d', strtotime($current_year . "-" . $current_mnth . "-" . $k)) >= date('Y-m-d', strtotime($this->calArr[$s]['date_from'])) && date('Y-m-d', strtotime($current_year . "-" . $current_mnth . "-" . $k)) <= date('Y-m-d', strtotime($this->calArr[$s]['date_to'])) && $i >= date('w', mktime(0, 0, 0, $current_mnth, 1, $current_year)) && $k <= date('t', mktime(0, 0, 0, $current_mnth, 1, $current_year)))
+                            {
+
+                                switch ($this->calArr[$s]['cal_status'])
+                                {
+
+                                    case '0': $block_class = 'date_block1';
+                                        break;
+                                    case '1': $block_class = 'date_block2';
+                                        break;
+                                    case '2': $block_class = 'date_block3';
+                                        break;
+                                }
+                            }
+                        }
+                        ?>			 	
+                        <?
+                        if ($i < date('w', mktime(0, 0, 0, $current_mnth, 1, $current_year)) || $k > date('t', mktime(0, 0, 0, $current_mnth, 1, $current_year)))
+                        {
+                            echo "<div class = 'week_blocks' id = 'c" . $current_mnth . "/" . $k . "/" . $current_year . "' align='center'>";
+                            echo "&nbsp";
+                        }
+                        else
+                        {
+
+                            if ($current_mnth == date('m') && $current_year == date('Y') && $k <= date('d'))
+                            {
+                                echo "<div class = 'week_blocks' id = 'c" . $current_mnth . "/" . $k . "/" . $current_year . "' align='center'>";
+                                echo $k;
+                                $k++;
+                            }
+                            else
+                            {
+
+                                echo "<div class = '$block_class' id = 'c" . $current_mnth . "/" . $k . "/" . $current_year . "' align='center'>";
+                                echo $k;
+                                $k++;
+                            }
+                        }
+                        ?>
+
+                    </div>			
+                    <?
+                }
+                ?>
+
+            </div><!-- first calendar box ends-->
+            <!-- CHECKING IF THE DISPLAYED MONTH WAS THE LAST MONTH OR NOT -->
+            <?
+            if ($current_mnth == 12)
+            {
+                $current_mnth = 1;
+                $current_year = $current_year + 1;
+            }
+            else
+                $current_mnth++;
+        }
+
+
+        /*         * *main loop ends * */
+        ?>
+
+
+
+
+        </div><!-- cal tab ends--> 
+
+
+
+        <!-- <div id="ryt_calTab">
+                                    <fieldset id="fsPartySize">
+                                       
+                                       <form name = "booking" id = "booking" action="<?= APPLICATION_URL ?>booking/index/ppty/<?= $this->ppty_id ?>" method="post">
+                                        <legend></legend>
+                                        <label>
+                                            Adults
+                                        </label>
+                                        <select name="adults" id="adults">
+                                            <option>0</option>
+        <?
+        for ($i = 1; $i <= $this->propertyData[0]['maximum_occupancy']; $i++)
+        {
+            echo "<option>" . $i . "</option>";
+        }
+        ?>     </select>
+                                         <br class="clear">
+                                        
+                                        <label>
+                                            Children<br>(Age 3-16)
+                                        </label>
+                                        
+                                        <select name="children" id="children">
+                                            <option>0</option>                                    	
+        <?
+        for ($i = 1; $i <= $this->propertyData[0]['maximum_occupancy']; $i++)
+        {
+            echo "<option>" . $i . "</option>";
+        }
+        ?>       
+                                         </select>
+                                         
+                                        <br class="clear">
+                                        
+                                        <label>
+                                            Infants<br>(Age 0-2)</label>
+                                        <select name="infants" id="infants">
+                                            <option>0</option>                                    
+        <?
+        for ($i = 1; $i <= $this->propertyData[0]['maximum_occupancy']; $i++)
+        {
+            echo "<option>" . $i . "</option>";
+        }
+        ?>
+                                        </select><br class="clear">
+                                        <br>
+                                    </fieldset>
+                                    The maximum party size is: <span id="MaxPartySize"><?= $this->propertyData[0]['maximum_occupancy'] ?></span>
+                                    <div title="Please use the calendar to select your start and end dates" class="section" id="checkInDate">
+                                        Check in:<br>
+                                        <span class="highlight" id="firstSelectedDate">
+                                            Please use calendar</span>
+                                    </div>
+                                    <div title="Please use the calendar to select your start and end dates" class="section" id="CheckoutDate">
+                                        Check out:<br>
+                                        <span class="highlight" id="secondSelectedDate">Please use calendar</span>
+                                    </div>
+                                    <div class="section">
+                                        Nights:<br>
+                                        <span class="highlight" id="nightsStay"></span>
+                                    </div>
+                                    <div style="display: none" class="section">
+                                        Party Size:<br>
+                                        <span class="highlight" id="partySize">Please select using calendar</span>
+                                    </div>
+                                  
+                                    <div id="currencyTextLiteral">
+                                    </div>
+                                   
+                                    <input type="hidden" name = "calNow" id ="calNow"  value="<?= $this->nexts ?>"/><br />
+
+                                    <input type="hidden" name = "dateFrom" id ="dateFrom"  value = ""/><br />
+
+                                    <input type="hidden" name = "dateTo" id ="dateTo" value = ""/>
+                                            
+                                    <div class = 'cancels' align="center"><a href="javascript:window.location.href=window.location" >Cancel</a></div>    
+                                    <div class = 'bookNow' align="center">
+                                            <a href="javascript:void(0);"  class="BookPropertyButton" onclick = "bookNow();">Book Now</a>
+                                    </div>
+                                    
+                                    </form>
+                                
+                                </div>-->
+
+
+
+
+        <?
+    }
+    if ($this->tab == '5')
+    {
+        ?>
+        
+        <div id="ratescontentHdr" align="center">
+            <p style="padding: 10px 18px;"><?= substr($this->propertyData[0]['property_title'], 0, 500) ?>...</p>
+            <div id="ratescol1Hdr" style="width:100%;">Property Date Rate Bands and Daily Rental Rates including Tax</div>
+            <p class='addNotes'>Total Holiday Rental Cost is calculated by adding together the Daily Rate x No. of Nights within each date price period.</p>
+
+
+            <div id="ratescontent">
+
+
+                <div class="fullBlock hgroupheader">
+                    <div class="ratesfrom" align="center">DateFrom</div>
+                    <div class="ratesfrom" align="center">DateTo</div>
+                    <div class="ratesfrom" align="center">Minimum Night Stay</div>
+                    <div class="ratesfrom" align="center">Daily Rate</div>
+                </div>
+                <?
+                for ($i = 0; $i < count($this->calData); $i++)
+                {
+                    ?>
+                    <div class="fullBlock whiteBg">
+                        <div class="ratesfrom " align="center"><?= date('d-m-Y', strtotime($this->calData[$i]['date_from'])) ?></div>
+                        <div class="ratesfrom " align="center"><?= date('d-m-Y', strtotime($this->calData[$i]['date_to'])) ?></div>
+                        <div class="ratesfrom " align="center"><?= $this->calData[$i]['nights'] ?></div>        
+                        <div class="ratesfrom " align="center"><?= "&pound;" . round($this->calData[$i]['prate']) ?></div>
+                    </div>   
+                    <?
+                }
+                ?>
+
+
+            </div>
+            <!-- End loop 1 -->
+
+            <!-- Second heading -->
+
+            <div class="spacer"></div>
+
+
+            <div id="ratescol1Hdr" style="width:100%;">Extras</div>
+
+            <p class='addNotes'>Total Cost of Extras = Price x No. of Nights.  Please note that Optional Extras are required to be ordered for the full period of your stay.</p>
+
+            <div id="ratescontent">
+
+                <div class="fullBlock hgroupheader">
+                    <div class="ratesfrom" align="center">Name of extras</div>
+                    <div class="ratesfrom" align="center">Price</div>
+                    <div class="ratesfrom" align="center">Type</div>
+                    <div class="ratesfrom" align="center">Per</div>
+                </div>
+                <?
+                for ($i = 0; $i < count($this->option_extra); $i++)
+                {
+                    ?>
+                    <div class="fullBlock whiteBg">
+                        <div class="ratesfrom " align="center"><?= $this->option_extra[$i]['ename'] ?></div>
+                        <div class="ratesfrom" align="center"><?= "&pound;" . round($this->option_extra[$i]['eprice']) ?></div>
+                        <div class="ratesfrom" align="center"><? echo $this->option_extra[$i]['etype'] == '0' ? "Optional" : "Compulsory"; ?></div>        
+                        <div class="ratesfrom" align="center"><? echo $this->option_extra[$i]['stay_type'] == '0' ? "Per Night" : "Per Stay"; ?></div>
+                    </div>   
+                    <?
+                }
+                ?>
+            </div>
+
+            <!-- second heading ends(extras)-->
+
+            <!--third heading starts (special offers)-->
+
+            <div class="spacer"></div>
+
+
+            <div id="ratescol1Hdr" style="width:100%;">Special Offers</div>
+
+            <p class='addNotes' style="width:90%;">For a Special Offer to be valid the full duration of your stay must be within the &acute;Valid From&acute; to &acute;Valid Until&acute; dates shown, and comply with the Minimum Night stay requirement and Book by Date.</p>
+
+            <div id="ratescontent">
+
+                <div class="fullBlock hgroupheader" >
+                    <div class="spcloffer" align="center">Special Offer Type</div>
+                    <div class="spcloffer" align="center">Promo Code</div>
+                    <div class="spcloffer" align="center">Valid From</div>
+                    <div class="spcloffer" align="center">Valid Until</div>
+                    <div class="spcloffer" align="center">Minimum Night Stay</div>                  
+                    <div class="spcloffer" align="center">Discount Offers or Freebies</div>                  
+                    <div class="spcloffer" align="center">Book by Date</div>                  
+                </div>
+                <?
+                for ($i = 0; $i < count($this->spclData); $i++)
+                {
+                    ?>
+                    <div class="fullBlock whiteBg">
+                        <div class="spcloffer" align="center"><?= $this->spclData[$i]['discount_type'] == '1' && $this->spclData[$i]['free_nights_type'] == 'variable' ? 'Every ' . ($this->spclData[$i]['discount_offer'] + 1) . 'th night free' : $this->spclData[$i]['type_name'] ?></div>
+                        <div class="spcloffer" align="center"><?= $this->spclData[$i]['promo_code'] ?></div>
+                        <div class="spcloffer" align="center"><?= date('d-m-Y', strtotime($this->spclData[$i]['valid_from'])) ?></div>
+                        <div class="spcloffer" align="center"><? echo date('d-m-Y', strtotime($this->spclData[$i]['valid_to'])) ?></div>        
+                        <div class="spcloffer" align="center"><? echo $this->spclData[$i]['min_night'] != NULL ? $this->spclData[$i]['min_night'] : $this->spclData[$i]['MIN_NIGHTS'] ?></div>
+                        <div class="spcloffer" align="center"><?
+        switch ($this->spclData[$i]['discount_type'])
+        {
+            case '0': echo $this->spclData[$i]['discount_offer'] . "%";
+                break;
+            case '1': if ($this->spclData[$i]['free_nights_type'] == 'variable')
+                    echo "Max Free Nights: " . ($this->spclData[$i]['max_night']) . "";
+                else
+                    echo "Free Nights:" . $this->spclData[$i]['discount_offer'];
+                break;
+            case '2': echo "Free Pool Heating";
+                break;
+            case '3': echo "7 nights Free";
+                break; //echo $this->spclData[$i]['min_nights_type']=='0'?$this->spclData[$i]['min_night']." nights":$this->spclData[$i]['MIN_NIGHTS']." nights"; break;
+        }
+                    ?></div>                    
+                        <div class="spcloffer" align="center"><? echo date('d-m-Y', strtotime($this->spclData[$i]['book_by'])) ?></div>                    
+                    </div>   
+                    <?
+                }
+                ?>
+
+            </div>
+
+
+
+            <!-- third heading ends (special offers)-->     
+            <div class="spacer"></div>
+            <p class="opening">
+                <br/><span class="hdg">Additional Notes for this Property</span><br/>
+                <?php
+                if ($this->propertyData[0]['is_insured'] == '1')
+                {
+                    ?>
+                <p style="font-size: 12px;margin-bottom: 10px;">Accidental Property Protection Insurance is included in the rates quoted for the period of your stay</p>
+                <?php
+            }
+            ?>
+
+            <span class="addNotes" ><?= nl2br($this->propertyData[0]['rental_ques']) ?>        </span>
+        </p> 
+
+        </div>
+
+
+        <?
+    }
+
+    if ($this->tab == '6')
+    {
+        ?>
+        <div class = "ppty_review" align="center">
+            <p style="padding: 10px 18px;"><?= substr($this->propertyData[0]['property_title'], 0, 500) ?>...</p>
+            <div class = 'review_wraps' align="center"><!-- wrapper for reviews -->
+                <?
+                if (count($this->galleryArr) > 0)
+                {
+                    ?>
+                    <ul class="gallery">
+                        <?
+                        foreach ($this->galleryArr as $key => $gallery)
+                        {
+                            ?>
+                            <li><img src="<?= APPLICATION_URL ?>image.php?image=<?= IMAGES_URL ?>property/<?= $gallery['image_name'] ?>&width=300&height=240" /></li>
+                            <?
+                        }
+                        ?>
+                    </ul>
+                    <?
+                }
+                else
+                {
+                    echo "There are no Photo gallery image";
+                }
+                ?>
+
+
+
+            </div>
+            <?
+            if ($this->propertyData[0]['floor_plan'] != ""):
+                ?>
+                <p style="margin: 40px 0">To view Floorplan <a target="_blank" href="<?= IMAGES_URL ?>floorplan/<?= $this->propertyData[0]['floor_plan'] ?>">click here</a> </p>
+                <?
+            endif;
+            ?>	        
+        </div>
+        <?
+    }
+
+    if ($this->tab == '7')
+    {
+        ?>
+        <div class = "ppty_review" >
+            <p style="padding: 10px 18px;"><?= substr($this->propertyData[0]['property_title'], 0, 500) ?>...</p>
+            <div class = 'review_wraps' ><!-- wrapper for reviews -->
+                <?
+                if (count($this->reviewArr) == 0)
+                {
+                    ?>	
+                    <div class="no_review_blck" align="center">
+                        No Review Found
+                    </div>	
+
+                    <?
+                }
+
+
+                foreach ($this->reviewArr as $values)
+                {
+                    if (!$values['owner_image'])
+                    {
+                        $images = "no_owner_pic.jpg";
+                    }
+                    else
+                    {
+
+                        $images = $values['owner_image'];
+                    }
+                    ?>
+                    <div class = "reviewList" >
+                        <div class="revImg">
+                            <img src="<?= APPLICATION_URL ?>image.php?image=<?= IMAGES_URL ?>profile/<?= $images ?>&height=100&width=100" />
+                            <h4 align="center"><?= $values['guest_name'] ?></h4>
+                            <p align="center">(<?= $values['location'] ?>)</p>
+                        </div>
+
+                        <div class = "review_bx">
+                            <h5><?= $values['headline'] ?><span class = 'posted_on'>Reviewed on <?= date('d-m-Y', strtotime($values['review_date'])) ?></span></h5>
+                            <p>
+                                <?= $values['review'] ?>
+                            </p>
+                            <p>
+                                Comment(Top Tip):- <?= $values['comment'] ?>
+                            </p>
+                            <p class = "posted_on_left">
+                                Check-in Date: <?= date('d-m-Y', strtotime($values['check_in'])) ?>
+                            </p>
+                            <p class = "posted_on_left">
+                                Rating: <? rating_view10($values['rating']) ?>
+                            </p>
+                        </div>
+
+                        <?
+                        if (is_array($values['child']))
+                        {
+                            if ($values['owner_image'])
+                                $child_img = $values['owner_image'];
+                            else
+                                $child_img = "no_owner_pic.jpg";
+                            ?>
+                            <div class = "response_blck">
+                                <div class = 'response_blck_img' style = ''>
+                                    <img src="<?= APPLICATION_URL ?>image.php?image=<?= IMAGES_URL ?><?= $values['image'] ?>&height=90&width=90" />
+                                </div>
+                                <div class = "aftr_reponse_blck_img" >
+
+                                    <div class="reply_blck">
+                                        <div class="one_line">
+                                            <h5>Owner Response</h5>
+                                            <span class= 'posted_on'>Replied on <?= date('d-m-Y', strtotime($values['review_date'])) ?></span>                    
+                                        </div>
+                                        <p>
+                                            <?= $values['child'][0]['comment'] ?>
+                                        </p>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                            <?
+                        }
+                        /* elseif(isLogged())
+                          {
+                          ?>
+                          <div class = "response_blck">
+                          <div class = 'response_blck_img'>
+                          <img src="<?=APPLICATION_URL?>image.php?image=<?=IMAGES_URL?><?=$mySession->LoggedUser['image']?>&height=90&width=90" />
+                          </div>
+                          <div style = 'margin-left:30px;display:inline-block;'>
+                          <form name="myform" id="mws-validate1"  method="post"  novalidate="novalidate" class="mws-form" onsubmit = "return replyreview(<?=$values['review_id']?>);">
+                          <div class="mws-form-item small"><textarea  rows="40" cols = "54" class = "required" maxlength = "300" name = "response_<?=$values['review_id']?>" id = "response_<?=$values['review_id']?>" style="width:100%;"></textarea></div><br /><br />&nbsp;&nbsp;
+                          <input type="submit"  class="mws-button grey" value = 'Reply' />
+                          </form>
+                          </div>
+                          </div>
+                          <?
+                          } */
+                        ?>
+                    </div>
+                    <?
+                }
+                ?>
+
+                <div class = "clear"></div>
+
+
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <?
+    }
+    if ($this->tab == '8')
+    {
+        ?>	
+        <div class = "no_review_blck" style="height:auto;">
+            <p style="padding: 10px 18px;"><?= substr($this->propertyData[0]['property_title'], 0, 500) ?>...</p>
+            <form name="myform" id="mws-validate"  method="post" class="mws-form" >
+
+                <div class="mws-form-inline"><div class="mws-form-row">
+                        <div class="label">Your Name<span class="red">*</span></div><div class="mws-form-item small"  ><?= $this->myform->full_name ?></div></div></div><br />
+
+                <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Email Address<span class="red">*</span></div><div class="mws-form-item small"><?= $this->myform->email_address ?> </div></div></div><br />
+                <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Telephone Number</div><div class="mws-form-item small" ><?= $this->myform->phone ?> </div></div></div><br />
+                <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Subject<span class="red">*</span></div><div class="mws-form-item small" ><?= $this->myform->subject ?> </div></div></div><br />
+                <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Question<span class="red">*</span></div><div class="mws-form-item small"><?= $this->myform->question ?> </div></div></div>
+
+
+                <div class="one_line" align="center"><?= recaptcha_get_html(CAPTCHA_PUBLLIC_KEY, $this->error) ?></div>
+
+                <div class="mws-button-row1" >
+                    <input type="submit" value="Send" class="mws-button" />
+                </div>
+
+
+            </form> 
+
+
+
+        </div>
+        <?
+    }
+?>
+
+
+</div>

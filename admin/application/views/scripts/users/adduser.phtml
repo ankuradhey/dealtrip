@@ -1,0 +1,90 @@
+ <div style="width:auto; margin-left:7%;px" >
+  <div class="mws-panel grid_8">
+    <div class="mws-panel-header"><span class="mws-i-24 i-check"><?=$this->pageHeading?></span></div>
+       <div class="mws-panel-body">
+        <form name="myform" id="mws-validate"  method="post" action="<?php echo $this->url(array('controller'=>'users', 'action'=>'adduser','uType'=>$this->uType), 'default', true)?>" novalidate="novalidate" class="mws-form" enctype="multipart/form-data" >
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+            
+           <div class="mws-form-inline"><div class="mws-form-row"><label>Title<span class = 'red'>*</span>:</label><div class="mws-form-item small"><?=$this->myform->title?></div></div></div> 
+            <!-- <div class="mws-form-inline"><div class="mws-form-row"><label>Username :</label><div class="mws-form-item small"><?=$this->myform->username?></div></div></div>-->
+           <div class="mws-form-inline"><div class="mws-form-row"><label>First Name<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->first_name?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Surname<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->last_name?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Email Address<span class="red">*</span>:</label><div class="mws-form-item small"><?=$this->myform->email_address?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Confirm Email Address<span class="red">*</span>:</label><div class="mws-form-item small"><?=$this->myform->cemail_address?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Password<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->password?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Confirm Password<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->password_c?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Street Address<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->address?></div></div></div>
+         <div class="mws-form-inline"><div class="mws-form-row"><label>City/Location<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->city_id?></div></div></div>
+          <div class="mws-form-inline"><div class="mws-form-row"><label>State/Region/Area<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->state_id?></div></div></div>
+          <div class="mws-form-inline"><div class="mws-form-row"><label>Country<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->country_id?></div></div></div>
+           
+       <div class="mws-form-inline"><div class="mws-form-row"><label>Zip/Postal Code<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->zipcode?></div></div></div>
+			<div class="mws-form-inline"><div class="mws-form-row"><label>Home Telephone<span class="red">*</span>:</label><div class="mws-form-item small"><?=$this->myform->home_number?></div></div></div>           
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Work Telephone:</label><div class="mws-form-item small"><?=$this->myform->work_number?></div></div></div>           
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Mobile Telephone:</label><div class="mws-form-item small"><?=$this->myform->mobile_number?></div></div></div>           
+
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Personal Web Link :</label><div class="mws-form-item small"><?=$this->myform->webaddress?></div></div></div>
+            <div class="mws-form-inline" ><div class="mws-form-row"><label>Profile Photo :</label><div  class="mws-form-item small"><?=$this->myform->photo?></div></div></div>
+			
+            
+            
+             <div class="mws-button-row"><input type="submit" tabindex="14" value="Submit" class="mws-button red" /></div>
+        </form>
+ 	</div>
+</div> 
+</div>
+
+<script language="javascript">
+function getCountryState(countryId)
+{
+	$.ajax({ url: "<?=APPLICATION_URL_ADMIN."location/getstatebycountry"?>",
+	type: "POST",
+	data: ({countryId:countryId}),
+	success: function(data)
+	{
+		EmptyListbox('state_id');
+		AddOptiontoListBox('state_id','','- - State - -');
+		if(data!="")
+		{
+			var ArrData=data.split("***");
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('state_id',OptionValue,OptionText);
+				}
+			}
+		}
+		
+	}});	
+}
+function getStateCity(stateId)
+{
+	$.ajax({ url: "<?=APPLICATION_URL_ADMIN."location/getcitiesbystate"?>",
+	type: "POST",
+	data: ({stateId:stateId}),
+	success: function(data)
+	{
+		EmptyListbox('city_id');
+		AddOptiontoListBox('city_id','','- - City - -');
+		if(data!="")
+		{
+			var ArrData=data.split("***");
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('city_id',OptionValue,OptionText);
+				}
+			}
+		}
+		
+	}});	
+}
+</script>

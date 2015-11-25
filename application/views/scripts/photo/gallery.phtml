@@ -1,0 +1,61 @@
+<link media="screen" rel="stylesheet" href="<?=APPLICATION_URL?>colorbox/colorbox.css" />
+<script src="<?=APPLICATION_URL?>colorbox/jquery.colorbox.js"></script>
+<script>
+$(document).ready(function(){
+$("a[rel='example1']").colorbox();
+});
+</script>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" width="21"><img src="<?=IMAGES_URL?>box_top1.png" border="0" /></td>
+<td align="left" valign="middle" style="background-image:url(<?=IMAGES_URL?>box_top2.png);background-repeat:repeat-x;" class="pageHeading"><?=$this->pageTitle?></td>
+<td align="left" valign="top" width="21"><img src="<?=IMAGES_URL?>box_top3.png" border="0" /></td>
+</tr>
+<tr>
+<td align="center" valign="top" colspan="3" class="main_content_area"><table width="100%" cellpadding="0" cellspacing="0" align="center">
+<tr>
+
+</tr>
+<?
+if($this->photoGalleryData!="" and count($this->photoGalleryData)>0)
+{
+	$i=1;
+	?>
+    <tr>
+    <?
+	foreach($this->photoGalleryData as $key=>$DataGallery)
+	{
+?>
+<td align="center" valign="top" width="25%"><a href="<?=IMAGES_URL?>photos/<?=$DataGallery['photo_path']?>" rel="example1" title="<?=$DataGallery['photo_title']?>"><img src="<?=APPLICATION_URL?>image.php?image=images/photos/<?=$DataGallery['photo_path']?>&height=150&width=150" border="0" style="border: solid 1px #cccccc;padding:4px;" alt="<?=$DataGallery['photo_title']?>"  /></a><div style="padding-top:5px;"><a href="<?=APPLICATION_URL?>photo/delete/photoId/<?=$DataGallery['photo_id']?>"><img src="<?=IMAGES_URL?>delete_icon.png" border="0" alt="Delete" title="Delete" /></a><div style="padding-top:5px;"><?=$DataGallery['photo_title']?></div></td>
+<?
+		if($i%4==0)
+		{
+		echo "</tr><tr><td>&nbsp;</td></tr><tr>";
+		}
+	$i++;
+	}
+	if(count($this->photoGalleryData)<3)
+	{
+	for($j=1;$j<=(4-count($this->photoGalleryData));$j++)
+	{
+	?>
+    <td align="left" valign="top" width="25%">&nbsp;</td>
+    <?
+	}
+	}
+	?>
+    </tr>
+    <?
+}
+else
+{
+?>
+<tr>
+<td align="center" valign="top" colspan="4" >There are no photos available in your photo gallery.</td>
+</tr>
+<?	
+}
+?>
+</table></td>
+</tr>
+</table>

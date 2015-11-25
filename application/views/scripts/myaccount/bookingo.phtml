@@ -1,0 +1,96 @@
+<!-- Recipe Index Page -->
+<style>
+.recipeIndexPage {
+    float: left;
+    width: 100%;
+}
+.recipeTableIndex {
+    width: 100%;
+}
+.recipeTableIndex th {
+    background-color: #CCCCCC;
+    border: 1px solid #999999;
+    color: #000000;
+    font-family: Tahoma,Geneva,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    padding-top: 10px;
+}
+.recipeTableIndex tr {
+    background-color: #FFFFFF;
+}
+.recipeTableIndex tr:hover {
+    background-color: #0099CC;
+}
+.recipeTableIndex td {
+    border: 1px solid #999999;
+    padding-bottom: 10px;
+    padding-left: 8px;
+    padding-top: 10px;
+    text-align: left;
+}
+table {
+    margin: 5px 0;!important;
+}
+</style>
+<div class="recipeIndexPage" >
+	 <table class="recipeTableIndex" cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th  width="3%">S.No</th>
+                <th width="20%">Propery Name</th>
+                <th width="12%">Booking Date</th>
+                <th width="14%">Booking Type</th>
+                <th width="10%">Total</th>
+                <th width="6%">View</th>
+                <th width="6%">Payment Type</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+        <? $i=0; foreach($this->bookingData as $row) { $start++;$i++;
+	    			     if($row['booking_status']==1){ $image ='check_yes.png';  }
+    	   				if($row['booking_status']==0){ $image ='cancel1.png';  }
+						
+						 if($row['booking_type']==1){ $b_type ='On Request';  }
+    	   				if($row['booking_type']==0){ $b_type ='Available';  }
+						 ?>
+        
+        <tr>
+        	<td style="text-align:center"><?=$i;?></td>
+            <td><?=$row['property_title']?></td>
+            <td><?=date('d M Y',strtotime($row['booking_date']))?></td>    
+            <td><?=$b_type?></td>    
+            <td  style="text-align:right"><?="&pound;".$row['amount_paid']?>&nbsp;</td> 
+            <td style="text-align:center">
+                <a href="<?=APPLICATION_URL?>myaccount/displaybookingo/bookingId/<?=$row['booking_id']?>">
+                    <img src="<?=APPLICATION_URL;?>images/showreel.png"  height="22"   border='0' title='View' alt='View'>
+                </a>
+            </td>    
+            <td style="text-align:center">
+            <?=$row['paid_status']=='1'?"Advance":"Full"?>
+            </td>
+          
+        </tr>
+        <? } ?>
+        </tbody>
+    </table>
+
+</div>
+<script type="text/javascript">
+function changestatus(Id,Status)
+{
+	$.ajax({ 
+				type: "POST", 
+				url: "<?=APPLICATION_URL?>myaccount/changebookingstatus", 
+				data: ({Id:Id,Status:Status}),
+				cache: false, 
+				success: function(data){
+						 window.location.href=window.location.href;
+			    }
+		  });
+}
+ 
+</script>

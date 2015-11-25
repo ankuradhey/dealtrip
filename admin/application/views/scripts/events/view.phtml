@@ -1,0 +1,69 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><div style="float:left;"><?=$this->pageHeading?></div>
+<div style="float:right;"><a href="<?=APPLICATION_URL_ADMIN?>events/index">Back</a></div></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" valign="middle"><table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" width="60%"><table width="100%" cellpadding="5" cellspacing="5">
+<tr>
+<td align="left" valign="top" width="25%">Event Title</td>
+<td align="center" valign="top" width="5%"><strong>:</strong></td>
+<td align="left" valign="top" width="70%"><?=$this->eventData['event_title']?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Event Date</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=date(DATEFORMAT,strtotime($this->eventData['event_date']))?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Event Venue</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->eventData['event_venue']?></td>
+</tr>
+
+<tr>
+<td align="left" valign="top">Total Attendee</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->eventData['totalattendee']?>&nbsp;Attendees</td>
+</tr>
+
+
+<tr>
+<td align="left" valign="top">Description</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->eventData['event_description']?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Map Address</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->eventData['event_location']?></td>
+</tr>
+</table></td>
+<td align="left" valign="top" width="40%">
+<?
+if($this->eventData['event_image']!="" and file_exists(SITE_ROOT.'images/events/'.$this->eventData['event_image']))
+{
+?>
+<img src="<?=APPLICATION_URL?>image.php?image=<?='images/events/'.$this->eventData['event_image']?>&height=150&width=150" border="0" style="padding:3px;border: solid 1px #cccccc;" />
+<?
+}
+else
+{
+?>
+<img src="<?=APPLICATION_URL?>image.php?image=<?='images/events/'.DEFAULT_EVENT_IMAGE?>&height=150&width=150" border="0" style="padding:3px;border: solid 1px #cccccc;" />
+<?	
+}
+?>
+</td>
+</tr>
+</table></td>
+</tr>
+</table>
+
+
+

@@ -1,0 +1,118 @@
+<?
+    global $mySession;
+    $myControllerName = Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
+    $myActionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
+
+    __autoloadDB('Db');
+?>
+<style>
+	.header_text{width:37.5%; float:left; padding:0px 0 0 2%; color:#3d3d3d; font-size:15px; border-left:1px solid #0099da; font-family:'museo_300regular';}
+    .header_right{width:32%; float:left;}
+	
+	</style>
+<div class="header_top">
+    <div class="logo"><a href="<?= APPLICATION_URL ?>"><img src="<?= IMAGES_URL; ?>logo.png" alt="<?php echo SITE_NAME; ?>"></a>
+	<div class="logo-text">DEAL A TRIP HOLIDAY RENTALS PRESENTED BY <span class="logo-color-text">DESTINATION AMERICA TRAVEL</span> GROUP</div>
+	</div>
+	
+    <div class="header_text">
+        <?php
+            if ($myControllerName == 'location' || ($myControllerName == 'search'))
+            {
+                ?>
+                <h2 style="display:inline;">
+                    <span style="display:block;font-weight: bold;font-size: 18px;">Holiday Rental Accommodation</span>
+                    <span style="display:block;font-weight: normal;font-size: 17px;">Homes - Apartments - Pool Homes</span>
+                    <span style="display:block;font-weight: normal;font-size: 15px;">Villas, Condos, Beach Homes, Townhouses</span>
+                </h2>
+                <?php
+            }
+            else
+            {
+                ?>
+                <h1 style="display:inline;">
+                    <span style="display:block;font-weight: bold;font-size: 18px;">Holiday Rental Accommodation</span>
+                    <span style="display:block;font-weight: normal;font-size: 17px;">Homes - Apartments - Pool Homes</span>
+                    <span style="display:block;font-weight: normal;font-size: 15px;">Villas, Condos, Beach Homes, Townhouses</span>
+                </h1>
+        <?php
+    }
+?>
+
+        <div class="header_social_icon">
+            <a target="_blank" href="https://www.twitter.com/dealatrip"><img src="<?= IMAGES_URL; ?>twitter_icon.png" alt="Twitter" width="25" height="26" target="_blank"></a>&nbsp;
+            <a target="_blank" href="https://www.facebook.com/pages/Deal-A-Trip-Holiday-Rentals/339035742863583"><img src="<?= IMAGES_URL; ?>facebook_icon.png" alt="Facebook" width="25" height="26" target="_blank"></a>&nbsp;
+            <a target="_blank" href="http://plus.google.com/+DealatripCoUkholidayrentalhomesandapartments/posts"><img src="<?= IMAGES_URL; ?>google_icon.png" alt="Google+" width="25" height="26" target="_blank"></a>&nbsp;
+            <a target="_blank" href="http://www.youtube.com/user/dealatriprentalhomes"><img src="<?= IMAGES_URL; ?>youtube_icon.png" alt="Youtube" width="25" height="26" target="_blank"></a>&nbsp;
+            <a target="_blank" href="http://www.pinterest.com/dealatrip"><img src="<?= IMAGES_URL; ?>pinterest_icon.png" alt="Pinterest" width="25" height="26" target="_blank"></a>&nbsp;
+        </div>
+    </div>
+    <div class="header_right">
+        <div class="header_login_main">
+            <div class="header_login">
+                <?
+                    if (!isLogged())
+                    {
+                        ?><a href="<?= APPLICATION_URL ?>signin">Customer Login</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?= APPLICATION_URL ?>signin/login">Owner Login</a><?
+            }
+            else
+            {
+                        ?>
+                        <a href="<?= APPLICATION_URL ?>myaccount"><div style="width:100px;float:left;height:auto;text-align:center"><?= $mySession->LoggedUser['first_name'] ?></div></a> &nbsp;&nbsp;|&nbsp;<a href="<?= APPLICATION_URL ?>signin/signout">Sign Out</a>
+        <?
+    }
+?>
+
+            </div>
+        </div>
+        <div class="add_property">
+            <?php
+                if ($mySession->LoggedUserType == '2')
+                {
+                    ?>
+                    <div class="btn">
+                        <a class="BookPropertyButton" href="<?= APPLICATION_URL ?>myaccount/addproperty"><?
+                }
+                else
+                {
+                    ?>
+                            <div class="btn"><a class="BookPropertyButton" href="<?= APPLICATION_URL ?>signup/ownerregistration"><?
+                        }
+            ?> 
+                            List Your Property
+                    <!--<img src="<?= IMAGES_URL; ?>add_property_latest.png" alt="add property">-->
+                        </a>
+                    </div>
+                    <div class="reservation-no">RESERVATIONS<br>
+                        <span class="tel">0800 180 4889</span><br>
+                        <span class="intl">Intl/Mobile: 0044 1721 725151</span>
+                    </div>
+            </div>
+
+        </div>
+    </div>
+    <?php
+        $new_array = array();
+        $db = new Db();
+        $sql = "select synonyms,page_key from " . PAGES1;
+        $records = $db->runQuery($sql);
+
+        foreach ($records as $key => $value)
+        {
+            $new_array[$value["page_key"]] = $value["synonyms"];
+        }
+    ?> 
+    <div class="nav">
+        <ul>
+            <!--    http://localhost/work/dealatrip/search/index?Datefrom=&DateTo=7&bedroom[0]=&bathroom[0]=&-->
+            <li><a href="<?= APPLICATION_URL ?>">Home</a></li>
+            <li><a href="<?= APPLICATION_URL ?>search/index/?spcloffr[0]=1&spcloffr[1]=2&spcloffr[2]=3&spcloffr[3]=4&spcloffr[4]=5&spcloffr[5]=6&spcloffr[6]=7&spcloffr[7]=10&spcloffr[8]=11">Special Offers</a></li>
+            <li><a href="<?= APPLICATION_URL ?>page/destinations">Destinations</a></li>
+            <li><a target="_blank" href="http://ww2.affordablecarhire.com/en/search/index?brand=dynamicholidays">Car & Van Hire</a></li>
+            <li><a href="<?= APPLICATION_URL ?>page/<?php echo $new_array["holiday_extras"]; ?>">Holiday Extras</a></li>
+            <li><a href="<?= APPLICATION_URL ?>page/<?php echo $new_array["owner_info"]; ?>">Owners</a></li>
+            <li><a href="<?= APPLICATION_URL ?>page/<?php echo $new_array["customer_support"]; ?>">Customer Support</a></li>
+            <li class="nopad"><a href="<?= APPLICATION_URL ?>page/<?php echo $new_array["contact_us"]; ?>">Contact Us</a></li>
+        </ul>
+    </div> 
+	

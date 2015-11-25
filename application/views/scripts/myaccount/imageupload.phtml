@@ -1,0 +1,192 @@
+<script>
+var SITEURL="<?=APPLICATION_URL;?>";
+var dataArray = [];
+</script>
+<script type="text/javascript" src="<?=JS_URL?>ajaxfileupload.js"></script>
+<link href="<?=CSS_URL?>style2.css" rel="stylesheet" />
+<link href="<?=CSS_URL?>img_upload.css" rel="stylesheet" />
+
+
+<script type="text/javascript">
+
+
+function loadajax()
+{
+	
+		$.ajaxFileUpload
+		(
+			{
+				url: SITEURL+'myaccount/doajaxfileupload',
+				secureuri:false,
+				fileElementId:'photo_res',
+				dataType: 'json',
+				data:{name:'logan', id:'id'},
+				success: function (data, status)
+				{
+					
+					console.log(data.filename);
+					
+				}
+				
+			}
+		)
+		
+		return false;
+
+
+}
+
+</script>
+
+
+<form name="myform" id="mws-validate" action = '' method="post"  novalidate="novalidate" class="mws-form" enctype="multipart/form-data"  >	
+			<div class="content">
+			
+			<div id="drop-files" ondragover="return false">
+					Browse Images
+			</div>
+			<input type="file" name="photo_res" id = "photo_res" onblur = "loadajax()"/>
+		
+			<br />
+			
+			<div id="uploaded-holder">
+				<div id="dropped-files">
+					<div id="upload-button">
+						<a href="#" class="upload">Upload!</a>
+						<a href="#" class="delete">delete</a>
+						<span>0 Files</span>
+					</div>
+				</div>
+				<div id="extra-files">
+					<div class="number">
+						0
+					</div>
+					<div id="file-list">
+						<ul></ul>
+					</div>
+				</div>
+			</div>
+			
+			<div id="loading">
+				<div id="loading-bar">
+					<div class="loading-color"> </div>
+				</div>
+				<div id="loading-content">Uploading file.jpg</div>
+			</div>
+			
+			<div id="file-name-holder">
+				<div id="uploaded-files" >
+					
+					<div id = 'img_blck0' class='cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck1' class='cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck2' class='cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck3' class='cancel' align="center"> 
+					
+					</div>
+					
+					<!-- 4 blocks -->
+					
+					<div id = 'img_blck4' class='cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck5' class='cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck6' class='cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck7' class='cancel' align="center"> 
+					
+					</div>
+					
+					<!-- 8 blocks -->
+					
+					<div id = 'img_blck8' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck9' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck10' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck11' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<!-- 12 blocks -->
+					
+					<div id = 'img_blck12' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck13' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck14' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck15' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<!-- 16 blocks -->
+                    
+                    <div id = 'img_blck16' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck17' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck18' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck19' class= 'cancel' align="center"> 
+					
+					</div>
+
+                    <!-- 20 blocks -->
+                    <div id = 'img_blck20' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck21' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck22' class= 'cancel' align="center"> 
+					
+					</div>
+					
+					<div id = 'img_blck23' class= 'cancel' align="center"> 
+					
+					</div>
+                    <!-- 24 blocks -->
+                    
+				</div>	
+			</div>
+		</div>
+			  
+				<!-- image upload ends-->
+				<div class="mws-button-button-row" style="float:left;padding:10px;"> <input type="submit" value="Next Step" class="mws-button" /></div> 
+			</form>

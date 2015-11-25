@@ -1,0 +1,22 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top"><h1>An error occurred</h1>
+  <h2><?php echo $this->message ?></h2>
+
+  <?php if (isset($this->exception)): ?>
+
+  <h3>Exception information:</h3>
+  <p>
+      <b>Message:</b> <?php echo $this->exception->getMessage() ?>
+  </p>
+
+  <h3>Stack trace:</h3>
+  <?php echo $this->exception->getTraceAsString() ?>
+  
+
+  <h3>Request Parameters:</h3>
+  <pre><?php echo var_export($this->request->getParams(), true) ?>
+  </pre>
+  <?php endif ?></td>
+</tr>
+</table>

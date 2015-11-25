@@ -1,0 +1,282 @@
+< c!-- Created on November 9,2012 -->
+<script type="text/javascript">
+$(document).ready(function() {
+		$("#mws-ui-button-radio").buttonset();
+		$("#date_from").datepicker({
+			minDate: new Date()
+		});
+		
+		
+		$("#date_to").datepicker({
+			minDate: new Date()
+		});
+		
+	jQuery.validator.addMethod("dateCheck", function(value, element) { 
+    
+	var DateT = new Date($("#date_to").val());
+	var DateF = new Date($("#date_from").val());
+
+	return (DateT > DateF); 
+  }, "Choose Proper Date");
+		
+});
+
+function do_save_cal()
+{
+	if($("#mws-validate").valid())
+	{
+		$.ajax({
+			type: 'POST',
+			url: '<?=APPLICATION_URL?>myaccount/savecalendarstat',
+			async:false,
+			data: ({Datef:$("#date_from").val(),Datet:$("#date_to").val(),Status:$("#status").val()}),
+			success: function(data){
+			//alert(data);
+			window.location = window.location.href;
+			
+			}
+			
+		});
+		
+	}
+	return false;
+}
+
+
+function cal_default(value)
+{
+	
+	$.ajax({
+				
+				type: 'POST',
+				url: '<?=APPLICATION_URL?>myaccount/setcaldefault',
+				async:false,
+				data: ({Value:value}),
+				success: function(data){
+					data = $.trim(data);
+					window.location = window.location.href;
+
+				}
+			});	
+	
+	
+}
+</script>
+<link href="<?=CSS_URL?>style2.css" rel="stylesheet" />
+<?
+
+	if($this->nexts == '1')
+	{
+		$prevurl = APPLICATION_URL."myaccount/calendarkijai";
+		$nexturl = "javascript:void(0)";
+		$nextText = "Previous";
+		$current_year  = date('Y')+1;
+		$current_mnth = $mnth_display = date('m');
+		$next_style = "style = 'width:86%;'";
+		
+	}
+	else
+	{
+		$prevurl = "javascript:void(0)";
+		$nexturl = APPLICATION_URL."myaccount/calendarkijai/cal/1";
+		$nextText = "Next";		
+		$current_year  = date('Y');
+		$current_mnth = $mnth_display = date('m');
+		$next_style = "style = 'margin-bottom:20px;width:86%'";
+		$next_btn = "style = 'float:right'";
+	}
+
+	$week = array('S','M','T','W','T','F','S');
+?>
+
+<div style="margin-left:40px;">
+ <!-- calendar code starts here -->
+							<?
+                
+                    if($this->nexts == '1')
+                    {
+                        $prevurl = APPLICATION_URL."myaccount/addproperty";
+                        $nexturl = "javascript:void(0)";
+                        $nextText = "Previous";
+                        $current_year  = date('Y')+1;
+                        $current_mnth = $mnth_display = date('m');
+                        $next_style = "style = 'width:86%;'";
+                        
+                    }
+                    else
+                    {
+                        $prevurl = "javascript:void(0)";
+                        $nexturl = APPLICATION_URL."myaccount/addproperty/cal/1";
+                        $nextText = "Next";		
+                        $current_year  = date('Y');
+                        $current_mnth = $mnth_display = date('m');
+                        $next_style = "style = 'margin-bottom:20px;width:86%'";
+                        $next_btn = "style = 'float:right'";
+                    }
+                
+                    $week = array('S','M','T','W','T','F','S');
+                ?>
+                
+                
+                <form name="myform" id="mws-validate"  method="post"  novalidate="novalidate" class="mws-form" >
+                <div  class = "container_cal"> <!-- main wrapper div container -->
+                 <span class = "left_deal_head_notes">
+                 	Select a choice of default for your Calendar. Select AVAILABLE if you intend to keep the calendar up to date - Select ON REQUEST if, for whatever reason, you cannot keep it up to date. NB: Selecting AVAILABLE will show the property to renters for immediate online booking and maximise booking potential. Selecting ON REQUEST means potential renters are made aware that Availability has to be checked.
+                 </span>
+                <div style="width:80%;">
+                	<?
+						if($this->cal_default == '0')
+						{
+							$checked_a = "checked = 'checked'";	
+							$checked_b = "";
+						}
+						if($this->cal_default == '1')
+						{
+							$checked_a = "";	
+							$checked_b = "checked = 'checked'";
+							
+						}
+					?>
+						<div class="mws-form-inline"><div class="mws-form-row">
+                      		<label>Default option <span class="red">*</span>:</label>
+						   <div id="mws-ui-button-radio" class="ui-buttonset">
+                                <input type="radio"  <?=$checked_a?>  name="radio" id="radio1" value = '0' class="ui-helper-hidden-accessible" onclick="cal_default(this.value);"><label for="radio1" class="ui-button ui-widget ui-state-default ui-button-text-only " role="button" ><span class="ui-button-text">Available</span></label>
+                                <input type="radio"  <?=$checked_b?> name="radio" id="radio2" value = '1' class="ui-helper-hidden-accessible" onclick="cal_default(this.value);"><label for="radio2" class="ui-button ui-widget ui-state-default ui-button-text-only " role="button" ><span class="ui-button-text">On Request</span></label>
+                            </div>
+                        </div></div>
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Date From(Arrival):</label><div class="mws-form-item large"><?=$this->myform->date_from?> </div></div></div>
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Date To(Night of):</label><div class="mws-form-item large"><?=$this->myform->date_to?> </div></div></div>
+                    <div class="mws-form-inline"><div class="mws-form-row"><label>Status:</label><div class="mws-form-item large"><?=$this->myform->status?> </div></div></div>
+                    <div class="mws-button-row1"> <input type="submit"  class="mws-button red" value = 'Process' onclick = "do_save_cal();"/></div> 
+					<p class="left_panel_heading" style="border-bottom:#CCCCCC dotted 1px;">Colour Codes:</p><br /><br />
+					
+                    <p style="background:#F9F9F9">
+                        <div style="height:20px;width:20px;background-color:#99CCFF;float:left;">
+                        </div>	<label style='float:left;margin:0 10px;'>Available</label>
+                        <div style="height:20px;width:20px;background-color:yellow;float:left;">
+                        </div>	<label style='float:left;margin:0 10px;'>On Request</label>
+                        <div style="height:20px;width:20px;background-color:#CC3300;float:left;">
+                        </div>	<label style='float:left;margin:0 10px;'>Booked</label><br />
+                    </p>
+                    
+                </div>
+               </form>
+                <div>
+                    <div style='float:left;margin-right:370px;'>
+                    <a href = "<?=$prevurl?>"><input class="mws-button black small" type="button" value="Prev"></a>	
+                    </div>
+                    
+                    <div style='margin-right:10px;'>
+                    <a href = "<?=$nexturl?>" style="float:right;"><input class="mws-button black small" type="button" value="Next"></a>	
+                    </div>
+                
+                </div>
+                
+                <br />
+                <br />
+                
+                
+                
+                <?
+                
+                //echo $this->calArr[]['date_from'];
+                //exit;
+                    for($t=1;$t<=12;$t ++) /***main loop**/
+                    {  
+                ?>    
+                
+                    
+                    <div class = 'calendar_box'><!-- first calendar box-->
+                        <div class = 'calendar_head'>
+                        <label><?=date('F Y',mktime(0, 0, 0, $current_mnth,date('d'),$current_year))?></label>
+                        </div>	
+                <?
+                        for($w=0;$w<7;$w++)
+                        {
+                ?>	
+                        <div class = 'week_block' align="center"><!--smaller blocks of week-->
+                       <label><?= $week[$w]?></label>
+                        </div>
+                <?
+                        }
+                        //if($t == 10)
+                        //echo date('w',mktime(0, 0, 0, $current_mnth,1,$current_year)); 
+                            for($i=0,$k=1;$i<42;$i++)
+                            {
+                                $block_class = 'date_block';				
+	
+								if($this->cal_default == '0')
+								$block_class = 'date_block3';
+								if($this->cal_default == '1')
+								$block_class = 'date_block2';
+								
+                                for($s=0;$s<count($this->calArr);$s++)
+                                {
+                                    
+									
+									//checking from database that if user has specified the status of the dates
+                                    if( date('Y-m-d',strtotime($current_year."-".$current_mnth."-".$k)) >= date('Y-m-d',strtotime($this->calArr[$s]['date_from'])) && date('Y-m-d',strtotime($current_year."-".$current_mnth."-".$k)) <= date('Y-m-d',strtotime($this->calArr[$s]['date_to'])) && $i >= date('w',mktime(0, 0, 0, $current_mnth,1,$current_year))  && $k <= date('t',mktime(0, 0, 0, $current_mnth,date('d'),$current_year)) ) 
+                                    {	
+                                        
+                                        switch($this->calArr[$s]['cal_status'])			
+                                        {
+                                            case 0:	$block_class = 'date_block1'; break;
+                                            case 1: $block_class = 'date_block2'; break;
+                                            case 2: $block_class = 'date_block3'; break;
+                                        }
+                                
+                                    }
+                                }
+                        ?>			<div class = '<?=$block_class?>' align="center"><!--smaller blocks of dates--> 	
+                                        <?	
+                                        if($i < date('w',mktime(0, 0, 0, $current_mnth,1,$current_year)) || $k > date('t',mktime(0, 0, 0, $current_mnth,date('d'),$current_year)))
+                                        echo "&nbsp";
+                                        else
+                                        {	echo $k;
+                                            $k++;
+                                        }
+                                        ?>
+                                        
+                                    </div>			
+                        <?	
+                
+                            }
+                        ?>
+                    
+                    </div><!-- first calendar box ends-->
+                    
+                    <!-- CHECKING IF THE DISPLAYED MONTH WAS THE LAST MONTH OR NOT -->
+                   <?
+                
+                    if($current_mnth == 12)
+                    {	$current_mnth = 1;
+                        $current_year = $current_year+1;
+                    }
+                    else
+                    $current_mnth++;
+                    
+                    
+                }
+                    
+                    
+                    /***main loop ends **/
+                    ?>
+                   
+                    
+                    
+                    
+                 </div>  
+                 
+                 <span class="left_deal_head_notes"><label>Important Calendar notes:</label> Each date that is shown in blue should be available to be booked &ndash; as a fall back we operate a safety net in our booking procedure to alert customers that until they receive a confirmation e-mail with a confirmed reservation number from us then a booking is not definite.</span>
+                 <br />
+				 <span class="left_deal_head_notes">If a renter checks out on any given day, then that date should be shown in blue as available for a new arrival. Only show as booked nights that have a rental in&dash;house. Eg: renter books for 14 August for 14 nights, checking-out on 28 August &dash; therefore using the calendar block dates as &acute;booked&acute; from 14 August to 27 August &dash; the last night.</span>
+ <!-- calendar code ends here -->	
+    		<form name="myform" id="mws-validate" action = '<?php echo $this->url(array('controller'=>'myaccount', 'action'=>'processcal'), 'default', true) ?>' method="post"  novalidate="novalidate" class="mws-form" enctype="multipart/form-data" >
+				<input type="hidden" name="step" id="step" value = "6"/> 
+
+            <div style='margin-left:590px;'>
+                    <input class="mws-button red" type="submit" value="Next">
+                    </div>    
+			            </form> 	    
+    
+ </div>  

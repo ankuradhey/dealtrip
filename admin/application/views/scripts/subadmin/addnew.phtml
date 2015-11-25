@@ -1,0 +1,68 @@
+<?php
+	global $mySession;
+	$db=new Db();
+	
+
+?>
+
+
+
+
+
+<div class="inner-page-title">
+					<h2><?=$this->pageHeading?></h2>
+					<span>&nbsp;</span>
+</div>
+
+<div >
+			   
+					 <!-- End #tab1 -->
+					
+					<div >
+                 <form name="myform" id="myform" action="<?php echo $this->url(array('controller'=>'subadmin', 'action'=>'savenew'), 'default', true)?>" 
+                 	method="post" enctype="multipart/form-data">
+                    <!-- Set class to "column-left" or "column-right" on fieldsets to divide the form into columns -->
+                        		<p>
+										<label>First Name :</label>
+										<?=$this->myform->first_name?> 
+										<br />
+								</p>
+                                
+                                <p>
+										<label>Last Name :</label>
+										<?=$this->myform->last_name?>
+										<br />
+								</p>
+								
+								<p>
+									<label>User Name :</label>
+									<?=$this->myform->username?>
+								</p>
+								
+								<p>
+									<label>Email address :</label>
+                                    <?=$this->myform->emailID?>
+								</p>
+                                
+                                <p>
+									<label>Password :</label>
+									<?=$this->myform->password?>
+								</p>
+								
+								<p>
+									<label>Status :</label>
+                                    <?=$this->myform->status?>
+								</p>
+                                
+                                <p>
+									<label>Priviledges :</label>
+                                    <?=$this->myform->priviledges?>
+								</p>
+                                
+								<p>
+									<input class="button" type="submit" value="Add" />
+								</p>
+                 </form>
+            	</div> <!-- End #tab2 -->        
+					
+				</div>

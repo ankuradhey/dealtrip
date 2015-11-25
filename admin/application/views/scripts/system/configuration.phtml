@@ -1,0 +1,67 @@
+<div class="mws-panel grid_8">
+                	<div class="mws-panel-header">
+                    	<span class="mws-i-24 i-check"><?=$this->pageHeading?></span>
+                    </div>
+                    <div class="mws-panel-body">
+                    	<form name="myform" id="mws-validate" action="" method="post" novalidate="novalidate" class="mws-form">
+                         
+                        	<div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+                        	<div class="mws-form-inline">
+                            	<div class="mws-form-row">
+                                	<label>Site Title :</label>
+                                	<div class="mws-form-item large">
+                                    	<?=$this->myform->site_title?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                                    </div>
+                                </div>
+                                
+                                <div class="mws-form-row">
+                                	<label>Message center name:</label>
+                                	<div class="mws-form-item large">
+                                    	<?=$this->myform->admin_name?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                                    </div>
+                                </div>
+                                
+                                <div class="mws-form-row">
+                                	<label>Meta Description :</label>
+                                	<div class="mws-form-item large">
+                                    	<?=$this->myform->site_description?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                                    </div>
+                                </div>
+                                <div class="mws-form-row">
+                                	<label>Meta Keyword :</label>
+                                	<div class="mws-form-item large">
+                                    	<?=$this->myform->site_keyword?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                                    </div>
+                                </div>
+                                <div class="mws-form-row">
+                                	<label>Admin Email Address :</label>
+                                	<div class="mws-form-item large">
+                                    	<?=$this->myform->admin_email?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                                    </div>
+                                </div>
+                                
+                            	<div class="mws-form-row">
+                                	<label>Paypal Id</label>
+                                	<div class="mws-form-item large">
+                                    <?=$this->myform->paypal_email?>
+                                    	<!--<input type="text" class="mws-textinput required email" name="emailField">-->
+                                    </div>
+                                </div>
+                            	<div class="mws-form-row">
+                                	<label>Welcome message </label>
+                                	<div class="mws-form-item large">
+                                    <?=$this->myform->welcomemessage?>
+                                    	<!--<input type="text" class="mws-textinput required url" name="urlField">-->
+                                    </div>
+                                </div>
+                            	 
+                            	 
+                            	 
+                            	 
+                            </div>
+                            <div class="mws-button-row">
+                            	<input type="submit" class="mws-button red" value="Submit">
+                            </div>
+                        </form>
+                    </div>    	
+                </div>

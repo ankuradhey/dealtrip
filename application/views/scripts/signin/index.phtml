@@ -1,0 +1,20 @@
+  <?
+global $mySession;
+?>
+<div class="mws-panel-body">
+						
+    <form name="myform" id="mws-validate" method="post"  novalidate="novalidate" class="mws-form">
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Email Id :</label><div class="mws-form-item small"><?=$this->myform->email_address?> </div></div></div>
+           
+            
+  		    <div class="mws-form-inline"><div class="mws-form-row"><label>Password :</label><div class="mws-form-item small"><?=$this->myform->password?></div></div></div>
+			<div class="mws-button-row2"  > <input type="submit" value="Sign In" class="mws-button" /> 
+                <a href = '<?=APPLICATION_URL?>signup/forgotpassword'  style="border:0px" >Forgot Password?</a>
+                <a href = '<?=APPLICATION_URL?>signup'  >Register</a>
+            </div>
+            
+    </form>    
+
+	</div> 
+
+

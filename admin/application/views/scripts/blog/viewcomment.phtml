@@ -1,0 +1,30 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><?=$this->pageHeading?></td>
+</tr>
+<tr>
+<td align="right" valign="top">
+<a href="<?=APPLICATION_URL_ADMIN?>blog/comment/blog_post_id/<?=$this->forumTopics[0]['blog_post_id'];?>">Back</a>
+</td>
+</tr>
+ 
+<tr>
+<td align="center" valign="middle"> 
+    <table width="100%" cellpadding="2" cellspacing="2">
+    <tr>
+    <td width="12%" align="left" valign="top">Blog Title :</td>
+    <td width="88%" align="left" valign="middle"><?=$this->forumTopics[0]['title'];?></td>
+    </tr>
+    <tr>
+    <td align="left" valign="top">Blog :</td>
+    <td align="left" valign="middle"><?=$this->forumTopics[0]['description'];?></td>
+    </tr>
+    <tr>
+    <td align="left" valign="top">Comment :</td>
+    <td align="left" valign="middle"><?=$this->forumTopics[0]['post_comment'];?></td>
+    </tr> 
+     
+    </table>
+</td>
+</tr>
+</table>

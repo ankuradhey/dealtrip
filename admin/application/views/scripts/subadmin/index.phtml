@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		
+		
+		<title>DataTables example</title>
+		
+       <?
+	     include SITE_ROOT.'admin/application/layouts/scripts/contents.phtml';
+	   ?>
+        
+	</head>
+    
+   
+    
+	<body id="dt_example">
+      <div class="text" >
+       <?=$this->pageHeading?> 
+       </div>
+       
+       
+       <form method="post" name="myform" id="myform" action="<?php echo $this->url(array('controller'=>'subadmin', 'action'=>'deletesubadmin'), 'default', true)?>" >
+    
+    <div id="container">
+    
+    <table width="800" height="40" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #c4c4c4; border-left:1px solid #c4c4c4;
+    border-right:1px solid #c4c4c4; " >
+    
+    <tr>
+    <td>
+        
+     <input type="submit" name="Delete" id="Delete" value="Delete" class="myButton"  onclick="return confirmbx();" align="right" style="margin-left:5px"  />
+     
+     
+     
+    
+    
+     <a href="<?php echo $this->url(array('controller'=>'subadmin', 'action'=>'addnew'), 'default', true)?>" >
+     <input type="button" name="add" id="add" value="Add Plan" class="myButton" style="margin-left:620px"  />
+	</a>
+        
+    </td>
+    </tr>
+    
+    </table>
+       
+      
+       
+		
+     
+		  <div class="demo_jui" style="margin-top:20px">
+		    <table width="796" border="0" cellpadding="0" cellspacing="0"  style="background-color:#FFFFFF" id="example">
+           
+	<thead>
+		<tr >
+        <th height="38"  class="border th" align="center" style="padding-left:38px">
+            <input type="checkbox" name="checkall" id="checkall" onclick="return check(this)"/>
+            </th>
+			 <th height="38"  class=" th">First Name</th>
+            <th  class=" th" align="center ">Last Name</th>
+            <th  class=" th" align="center">Email Address</th>
+            <th align="center" class=" th">Username</th>
+            <th align="center" class=" th">Edit</th>
+			<th  class=" th" align="center">Status</th>
+		</tr>
+	</thead>
+	<tbody >
+    
+    
+    
+    <? for($i=0;$i<count($this->sql);$i++)
+	{
+		
+		if($i%2==0)
+		{
+			?>
+        <tr class="gradeA" onmouseover =this.className='tableven' onmouseout=this.style.backgroundColor='#ffffff' >
+        <?
+		}
+		else
+		{
+			
+		
+		?>
+        <tr class="gradeA" onmouseover =this.className='tableven' onmouseout=this.style.backgroundColor='#f7f7f7' >
+        <? }
+		?>
+		
+        	<td height="38"  class="border" align="center">
+            
+      <input type="checkbox" name="checkbox[]" id="checkbox[]" value="<?=$this->sql[$i]['subadmin_id']?>"  onClick="return check1();"/>
+            </td>
+			<td height="38"  class="border"><?=$this->sql[$i]['first_name']?></td>
+			<td class="border" align="center"><?=$this->sql[$i]['last_name']?></td>
+			<td align="center" class="border"><?=$this->sql[$i]['emailID']?></td>
+            <td align="center" class="border"><?=$this->sql[$i]['username']?></td>
+			
+            <td class="border" align="center">
+            
+             <a href=<?=APPLICATION_URL_ADMIN?>subadmin/edit/subsID/<?=$this->sql[$i]['subadmin_id']?>>
+            <img src=<?=IMAGES_URL_ADMIN?>edit.png border='0' />
+            </a>
+            
+            </td>
+            
+            
+            <td class=" border" align="center">
+         
+         
+       
+           <? 
+		
+		   if($this->sql[$i]['status']==1)
+		   {
+			   $status=$this->sql[$i]['status'];
+			 ?>
+			
+               <img src=<?=IMAGES_URL_ADMIN?>tick.gif onclick="changestatus('<?=$this->sql[$i]['subadmin_id']?>','<?=$this->sql[$i]['status']?>')" />
+              
+			    <?
+			}
+			if($this->sql[$i]['status']==0)
+			{
+				$status=$this->sql[$i]['status'];
+				 ?>
+                  <img src=<?=IMAGES_URL_ADMIN?>cross.png onclick="changestatus('<?=$this->sql[$i]['subadmin_id']?>','<?=$this->sql[$i]['status']?>')" />
+                  <?  
+		    } 
+			?>
+           
+         
+           
+            </td>
+			
+		</tr>
+		<? 
+	    
+	
+	}
+		?>
+	
+	</tbody>
+	<tfoot>
+		<tr >
+        <th height="38"  class="border th" align="center" style="padding-left:38px">
+           
+            </th>
+            <th height="38"  class=" th">First Name</th>
+            <th  class=" th" align="center">Last Name</th>
+            <th  class=" th" align="center">Email Address</th>
+            <th align="center" class=" th">Username</th>
+            <th align="center" class=" th">Edit</th>
+			<th  class=" th" align="center">Status</th>
+		</tr>
+	</tfoot>
+</table>
+			</div>
+		 
+		</div>
+        </form>
+	</body>
+</html>
+
+
+
+
+<script type="text/javascript">
+function deleteRecord()
+{ 
+
+var SubsIds='';
+var Adrows=new Array();
+var cboxes=document.getElementsByName('subs_id') 
+
+for(i=0;i<cboxes.length;i++)
+{ 
+	if(cboxes[i].checked==true)
+		{
+			SubsIds+=cboxes[i].value+','; 
+			Adrows[i]=cboxes[i].value;
+		}
+}
+if(SubsIds=="")
+{
+	alert("Please select atleast one record.");
+	return;
+}
+
+
+if(confirm("Are you sure to delete these records?"))
+{
+
+	var url="<?=APPLICATION_URL_ADMIN."subadmin/deletesubadmin/subs_id/"?>"+SubsIds;
+	$.get(url, function(data)
+		{ 	
+		window.location ="<?=APPLICATION_URL_ADMIN?>subadmin/index";		
+		});
+}
+
+}
+
+
+function changestatus(aid,astatus)
+{
+	
+	 $.ajax({ 
+				type: "POST", 
+				url: "<?=APPLICATION_URL_ADMIN?>subadmin/changestatus", 
+				data: ({AID:aid,AStatus:astatus}),
+				cache: false, 
+				success: function(data){	
+			
+				window.location ="<?=APPLICATION_URL_ADMIN?>subadmin/index";					 
+				
+			    }
+	  });
+}
+
+
+
+	</script>					
+

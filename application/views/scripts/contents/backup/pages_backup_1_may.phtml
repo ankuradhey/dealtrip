@@ -1,0 +1,78 @@
+        <div class = "mws-panel-body" >
+            <div class = 'staticPage'>
+                <?=$this->pageContent;?>
+             </div>
+       
+    <?
+        if($this->page_id == '12'  || $this->page_id == '63' && $this->varsuccess == 0):
+    ?>
+    <div class = 'contactForm'>
+    
+     <h3>Your Contact Information </h3>
+    <form name="myform" id="mws-validate"  method="post" novalidate="novalidate" class="mws-form" >
+        
+        <div id = "loading" class = 'loading'></div>  
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Full Name<span class="red">*</span></div><div class="mws-form-item small"><?=$this->myform->full_name?></div></div></div>
+            <!--<div class="mws-form-inline"><div class="mws-form-row"><div class="label">Phone<span class="red">*</span></label><div class="mws-form-item small"><?=$this->myform->phone?></div></div></div>-->
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Email<span class="red">*</span></div><div class="mws-form-item small"><?=$this->myform->email_address?> </div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Confirm email<span class="red">*</span></div><div class="mws-form-item small"><?=$this->myform->cemail_address?> </div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Subject<span class="red">*</span></div><div class="mws-form-item small"><?=$this->myform->subject?> </div></div></div>
+            <!--<div class="mws-form-inline"><div class="mws-form-row"><div class="label">Message<span class="red">*</span></label><div class="mws-form-item small"><?=$this->myform->comment?></div></div></div>-->
+            <div>
+            <h3>Please Note:- </h3>
+            <p>If you are enquiring about an existing booking please quote your name and booking reference. If you are enquiring about making a new booking please provide the name of property, the type of accommodation, date of arrival and number of nights required.. </p>
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Your Enquiry<span class="red">*</span></div><div class="mws-form-item small"><?=$this->myform->enquiry?></div></div></div>
+            </div>
+           <!-- <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Subject<span class="red">*</span></label><div class="mws-form-item small"><?=$this->myform->subject?> </div></div></div>-->
+          
+           <div class = "Captcha" >
+               
+               <img src = "<?=APPLICATION_URL?>captcha/captcha.php" id = "captcha"/>  <a  class = 'link' style ="text-decoration:none;color:#064C8A" href="javascript:void(0);" id="refresh_link" onclick="
+            document.getElementById('captcha').src='<?=APPLICATION_URL?>captcha/captcha.php?'+Math.random();document.getElementById('captcha').focus();$('#check').val(<?=$_SESSION['captcha']?>)"
+            id="change-image"><img src="<?=APPLICATION_URL?>images/refresh_b.gif" border="0" alt=""/> Display another image</a>
+           
+           </div>    
+           
+           <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Enter Human Verification code<span class="red">*</span></div><div class="mws-form-item small"><?=$this->myform->captcha?> </div></div></div> 
+    
+            <div class="mws-button-row">
+                    <input type="submit" value="Submit" class="mws-button" />
+            </div>
+            
+    
+    </form> 
+    
+    </div>
+    <?
+    endif;
+    
+    if($this->page_id == '80' && $this->varsuccess == 0):
+    ?>
+        
+        <form name="myform" id="mws-validate"  method="post" novalidate="novalidate" class="mws-form" >
+        
+            <div id = "loading" class = 'loading'></div>  
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Your Name<span class="red">*</span></div><div class="mws-form-item small"><?=$this->myform->full_name?></div></div></div>
+            <!--<div class="mws-form-inline"><div class="mws-form-row"><div class="label">Phone<span class="red">*</span></label><div class="mws-form-item small"><?=$this->myform->phone?></div></div></div>-->
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Email Address<span class="red">*</span></div><div class="mws-form-item small"><?=$this->myform->email_address?> </div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Telephone Number<span class="red">*</span></div><div class="mws-form-item small"><?=$this->myform->phone?> </div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Property No.</label><div class="mws-form-item small"><?=$this->myform->property_no?> </div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Subject<span class="red">*</span></div><div class="mws-form-item small"><?=$this->myform->subject?> </div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Question<span class="red">*</span></div><div class="mws-form-item small"><?=$this->myform->question?> </div></div></div>
+            <div class="mws-button-row1">
+                    <input type="submit" value="Send" class="mws-button red" />
+            </div>
+            
+    
+    	</form> 
+    
+    
+    
+    <?
+    endif;
+    ?>
+    
+    
+    
+    </div> <!-- mws panel body-->
+

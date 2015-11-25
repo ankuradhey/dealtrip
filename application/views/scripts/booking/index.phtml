@@ -1,0 +1,850 @@
+<?
+    global $mySession;
+?>
+<style>
+    .within_eight{display:none;}
+    #SizeOfParty {
+        margin-bottom: 10px;
+    }
+    .BookingDetailsLabel {
+        float: left;
+        font-weight: bold;
+        width: 210px;
+    }
+
+    .discount-code{
+        -moz-box-sizing: border-box;
+        background-color: #FFFFFF;
+        border: 1px solid #CDCDCD;
+        box-shadow: 0 1px 3px rgba(128, 128, 128, 0.1) inset;
+        color: #323232;
+        margin: 0;
+        outline: medium none;
+        padding: 6px 7px;
+    }
+
+    .ChangeDetails {
+        float: left;
+        margin: 5px 0;
+        width: 100%;
+    }
+
+    a {
+        color: #D74B14;
+        text-decoration: underline;
+    }
+    #error
+    {
+        color:#903;
+        display:none;
+        width:500px;
+    }
+    .quote-row-right {
+        text-align: right;
+        vertical-align: top;
+    }
+    table
+    {
+        margin:0px !important;
+    }
+    #cost
+    {
+        text-decoration:line-through;	
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function(e) {
+        $("#date_from").datepicker({ minDate: new Date(),dateFormat: "dd-mm-yy" });
+    });
+
+    function __checkPromo()
+    {
+        if($("#spclCode").val()=="")	
+        {	
+            $("label.error").not("#mws-validate-error").show();
+            $("label.error").text("Enter Voucher");
+        }
+	
+        else
+        {
+            $.ajax({
+		
+                url:"<?= APPLICATION_URL ?>booking/getvoucher",
+                type: "POST",
+                data: ({ppty:<?= $this->ppty ?>,code:$("#spclCode").val()}),
+                success: function(data){
+                    data = $.trim(data);
+			
+                    if(data != 'none' && data != 'already')
+                    {
+                        //window.location=window.location;
+                        $('#spcl_blck_book').slideDown(200);
+                        $(".spclOffers #spcl_offer_body").html(data);
+                    }
+                    else
+                    {
+				
+				
+                        if(data == 'already')
+                        {	
+                            $('.mws-form-message.error').show("fast",function(){
+                                $(this).text("Only one special offer is permitted per booking.");
+                                $('.banner_header').focus();
+                            });
+
+                            //$('.mws-form-message.error').hide("slow");
+					
+                        }
+                        else
+                        {	
+                            $("label.error").not("#mws-validate-error").show();
+                            $("label.error").text("Invalid Voucher");	
+                        }
+                    }
+			
+                }
+			
+		
+            });
+		
+		
+		
+        }
+	
+
+
+    }
+
+    function alreadyCustomer(name)
+    {
+
+
+        $.ajax({
+	
+            url: "<?= APPLICATION_URL ?>booking/checkvaliduser",
+            type:"POST", 
+            data:({email:name})	,
+            success:function(data){
+                data = parseInt($.trim(data));
+                $("#prvemailAddress").children().not("#emailAddress").remove();
+                if(data === 1)
+                {
+                    $("#emailAddress").before("<img  style = 'padding:5px;' class='floatL' src='<?= IMAGES_URL ?>accept.png'>")	;
+                    $("#emailAddress").after("<button type='submit' class='mws-button Btn'>Proceed to Step 3</button>"); 
+			
+                }
+                else
+                {
+                    $("#emailAddress").before("<img style = 'padding:5px;' class='floatL' src='<?= IMAGES_URL ?>delete.png'>")	;
+                    $("#emailAddress").after("<button type='button' onclick ='alreadyCustomer($(&quot;#emailAddress&quot;).val())' class='mws-button Btn'>GO!</button>");
+                }
+		
+            }
+        })	
+	
+    }
+
+
+    function departureDate()
+    {
+	
+        var dateFrom = $("#date_from").val();	
+        var dateTo = $("#date_to").val();
+
+        if(dateFrom != "" && dateTo != "")
+        {	
+            dateFrom = dateFrom.split("-");
+            dateFrom = new Date(dateFrom[2],dateFrom[1]-1,dateFrom[0]);
+            dateFrom = dateFrom.setDate(dateFrom.getDate()+parseInt(dateTo));
+            dateFrom = new Date(dateFrom);
+            //alert(dateFrom.getMonth());
+		
+            var x = dateFrom.getDate()+"-"+(dateFrom.getMonth()+1)+"-"+dateFrom.getFullYear();
+		
+            $("#departureDates").val(x);
+        }
+    }
+
+    function __doPostBack()
+    {
+        window.location.href='<?= APPLICATION_URL ?>search/searchdetail/ppty/<?= $this->ppty ?>/property/availability#reach';
+    }
+
+    function __doTotal()
+    {
+        var acco=document.getElementById('option_accommodation').value;
+        var option_extra=document.getElementById('option_extra').value;
+        var compulsory=document.getElementById('compulsory').innerHTML;
+        var discount=100-parseFloat(document.getElementById('discount').value);
+        var extra=0.0;
+	
+        if(option_extra!="")
+        {
+            for(i=1;i<=option_extra;i++)
+            {
+                if(document.getElementById('option_extra_eprice_'+i).checked==true)
+                {
+                    extra=extra + parseFloat(document.getElementById('option_extra_eprice_'+i).value); 
+                }
+            } 
+            //extra=extra*<?= $this->Staying ?>;
+        }
+	
+<?
+    if ($this->perprice != "unknown")
+    {
+        ?>
+                        document.getElementById('extra').innerHTML=extra;
+                	
+                        var total_option=(parseFloat(extra)+parseFloat(compulsory))*(parseFloat(document.getElementById('Adults').value)+ parseFloat(document.getElementById('Children').value));;
+                	
+                        acc=parseFloat(acco)*(parseFloat(document.getElementById('Adults').value)+ parseFloat(document.getElementById('Children').value));
+                        document.getElementById('acco').innerHTML=acc;
+                        document.getElementById('cost').innerHTML=total_option+acc;
+                        document.getElementById('total').innerHTML=parseFloat((total_option+acc)*discount/100);
+                        document.getElementById('totali').value=parseFloat((total_option+acc)*discount/100);
+        <?
+    }
+?>
+    }
+    /*function person(fid,valp)
+{
+        var maximum_person=<?= $this->propertyData[0]['maximum_occupancy'] ?>;
+        var adult_person=document.getElementById('Adults').value;
+        var children_person=document.getElementById('Children').value;
+        var total_person=parseInt(children_person)+parseInt(adult_person);
+        if(total_person > maximum_person)
+        {
+                alert("Member excedded the limit !");
+		
+                if(document.getElementById('chil_person').value==0)
+                {
+                        document.getElementById('Children').selectedIndex=document.getElementById('chil_person').value;
+                }
+                else
+                {
+                        document.getElementById('Children').selectedIndex=document.getElementById('chil_person').value-1;
+                }
+                if(document.getElementById('add_person').value==0)
+                {
+                        document.getElementById('Adults').selectedIndex=document.getElementById('add_person').value;
+                }
+                else
+                {
+                        document.getElementById('Adults').selectedIndex=document.getElementById('add_person').value-1;
+                }
+        }
+        else
+        {
+                document.getElementById(fid).value=valp;
+        }
+}*/
+</script>
+<?php if($this->msg !='') { ?><span class="mws-form-message error" style="padding-bottom:45px;"><?php echo $this->msg;?></span> <?php } ?>
+
+
+<div class="BookingForm">
+    <div id = "property-nav_results" style="margin-bottom:5px;">
+	
+        <ul>
+            <li  <? echo ($this->step == '1' || $this->step == "") ? "class='active'" : "" ?>  ><a  href="<?= APPLICATION_URL ?>booking/index/ppty/<?= $this->ppty ?>/step/1">Step1</a><span >Holiday Rental Details</span></li>
+            <li <? echo ($this->step == '2') ? "class='active'" : "" ?> ><a  href="<? echo $mySession->partySize ? APPLICATION_URL . "booking/index/ppty/" . $this->ppty . "/step/2" : "javascript:alert('First Complete step 1')"; ?>">Step2</a><span >Your Details</span></li>
+            <li <? echo ($this->step == '3') ? "class='active'" : "" ?>><a  href="<? echo $mySession->bookingUser ? APPLICATION_URL . "booking/index/ppty/" . $this->ppty . "/step/3" : "javascript:alert('First Complete step 2')"; ?>">Step3</a><span>Property Extra&acute;s</span></li>
+            <li <? echo ($this->step == '4') ? "class='active'" : "" ?>><a  href="<? echo $mySession->bookingUser ? APPLICATION_URL . "booking/index/ppty/" . $this->ppty . "/step/4" : "javascript:alert('First Complete step 3')"; ?>">Step4</a><span >Payment / Confirmation</span></li>
+        </ul>
+    </div>
+    <!-- PayPal Logo --><table style="float:right;" border="0" cellpadding="10" cellspacing="0" align="center"><tr><td align="center"></td></tr><tr><td align="center"><a href="https://www.paypal.com/in/webapps/mpp/paypal-popup" title="How PayPal Works" onclick="javascript:window.open('https://www.paypal.com/in/webapps/mpp/paypal-popup','WIPaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700'); return false;"><img src="https://www.paypalobjects.com/webstatic/en_IN/mktg/logos/bdg_secured_by_pp_2line.png" border="0" alt="Secured by PayPal"></a><div style="text-align:center"><a href="https://www.paypal.com/in/webapps/mpp/how-paypal-works" style="text-decoration:none;"><font size="2" face="Arial" color="#0079CD"><b>How PayPal Works</b></font></a></div></td></tr></table><!-- PayPal Logo -->
+    <div class="bookContent" id="ppty_tabs">
+        <span id="PropertyTypeLabel" class="mg20" >
+            <?
+                if ($this->propertyData[0]['local_area_name'])
+                    echo $this->propertyData[0]['local_area_name'] . "&nbsp;&raquo;&nbsp;";
+                if ($this->propertyData[0]['sub_area_name'])
+                    echo $this->propertyData[0]['sub_area_name'] . "&nbsp;&raquo;&nbsp;";
+                if ($this->propertyData[0]['city_name'])
+                    echo $this->propertyData[0]['city_name'] . "&nbsp;&raquo;&nbsp;";
+                if ($this->propertyData[0]['state_name'])
+                    echo $this->propertyData[0]['state_name'] . "&nbsp;&raquo;&nbsp;";
+                echo $this->propertyData[0]['country_name'];
+            ?>
+        </span>
+        <span class="mgR20"><?= $this->propertyData[0]['ptyle_name'] ?></span>
+        <span class="mgR20"><?= ($this->propertyData[0]['bedrooms'] != "") ? $bed = $this->propertyData[0]['bedrooms'] . " Beds" : "" ?> <?= ($this->propertyData[0]['bathrooms'] != "") ? $bed = $this->propertyData[0]['bathrooms'] . " Bathrooms" : "" ?> </span>
+
+    </div>
+    <div class="bookContent mg20" id="ppty_tabs">
+
+        <div class="property-overview-row-frame mgB20 bookDetail"  >
+            <h3>Booking details</h3>
+            <div class="bookDetails">
+                <label>Property No: <span style="color:#000;"><?= $this->propertyData[0]['propertycode'] ?></span></label>
+                <label>Check-in Date: <span style="color:#000;"><?= $mySession->arrivalDate != "" ? $mySession->arrivalDate : "[ Not Determined]" ?></span></label>
+                <label>Number Of Nights: <span style="color:#000;"><?= $mySession->noOfNights != "" ? $mySession->noOfNights : "[ Not Determined]" ?></span></label>
+                <label>Departure Date: <span style="color:#000;"><?= $mySession->noOfNights != "" ? $mySession->departureDate : "[ Not Determined]" ?></span></label>
+                <label>Number in Party: <span style="color:#000;"><?= $mySession->partySize != "" ? $mySession->partySize : "[ Not Determined]" ?></span></label>
+                <label>Cost of your stay: <span style="color:#000;"><?= $mySession->totalCost != "" ? "&pound;" . round($mySession->totalCost) : "[ Not Determined]" ?></span></label>                        
+                <label>The maximum party size is: <span style="color:#000;"><?= $this->propertyData[0]['maximum_occupancy'] ?></span></label>
+                <label>Property Availability: <span style="color:#000;">
+                        <?
+                            if (cal_availability($mySession->pptyId, $mySession->arrivalDate, date('d-m-Y', strtotime($mySession->arrivalDate . ' + ' . ($mySession->noOfNights - 1) . ' day'))) == '1')
+                                echo "On Request";
+                            elseif (cal_availability($mySession->pptyId, $mySession->arrivalDate, date('d-m-Y', strtotime($mySession->arrivalDate . ' + ' . ($mySession->noOfNights - 1) . ' day'))) == '2')
+                                echo "Available";
+                            else
+                            {
+                                echo $this->propertyData[0]['cal_default'] == '0' ? "Available" : "On Request";
+                            }
+                        ?></span></label>
+                <label> <a href="<?= APPLICATION_URL ?>holiday-rentals/<?= $this->propertyData[0]['country_name'] ?>/<?= $this->propertyData[0]['state_name'] ?>/<?= $this->propertyData[0]['city_name'] ?>/<?= ($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '') ?><?= $this->propertyData[0]['bedrooms'] . "-Beds-" . $this->propertyData[0]['bathrooms'] . "-Bath-" . $this->propertyData[0]['ptyle_url'] ?>/<?= $this->propertyData[0]['propertycode'] ?>" class="ChangeDetails" id="Tabs_SizeOfPartyAndOptionalExtras_lbBackToAvailabilityPage" target="_blank">View Property Details</a></label>
+            </div>
+        </div>                        
+
+        <div class="clear"></div>
+
+
+        <?
+            switch ($this->step)
+            {
+                case '':
+                case '1':
+                    ?>
+
+                    <div class="mws-form-inline"><div class="mws-form-item small"><span class="left_deal_head_notes">Please tell us below how many persons will be staying in the Holiday Rental &ndash; and either insert your check&ndash;in dates/nights or verify they are correct.  NB: Modify your check&ndash;in date /no of nights here if needed. Click on the 'Update and Next Step' button to confirm and check all the details on Step 2.</span> </div></div>
+                    <div class="clear mgB20"></div>
+                    <form name="myform" id="mws-validate" action="<?php echo $this->url(array('controller' => 'booking', 'action' => 'processbook', 'ppty' => $this->ppty), 'default', true) ?>" method="post">
+                        <fieldset  id="SizeOfParty" class="search_form">
+
+
+                            <?= $this->myform->partySize ?>
+                            <div class="mgL100">
+                                <span class = "bookLabels">Adults:<span class="red">*</span></span>
+                                <?= $this->myform->Adults ?>
+                            </div>
+
+
+                            <br />
+
+                            <div class="mgL100">
+
+                                <span class = "bookLabels">Children:<span class="red">*</span></span>
+                                <?= $this->myform->Children ?>
+                            </div>
+                            <br />
+
+                            <div class="mgL100">
+
+                                <span class = "bookLabels"> Infants:<span class="red">*</span></span>
+                                <?= $this->myform->Infants ?>
+                            </div>
+
+                            <br>
+
+                            <div class="mgL100">
+                                <span  class="bookLabels"> Check-in Date:<span class="red">*</span></span>
+                                <?= $this->myform->date_from ?>
+                            </div>
+                            <br />
+
+                            <div class="mgL100">
+                                <span class="bookLabels"> Nights:<span class="red">*</span></span>	
+                                <?= $this->myform->date_to ?>
+                            </div>
+
+                            <br />
+
+                            <div class="mgL100">
+                                <span  class="bookLabels"> Departure Date:</span>
+                                <span  class="bookLabels" id="departureDatePlace" style="width:486px;font-weight:bold;"> 
+
+                                    <?= $this->myform->departureDates ?>
+                                </span>
+                            </div>
+
+                            <br />
+
+                            <div  class="mws-form-item small agreeCheck fullBlock mgL100" >
+                                <input type = "checkbox"  value="1" id = "agree" name = "agree" class = "required floatL"  style="width:20px;" /><span class="floatL">Please tick here to confirm that you have read and accepted our <a class= "link" target='_blank' href = '<?= APPLICATION_URL ?>contents/pages/slug/agency-terms-of-business' >Terms & Conditions</a> </span>
+                                <br />
+                                <label class = "error" id = 'checkBox' for = "agree" style="display:none;background:none;color:#F63611">This Field is required</label>
+                            </div>
+                            <br />
+                            <br />
+
+                         <?php if($this->msg =='') { ?>
+                            <div class="mws-button-row mgL100 mgT20 floatL" > 
+                                <button type="submit" class="mws-button">Update and Next Step</button>
+                            </div>
+							<?php  } else{ ?>
+								<div class="mws-button-row mgL100 mgT20 floatL" > 
+                                <button type="button" class="mws-button" style="opacity: 0.5;" onclick="alert('<?php echo $this->msg;?>');">Update and Next Step</button>
+                            </div>
+							<?php } ?>
+                        </fieldset>
+                    </form>       
+
+                    <?
+                    break;
+                case '2':
+                    ?>	
+                    <p >Customer Details: Are you are a registered customer? If so, please enter your email address here:</p> 
+
+                    <form action="<?php echo $this->url(array('controller' => 'booking', 'action' => 'index', 'ppty' => $this->ppty, 'step' => '3'), 'default', true) ?>" method="post">
+                        <div  class="search_form" id = "prvemailAddress">
+                            <input type="text" class = "mws-textinput floatL" name="emailAddress" id="emailAddress" value="<?= ($mySession->bookingUser['email_address'] != "") ? $mySession->bookingUser['email_address'] : (isLogged() ? $mySession->LoggedUser['email_address'] : "") ?>"  
+                                   <? echo (isLogged() || $mySession->bookingUser['email_address'] != "") ? "readonly='readonly'" : ""; ?>  style="width:400px;" />
+                            <? if (isLogged()): ?><a href='<?= APPLICATION_URL . "booking/index/ppty/" . $this->ppty . "/step/3" ?>' class="Btn"><button type="button" class="mws-button">Proceed to Step 3</button></a> 
+                            <? else: ?>
+                                <button type="button" class="mws-button" onclick="alreadyCustomer($('#emailAddress').val());">GO!</button>	
+
+                            <? endif; ?>
+                        </div>       				
+                    </form>
+                    <form name="myform" id="mws-validate"  action="<?php echo $this->url(array('controller' => 'booking', 'action' => 'process', 'ppty' => $this->ppty), 'default', true) ?>" method="post" novalidate="novalidate" class="mws-form" enctype="multipart/form-data" >
+
+
+
+                        <div class="clear"></div>             
+                        <div class="mws-form-message"><span class="red">*</span> Denotes the Mandatory Information to set up a Customer Account.</div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Title:</label><div class="mws-form-item small"><?= $this->myform->title ?></div></div></div>
+                        <!-- <div class="mws-form-inline"><div class="mws-form-row"><label>Username :</label><div class="mws-form-item small"><?= $this->myform->username ?></div></div></div>-->
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>First Name<span class="red">*</span> :</label><div class="mws-form-item small"><?= $this->myform->first_name ?></div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Surname<span class="red">*</span> :</label><div class="mws-form-item small"><?= $this->myform->last_name ?></div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Email Address<span class="red">*</span>:</label><div class="mws-form-item small"><?= $this->myform->email_address ?></div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Confirm Email Address<span class="red">*</span>:</label><div class="mws-form-item small"><?= $this->myform->cemail_address ?></div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Password<span class="red">*</span> :</label><div class="mws-form-item small"><?= $this->myform->password ?></div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-item small"><span class="left_deal_head_notes">Password Notes:  This is required to set up a Customer Area for you where you will be able to access your booking information and keep records of all your transactions with us.  You will also be automatically enrolled into our Deal-A-Trip Rewards programme and enjoy our Customer Benefits.</span> </div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Confirm Password<span class="red">*</span> :</label><div class="mws-form-item small"><?= $this->myform->password_c ?></div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Street Address<span class="red">*</span> :</label><div class="mws-form-item small"><?= $this->myform->address ?></div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>City/Location<span class="red">*</span> :</label><div class="mws-form-item small"><?= $this->myform->city_id ?></div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>State/Region/Area<span class="red">*</span> :</label><div class="mws-form-item small"><?= $this->myform->state_id ?></div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Country<span class="red">*</span> :</label><div class="mws-form-item small"><?= $this->myform->country_id ?></div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Zip/Postal Code<span class="red">*</span> :</label><div class="mws-form-item small"><?= $this->myform->zipcode ?></div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Home Telephone<span class="red">*</span>:</label><div class="mws-form-item small"><?= $this->myform->home_number ?></div></div></div>           
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Work Telephone:</label><div class="mws-form-item small"><?= $this->myform->work_number ?></div></div></div>           
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Mobile Telephone:</label><div class="mws-form-item small"><?= $this->myform->mobile_number ?></div></div></div>           
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>Personal Web Link :</label><div class="mws-form-item small"><?= $this->myform->webaddress ?></div></div></div>
+                        <div class="mws-form-inline" ><div class="mws-form-row"><label>Profile Photo :</label><div  class="mws-form-item small"><?= $this->myform->photo ?></div></div></div>
+                        <div class="mws-form-inline"><div class="mws-form-row"><label>&nbsp;</label><div  class="mws-form-item small left_deal_head_notes_register" style="float:none;">Please note your photo will automatically upload when you click to Submit the form.</div></div></div>                        
+                        <div class="mws-form-item small agreeCheck" >
+                            <input type = "checkbox"  value="1" checked="checked" id = "agree" name = "agree" class = "required"  /><span>I agree to the <a class= "link" target='_blank' href = '<?= APPLICATION_URL ?>contents/pages/slug/booking_your_holiday_home' >Customer Terms & Conditions</a> and <a target='_blank' class= "link" href = '<?= APPLICATION_URL ?>contents/pages/slug/privacy_policy' >Privacy Policy</a> of Deal A Trip. </span>
+                            <label class = "error" id = 'checkBox' for = "agree" style="display:none;background:none;color:#F63611">This field is required</label>
+                        </div>
+
+                        <div class="mws-button-row2">
+                            <input type="submit" value="Submit" class="mws-button" />
+                        </div>
+                    </form>
+
+                    <?
+                    break;
+
+                case '3':
+                    ?>			
+
+                    <style type="text/css">
+                        .search_form label.error {display:block;width:110px;}
+                    </style>		
+                    <form name="myform" id="mws-validate"  action="<?php echo $this->url(array('controller' => 'booking', 'action' => 'index', 'ppty' => $this->ppty, 'step' => '4'), 'default', true) ?>" method="post" novalidate="novalidate" class="mws-form" enctype="multipart/form-data" >	
+                        <h3>Customer Extras</h3>
+
+                        <span class="left_deal_head_notes">NB: Property Extras costs will be added to the 'Final Details' costing on Step 4.</span> 
+
+                        <div class="spclOffers">
+                            <div class="head" style="display:inline-block">
+                                <div class ="name" align="center">
+                                    Property Extra
+                                </div>
+
+                                <div class="cost" align="center">
+                                    Cost
+                                </div>
+
+                                <div class="option" align="center">
+                                    Optional/Compulsory
+                                </div>
+
+                                <div class="per" align="center">
+                                    Per Night/ Per Stay
+                                </div>
+
+                                <div class="tick" align="center">
+                                    Tick to Add
+                                </div>
+
+                            </div>
+
+                            <?
+                            $i = 0;
+                            foreach ($this->extras as $values)
+                            {
+                                ?>
+                                <div class="body" style="display:inline-block;width:100%;">
+                                    <div class ="name" align="center">
+                                        <?= $values['ename'] ?>
+                                    </div>
+
+                                    <div class="cost" align="center">
+                                        <?= "&pound;" . $values['eprice'] ?>
+                                    </div>
+
+                                    <div class="option" align="center">
+                                        <? echo $values['etype'] == '0' ? "Optional" : "Compulsory" ?>
+                                    </div>
+
+                                    <div class="per" align="center">
+                                        <? echo $values['stay_type'] == '0' ? "Per Night" : "Per Stay"; ?>
+                                    </div>
+
+                                    <div class="tick" align="center">
+                                        <input type="checkbox" name="check[]" id="check_<?= $i ?>"  value="<?= $values['eid'] ?>" <? echo $values['etype'] === '1' ? "checked='checked' disabled='disabled'  " : ""; ?>  <? echo in_array($values['eid'], $mySession->extrasId) ? "checked='checked'" : ""; ?> />
+                                    </div>
+
+                                </div>    
+
+
+                                <?
+                                $i++;
+                            }
+                            ?>
+
+
+                        </div>
+
+                        <br />
+                        <br />
+
+                        <p class="floatL">Do you have a Special Offer code for this Property?</p> 
+                        <div class="floatL search_form" style="width:auto;height:auto;">  
+                            <input type="text" name="spclCode" id="spclCode" style="width:100px;"/> 
+                            <label style='display:none;' class="error" >Enter Voucher</label> 
+                        </div>    
+
+                        <a class="mws-button Btn mgL20" href="javascript:__checkPromo();" >Apply</a>
+
+                        <br />
+                        <br />
+
+
+                        <?
+                        if (count($mySession->spclOfferId) == 0)
+                            $spcl_display = "style='display:none;'";
+                        else
+                            $spcl_display = "";
+                        ?>
+
+
+                        <div  id = "spcl_blck_book" <?= $spcl_display ?> > <!-- special offer div-->
+
+                            <h3>Special Offers Applied</h3>
+
+
+                            <span class="left_deal_head_notes">NB: Special Offer Discounts or Freebies will be adjusted / confirmed on Step 4.</span> 
+                            <div class="spclOffers" style="width:65.8%;overflow:hidden;">
+                                <div class="heads" style="display:inline-block">
+                                    <div class ="name" align="center">
+                                        Special Offer Name
+                                    </div>
+                                    <div class="option" align="center">
+                                        Discount Offers or Freebies
+                                    </div>
+                                </div>
+                                <div class="body" id="spcl_offer_body">
+                                    <?
+                                    $i = 0;
+                                    foreach ($this->spclOfferArr as $values)
+                                    {
+                                        ?>
+                                        <div class="bodies" style="display:inline-block;width:100%;">
+                                            <div class ="name" align="center" style="width:373px;">
+                                                <?= $values['type_name'] ?>
+                                            </div>
+                                            <div class="option" align="center">
+                                                <?
+                                                switch ($values['discount_type'])
+                                                {
+                                                    case '0': echo "(" . $values['promo_code'] . ") " . $values['discount_offer'] . "%";
+                                                        break;
+                                                    case '1': if ($values['free_nights_type'] == 'constant')
+                                                            echo "(" . $values['promo_code'] . ") " . $this->minrate . " x " . $values['discount_offer'];
+                                                        else
+                                                            echo "(" . $values['promo_code'] . ") " . $this->minrate . " x " . (float) (floor($mySession->noOfNights / $values['discount_offer']) > $values['max_night'] ? $values['max_night'] : floor($mySession->noOfNights / $values['discount_offer']));
+                                                        break;
+                                                    case '2': echo "(" . $values['promo_code'] . ") " . "Free Pool Heating";
+                                                        break;
+                                                    case '3': echo "(" . $values['promo_code'] . ") " . $values['id'] == '6' ? "33.3%" : "25%";
+                                                        break;
+                                                }
+                                                ?>
+
+                                            </div>
+                                        </div>
+                                        <?
+                                    }
+                                    ?>                            
+
+                                </div>
+                            </div> <!-- spcl offer div ends-->
+                        </div> 
+
+                        <?
+                        ?>				
+                        <div class="mgT50" > 
+                            <button type="submit" class="mws-button">Update and Next Step</button>
+                        </div>
+                    </form>	
+                    <?
+                    break;
+
+                case '4':
+                    ?>
+                    <h3>Final Booking Details</h3>
+                    <div class='bookDetails'> 
+                        <ol>
+                            <li><span style="color:#000;">Check-in Date:</span> <?= $mySession->arrivalDate ?></li>
+                            <li><span style="color:#000;">Number of Nights:</span> <?= $mySession->noOfNights ?></li>
+                            <li><span style="color:#000;">Departure Date:</span> <?= date('d-m-Y', strtotime($mySession->arrivalDate . " + " . ($mySession->noOfNights) . " day")) ?></li>
+                            <li><span style="color:#000;">Cost of Holiday Rental: </span><?= "&pound;" . round($mySession->totalCost) ?></li>
+                            <?
+                            $i = 0;
+                            do
+                            {
+                                ?>
+                                <li>
+
+                                    <span style="color:#000;"><?= $i == 0 ? "Special Offer Discount/Freebie:" : "&nbsp;"; ?></span>
+                                    <?
+                                    switch ($this->spclOfferArr[$i]['discount_type'])
+                                    {
+                                        case '0': echo "(" . $this->spclOfferArr[$i]['promo_code'] . ") " . $this->spclOfferArr[$i]['discount_offer'] . "%";
+                                            break;
+                                        case '1': if ($this->spclOfferArr[$i]['free_nights_type'] == 'constant')
+                                                echo "(" . $this->spclOfferArr[$i]['promo_code'] . ") " . $this->minrate . " x " . $this->spclOfferArr[$i]['discount_offer'];
+                                            else
+                                                echo "(" . $this->spclOfferArr[$i]['promo_code'] . ") " . $this->minrate . " x " . (float) (floor($mySession->noOfNights / $this->spclOfferArr[$i]['discount_offer']) > $this->spclOfferArr[$i]['max_night'] ? $this->spclOfferArr[$i]['max_night'] : floor($mySession->noOfNights / $this->spclOfferArr[$i]['discount_offer']));
+                                            break;
+                                        case '2': echo "Free Pool Heating";
+                                            break;
+                                        case '3': if ($this->spclOfferArr[$i]['id'] == '6')
+                                                echo "(" . $this->spclOfferArr[$i]['promo_code'] . ") " . "33.3%";
+                                            else
+                                                echo "(" . $this->spclOfferArr[$i]['promo_code'] . ") 25%";
+                                            break;
+                                        default: echo "N/A";
+                                    }
+                                    ?></li>
+                                <?
+                                $i++;
+                            }while ($this->spclOfferArr[$i] != "");
+                            ?>
+                            <li><span style="color:#000;">Revised Cost of Holiday Rental: </span><?= "&pound;" . round(calculate_rate_after_offer($this->ppty)) ?></li>
+                            <li><span style="color:#000;">Cost of Property Extras: </span><?= "&pound;" . round(calculate_extras()) ?></li>
+                            <li><span style="color:#000;">Total Cost of Holiday Rental: </span><?= "&pound;" . (round(calculate_extras()) + round(calculate_rate_after_offer($this->ppty))) ?></li>
+                            <li><span style="color:#000;">Online Booking Status: </span><?
+                if (cal_availability($mySession->pptyId, $mySession->arrivalDate, date('d-m-Y', strtotime($mySession->arrivalDate . ' + ' . ($mySession->noOfNights - 1) . ' day'))) == '1')
+                    echo "On Request";
+                elseif (cal_availability($mySession->pptyId, $mySession->arrivalDate, date('d-m-Y', strtotime($mySession->arrivalDate . ' + ' . ($mySession->noOfNights - 1) . ' day'))) == '2')
+                    echo "Available";
+                else
+                {
+                    echo $this->propertyData[0]['cal_default'] == '0' ? "Available" : "On Request";
+                }
+                            ?></li>
+                        </ol>
+                    </div>
+
+                    <p style="float:left;margin:10px 0">Please note: Available property usually confirmed immediately.  On Request property takes up to 24 hours.</p>
+
+
+
+                    <?
+                    $Totalpay = round(calculate_extras()) + round(calculate_rate_after_offer($this->ppty)); //calculated without adding credit card rate (2.9%)
+                    $advancePay = (float) $Totalpay * (0.2); //calculated advance without adding credit ad debit card rate
+                    $advancePay = round($advancePay);
+
+                    if (cal_availability($mySession->pptyId, $mySession->arrivalDate, date('d-m-Y', strtotime($mySession->arrivalDate . ' + ' . ($mySession->noOfNights - 1) . ' day'))) == '2' || $this->propertyData[0]['cal_default'] == '0')
+                    {
+
+                        if (find_payable_opt() == '2'):
+                            ?> 
+
+                            <span class="left_deal_head_notes" >Bookings for this property are Available for 'Instant online confirmation' (subject only to owner acceptance) which is why we require your payment information at this time.  NB: Bookings within 8 weeks of Arrival Date require full payment at the time of booking.After Completing your Booking you will shortly receive an email confirmation.</span> 
+
+                            <div class='paymentDetails'> 
+                                <label>Total Cost of holiday rental: </label><span class="aftrLabel" ><?= "&pound;" . (round(calculate_extras()) + round(calculate_rate_after_offer($this->ppty))) ?></span>
+                                <label>Fee for credit and debit cards(2.9%): </label><span class="aftrLabel"><? $creditpay = round((float) 0.029 * $Totalpay);
+                echo "&pound;" . $creditpay;
+                            ?></span>
+                                <label>Total Payment:</label><span class="aftrLabel" ><? $Totalpay += $creditpay;
+                echo "&pound;" . round($Totalpay);
+                ?></span>
+                            </div>
+
+
+                            <div class="clear mgT20">    
+                                <form  action="<?php echo $this->url(array('controller' => 'booking', 'action' => 'beforepay', 'ppty' => $this->ppty, 'step' => '4'), 'default', true) ?>"  name="payment_frm" id="payment_frm" method="post">  <!--action="https://www.sandbox.paypal.com/cgi-bin/webscr" -->
+                                    <input type="hidden" name="cmd" value="_xclick">
+                                    <input type="hidden" name="upload" value="1">
+                                    <input type="hidden" name="custom" value="">
+                                    <input type="hidden" name="business" value="<?= PAYPAL_EMAIL ?>">
+                                    <input type="hidden" name="amount" value="<?= round($Totalpay) ?>">
+                                    <input type="hidden" name="currency_code" value="UBP">
+                                    <input type="hidden" name="charset" value="utf-8">
+                                    <input type="hidden" name="payment_type" id = "payment_type" value="1">
+                                    <input type="hidden" name="full_pay_amount" id = "full_pay_amount" value="<?= round($Totalpay) ?>">
+                                    <input type="hidden" name="adv_pay_amount" id = "adv_pay_amount" value="<?= round($advancePay) ?>">
+                                    <input type="hidden" name="rm" value="2" >
+                                    <input type="hidden" name="first_name" value="<?= $mySession->bookingUser['first_name'] ?>">  
+                                    <input type="hidden" name="last_name" value="<?= $mySession->bookingUser['last_name'] ?>">  
+                                    <input type="hidden" name="address1" value="<?= $mySession->bookingUser['address'] ?>">  
+                                    <input type="hidden" name="address2" value="<?= $mySession->bookingUser['address1'] ?>">  
+                                    <input type="hidden" name="city" value="<?= $mySession->bookingUser['city_id'] ?>">  
+                                    <input type="hidden" name="state" value="<?= $mySession->bookingUser['state_id'] ?>">  
+                                    <input type="hidden" name="zip" value="<?= $mySession->bookingUser['zipcode'] ?>">  
+                                    <input type="hidden" name="night_phone_a" value="<?= $mySession->bookingUser['home_number'] ?>">  
+                                    <input type="hidden" name="night_phone_b" value="<?= $mySession->bookingUser['work_number'] ?>">  
+                                    <input type="hidden" name="night_phone_c" value="<?= $mySession->bookingUser['mobile_number'] ?>">  
+                                    <input type="hidden" name="email" value="<?= $mySession->bookingUser['email_address'] ?>">  
+                                    <input type="hidden" name="item_name"   value="<?= $this->propertyData[0]['property_title'] ?>"> 
+                                    <input type="hidden" name="notify_url" value="<?= APPLICATION_URL . 'booking/afterpay/Return/1' ?>">
+                                    <input type="hidden" name="return" id="return" value="<?= APPLICATION_URL . 'booking/afterpay/Return/1' ?>">
+                                    <input type="hidden" name="cancel_return" value="<?= APPLICATION_URL . 'booking/afterpay/Return/0' ?>">
+                                    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynow_LG.gif" name="submit" />
+                                </form>
+                            </div>
+
+                            <?
+                        else:
+                            ?>	
+
+                            <script type="text/javascript">
+                                        					
+                                function get_notes(id)
+                                {
+                                    if($(id).val() == '1')
+                                    {
+                                        $(".within_eight").slideToggle();
+                                        $(".before_eight").slideToggle();	
+                                    }
+                                    else
+                                    {
+                                        $(".before_eight").slideToggle();
+                                        $(".within_eight").slideToggle();								
+                                    }
+                                }
+                                                            
+                            </script>
+
+                            <div>
+
+
+                            </div>
+
+                            <span class="left_deal_head_notes within_eight">Bookings for this property are Available for 'Instant online confirmation' (subject only to owner acceptance) which is why we require your payment information at this time.  NB: Bookings within 8 weeks of Arrival Date require full payment at the time of booking.After Completing your Booking you will shortly receive an email confirmation.</span> 
+                            <span class="left_deal_head_notes before_eight">Bookings for this property are Available for 'Instant online confirmation' (subject only to owner acceptance) which is why we require your payment information at this time.  NB: Bookings not within 8 weeks of Arrival Date require a 20% deposit but you may select to pay in full if your prefer - Please select now whether to pay the 20% deposit or make full payment. NB: After Completing your Booking you will shortly receive an email confirmation.</span> 
+
+                            <div class='paymentDetails'> 
+                                <label>Total Cost of holiday rental: </label><span class="aftrLabel"><?= "&pound;" . $Totalpay ?></span>
+                                <div class="before_eight">
+                                    <label >Deposit payment(20%): </label><span class="aftrLabel"><? echo "&pound;" . $advancePay; ?></span>	
+                                    <label >Fee for credit and debit cards(2.9%): </label><span class="aftrLabel"><?
+                    $creditpay = round((float) 0.029 * $advancePay);
+                    $advancePay = round($creditpay + $advancePay);
+                    echo "&pound;" . round($creditpay);
+                            ?></span>
+                                </div>                
+                                <div class="within_eight"><label >Fee for credit and debit cards(2.9%): </label><span class="aftrLabel"><? $creditpay1 = round((float) 0.029 * $Totalpay);
+                    echo "&pound;" . round($creditpay1);
+                    ?></span></div>
+
+                                        <!--<label>Total Payment:</label> <span class="aftrLabel"></span>-->
+                    <? $Totalpay += round((float) 0.029 * $Totalpay); ?>
+                                <label style="width:100%;">Pay</label>
+                                <label><input checked="checked" type="radio" checked="checked" name="full" value = '2' onclick="$('#payment_type').val(2);get_notes(this);" /> Advance Payment: <? echo "(&pound;" . $advancePay . ")"; ?></label>
+                                <label><input   type="radio" name="full" value = '1' onclick="$('#payment_type').val(1);get_notes(this);"/> Full Payment: (&pound;<?= round($Totalpay) ?>)</label>                        
+                            </div>
+                            <div class="clear mgT20">   
+                                <form  action="<?php echo $this->url(array('controller' => 'booking', 'action' => 'beforepay', 'ppty' => $this->ppty, 'step' => '4'), 'default', true) ?>"  name="payment_frm" id="payment_frm" method="post">  <!--action="https://www.sandbox.paypal.com/cgi-bin/webscr" -->
+                                    <input type="hidden" name="cmd" value="_xclick">
+                                    <input type="hidden" name="upload" value="1">
+                                    <input type="hidden" name="custom" value="">
+                                    <input type="hidden" name="business" value="<?= PAYPAL_EMAIL ?>">
+                                    <input type="hidden" name="amount" value="<?= round($Totalpay) ?>">
+                                    <input type="hidden" name="currency_code" value="UBP">
+                                    <input type="hidden" name="charset" value="utf-8">
+                                    <input type="hidden" name="payment_type" id = "payment_type" value="2">
+                                    <input type="hidden" name="full_pay_amount" id = "full_pay_amount" value="<?= round($Totalpay) ?>">
+                                    <input type="hidden" name="adv_pay_amount" id = "adv_pay_amount" value="<?= round($advancePay) ?>">
+                                    <input type="hidden" name="rm" value="2" >
+                                    <input type="hidden" name="first_name" value="<?= $mySession->bookingUser['first_name'] ?>">  
+                                    <input type="hidden" name="last_name" value="<?= $mySession->bookingUser['last_name'] ?>">  
+                                    <input type="hidden" name="address1" value="<?= $mySession->bookingUser['address'] ?>">  
+                                    <input type="hidden" name="address2" value="<?= $mySession->bookingUser['address1'] ?>">  
+                                    <input type="hidden" name="city" value="<?= $mySession->bookingUser['city_id'] ?>">  
+                                    <input type="hidden" name="state" value="<?= $mySession->bookingUser['state_id'] ?>">  
+                                    <input type="hidden" name="zip" value="<?= $mySession->bookingUser['zipcode'] ?>">  
+                                    <input type="hidden" name="night_phone_a" value="<?= $mySession->bookingUser['home_number'] ?>">  
+                                    <input type="hidden" name="night_phone_b" value="<?= $mySession->bookingUser['work_number'] ?>">  
+                                    <input type="hidden" name="night_phone_c" value="<?= $mySession->bookingUser['mobile_number'] ?>">  
+                                    <input type="hidden" name="email" value="<?= $mySession->bookingUser['email_address'] ?>">  
+                                    <input type="hidden" name="item_name"   value="<?= $this->property_title ?>"> 
+                                    <input type="hidden" name="notify_url" value="<?= APPLICATION_URL . 'booking/afterpay/Return/1' ?>">
+                                    <input type="hidden" name="return" id="return" value="<?= APPLICATION_URL . 'booking/afterpay/Return/1' ?>">
+                                    <input type="hidden" name="cancel_return" value="<?= APPLICATION_URL . 'booking/afterpay/Return/0' ?>">
+                                    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynow_LG.gif" name="submit" />
+                                </form>
+                            </div>
+                <?
+                endif;
+            }
+            ?>
+
+
+
+                    <div class="clear"></div>
+            <?
+            if (cal_availability($mySession->pptyId, $mySession->arrivalDate, date('d-m-Y', strtotime($mySession->arrivalDate . ' + ' . ($mySession->noOfNights - 1) . ' day'))) == '2' || $this->propertyData[0]['cal_default'] == '0')
+            {
+                ?>
+
+
+
+
+                        <!-- <form action="https://api-3t.sandbox.paypal.com/nvp" method="post">
+                             <input type="hidden" name="item_name" value="hat">
+                             <input type="hidden" name="item_number" value="123">
+                             <input type="hidden" name="amount" value="15.00">
+                             <input type="hidden" name="first_name" value="John">
+                             <input type="hidden" name="last_name" value="Doe">
+                             <input type="hidden" name="address1" value="9 Elm Street">
+                             <input type="hidden" name="address2" value="Apt 5">
+                             <input type="hidden" name="city" value="Berwyn">
+                             <input type="hidden" name="state" value="PA">
+                             <input type="hidden" name="zip" value="19312">
+                             <input type="hidden" name="night_phone_a" value="610">
+                             <input type="hidden" name="night_phone_b" value="555">
+                             <input type="hidden" name="night_phone_c" value="1234">
+                             <input type="hidden" name="email" value="jdoe@zyzzyu.com">
+                             <input type="image" name="submit" border="0" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynow_LG.gif" alt="PayPal - The safer, easier way to pay online">
+                                     </form>-->
+
+                    </div>
+                <?
+            }
+            else
+            {
+                ?>
+                    <span class="left_deal_head_notes mgB20">Bookings for this property are On Request which is why we do not require your payment information at this time. Please have your payment details ready as on receipt of your online booking we will make the reservation for the Holiday Rental property and telephone you to confirm &dash; if you prefer to please call us please do so on 0845 121 0160 (quoting your booking reference no) to put the payment information in hand ready for us  to process. After Completing your Booking you will shortly receive an email confirmation.</span> 
+
+                    <a href="<?= APPLICATION_URL ?>booking/onrequestpay" class="Btn"><input type="button" class="mws-button"  value="Complete your Booking"/></a>
+
+                <?
+            }
+            break;
+    }
+?>     
+</div>   <!-- content of booking-->
+
+
+
+
+

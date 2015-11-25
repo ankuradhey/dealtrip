@@ -1,0 +1,55 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><?=$this->pageTitle?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" valign="middle"><form name="photoform" id="photoform" enctype="multipart/form-data" action="<?php echo $this->url(array('controller'=>'photo', 'action'=>'save','photoId'=>$this->photoData['photo_id']), 'default', true)?>" method="post"><table width="100%" cellpadding="0" cellspacing="0">
+
+
+<tr >
+<td align="left" valign="middle">Photo Path :</td>
+<td align="left" valign="middle"><?=$this->myform->photo_path2?></td>
+</tr>
+
+
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td align="left" valign="middle">Photo Title :</td>
+<td align="left" valign="middle"><?=$this->myform->photo_title?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<? if($this->photoData['photo_id']!="")
+{ ?>
+<tr>
+<td align="left" valign="middle">Uploaded On :</td>
+<td align="left" valign="middle"><?=$this->myform->up_date?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<? } ?> 
+<tr>
+<td align="left" valign="middle">Photo Description :</td>
+<td align="left" valign="middle"><?=$this->myform->photo_description?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<td align="left" valign="middle">Photo Status :</td>
+<td align="left" valign="middle"><?=$this->myform->photo_status?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<tr>
+
+
+
+<td align="left" colspan="2" valign="top">
+<input type="submit" <? if($this->photo_path['photo_id']!=""){ echo 'value="Update"';} else { echo 'value="Add"'; }  ?>  class="myButton" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="Back" id="Back" value="Back" class="myButton" onclick="window.location='<?=APPLICATION_URL_ADMIN?>photo/index'" /></td>
+</tr>
+</table></form></td>
+</table>
+
+<style>
+.textarea_medium { height:215px;}
+</style>

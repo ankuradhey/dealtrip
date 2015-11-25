@@ -1,0 +1,55 @@
+ 
+ <div style="width:85%; margin-left:7%;px" >
+  <div class="mws-panel grid_8">
+    <div class="mws-panel-header"><span class="mws-i-24 i-check"><?=$this->pageHeading?></span></div>
+    <div class="mws-panel-body">
+        <form name="myform" id="mws-validate" action="<?=$this->url(array('controller'=>'property', 'action'=>'processamenity'), 'default', true)?>" method="post" novalidate="novalidate" class="mws-form">
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><label>Amenity Name :</label><div class="mws-form-item large"><?=$this->myform->amenity_name?></div></div></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><label>Description :</label><div class="mws-form-item large"><?=$this->myform->description?></div></div></div>              
+                
+           <!--     <div class="mws-form-row">
+                    				<label>Display on</label>
+                    				<div class="mws-form-item large">
+                                    	<div class="mws-dualbox clearfix">
+                                        	<div class="mws-dualbox-col1">
+                                            	<div class="mws-dualbox-filter clearfix">
+                                                    <label for="box1Filter">Filter</label>
+                                                    <input type="text" id="box1Filter" class="mws-textinput" />
+                                                    <button type="button" id="box1Clear">X</button>
+                                                </div>
+
+                                                <?=$this->myform->box1View?>
+                                                <span id="box1Counter" class="countLabel"></span>
+                                                <select id="box1Storage"></select>
+                                            </div>
+                                            <div class="mws-dualbox-col2">
+                                                <button id="to2" type="button">&gt;</button>
+                                                <button id="allTo2" type="button">&gt;&gt;</button>
+                                                <div class="clear"></div>
+                                                <button id="allTo1" type="button">&lt;&lt;</button>
+                                                <button id="to1" type="button">&lt;</button>
+                                            </div>
+                                            <div class="mws-dualbox-col3">
+	                                            <div class="mws-dualbox-filter clearfix">
+    	                                            <label for="box2Filter">Filter</label>
+        	                                        <input type="text" id="box2Filter" class="mws-textinput" />
+            	                                    <button type="button" id="box2Clear">X</button>
+                                                </div>
+
+                                                <?=$this->myform->box2View?>
+                                                <span id="box2Counter" class="countLabel"></span>
+                                                <select id="box2Storage"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                    			</div> -->
+                           
+                
+                <div class="mws-form-inline"><div class="mws-form-row"><label>Status :</label><div class="mws-form-item large"><?=$this->myform->amenity_status?></div></div></div>
+                
+            <div class="mws-button-row"><input type="submit" tabindex="14" value="Submit" class="mws-button red" /></div>
+        </form>
+    </div>    	
+</div> 
+</div>

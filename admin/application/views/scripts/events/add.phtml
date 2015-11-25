@@ -1,0 +1,111 @@
+<style type="text/css">
+.ui-autocomplete {
+	background-color: white;
+	width: 300px;
+	border: 0px solid #cfcfcf;
+	list-style-type: none;
+	padding-left: 5px;
+	line-height:25px;
+	cursor:pointer;
+}
+</style>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="<?=JS_URL?>jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="<?=JS_URL?>jquery-ui-1.8.1.custom.min.js"></script>
+<script type="text/javascript" src="<?=JS_URL?>main.js"></script>
+<script language="javascript">
+function AddMoreImages()
+{
+	for(var i=1;i<=10;i++)
+	{
+		if(document.getElementById('CounterImage'+i).style.display=="none")
+		{
+			document.getElementById('CounterImage'+i).style.display="block";
+			break;
+		}
+	}
+}
+</script>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><?=$this->pageHeading?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" valign="middle"><form name="myform" id="myform" action="<?php echo $this->url(array('controller'=>'events', 'action'=>'savenewevent'), 'default', true)?>" method="post" enctype="multipart/form-data"><table width="100%" cellpadding="5" cellspacing="5">
+<tr>
+<td width="22%" align="left" valign="top">Event Name/Title</td>
+<td width="6%" align="center" valign="top"><strong>:</strong></td>
+<td width="72%" align="left" valign="top"><?=$this->myform->event_title?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Event Description</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->myform->event_description?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Event Date</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->myform->event_date?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Event Time From</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><div style="float:left;"><?=$this->myform->hour_from?>&nbsp;</div><div style="float:left;"><?=$this->myform->minute_from?>&nbsp;</div><div style="float:left;"><?=$this->myform->ampm_from?></div></td>
+</tr>
+<tr>
+<td align="left" valign="top">Event Time To</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><div style="float:left;"><?=$this->myform->hour_to?>&nbsp;</div><div style="float:left;"><?=$this->myform->minute_to?>&nbsp;</div><div style="float:left;"><?=$this->myform->ampm_to?></div></td>
+</tr>
+<tr style="padding:0px;margin:0px;">
+<td align="left" valign="top" colspan="3" style="padding:0px;margin:0px;">
+<?
+for($counter=1;$counter<=10;$counter++)
+{
+	$imageName='event_image'.$counter;
+	$ImagePath='event_image_Path'.$counter;
+	$style="none";
+	if($counter=='1')
+	{
+		$style="block";
+	}
+?>
+<div id="CounterImage<?=$counter?>" style="display:<?=$style?>;"><table width="100%" cellpadding="3" cellspacing="0" style="line-height:25px;">
+<tr>
+<td width="22%" align="left" valign="top">Event Image <?=$counter?></td>
+<td width="6%" align="center" valign="top" style="padding-left:7px;"><strong>:</strong></td>
+<td width="72%" align="left" valign="top" style="padding-left:12px;"><?=$this->myform->$imageName?><?=$this->myform->$ImagePath?></td>
+</tr>
+</table></div>
+<?
+}
+?>
+<table width="100%" cellpadding="3" cellspacing="0" style="line-height:25px;">
+<tr>
+<td align="left" valign="top" colspan="3"><a style="cursor:pointer;" onclick="Javascript:AddMoreImages();">Add More Images</a></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td align="left" valign="top">Event Venue</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->myform->event_venue?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Event Address</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->myform->address?><?=$this->myform->latitude?><?=$this->myform->longitude?></td>
+</tr>
+<tr>
+  <td align="left" valign="top" colspan="3"><div id="map_canvas" style="width:100%;height:250px;border: solid 1px #cccccc;padding:2px;"></div></td>
+</tr>
+<tr>
+<td align="center" valign="top" colspan="3"><input type="submit" name="Save Event" id="Save Event" value="Save Event" class="myButton" /></td>
+</tr>
+</table></form></td>
+</tr>
+</table>

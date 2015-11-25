@@ -1,0 +1,548 @@
+ <!-- Panels Start -->
+<link href="<?= CSS_URL ?>style2.css" rel="stylesheet" />
+<style>
+.mws-textinput {
+    background-color: #ffffff;
+    border: 1px solid #c5c5c5;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(128, 128, 128, 0.1) inset;
+    box-sizing: border-box;
+    color: #323232;
+    margin: 0;
+    margin-top: 10px;
+    outline: medium none;
+    padding: 6px 7px;
+}
+label{
+    margin-top: 10px;
+}
+</style>
+<div>
+    <div class="mws-panel grid_8">
+        <div class="mws-panel-header"><span class="mws-i-24 i-check"><?= $this->pageHeading ?></span></div>
+        <div class="mws-panel-body" >
+            <div class="mws-panel-toolbar top clearfix " style="float:right;">
+                <ul>
+                    <li><a class="mws-ic-16 ic-arrow-undo" href="<?=APPLICATION_URL_ADMIN?>booking/index" title="Back">Back</a></li>
+                </ul>
+            </div>
+            <div style="padding:20px;">	
+                <form method="POST" action="">
+                    <div class="mws-form-inline">
+                        <div class="mws-form-row">
+                            <label><b>Size of party :</b></label>
+                            <span style=" margin-left: 100px;">
+                                <label> 
+                                    <input type="text" onblur="checkValue(this);" value="<?=$this->bookingData[0]['adult']?>" name="no_adult" id="no_adult" maxlength="2" style="width:25px;"/> Adults,
+                                    
+                                    <input type="text" onblur="checkValue(this);" value="<?=$this->bookingData[0]['children']?>" name="no_child" id="no_child" maxlength="2" style="width:25px;"/>  Children,
+                                    
+                                    <input type="text" onblur="checkValue(this);" value="<?=$this->bookingData[0]['infants']?>" name="no_infants" id="no_infants" maxlength="2" style="width:25px;"/> Infants
+                                    
+                                    <? $member=$this->bookingData[0]['adult']+$this->bookingData[0]['children'];?>
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mws-form-inline">
+                        <div class="mws-form-row">
+                            <label>&nbsp;</label>
+                            <span style=" margin-left: 100px;">
+                                <label> 
+                                <div id="errmsg1" style=" color: red;"></div>
+                                <div id="errmsg2" style=" color: red;"></div>
+                                <div id="errmsg3" style=" color: red;"></div>
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mws-form-inline">
+                        <div class="mws-form-row">
+                            <label><b>Property No :</b></label>
+                            <span style=" margin-left: 100px;">
+                                <select name='propertyId' id='propertyId' class='mws-textinput valid' onchange="changePrice(this.value);">
+                                    <?php 
+                                    foreach($this->propertyData AS $key=>$propertyData){
+                                        if($propertyData['id']==$this->bookingData[0]['property_id']){
+                                            ?><option value="<?php echo $propertyData['id'];?>" selected="selected"><?php echo $propertyData['propertycode'];?></option><?php
+                                        }else{
+                                            ?><option value="<?php echo $propertyData['id'];?>"><?php echo $propertyData['propertycode'];?></option><?php
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mws-form-inline">
+                        <div class="mws-form-row">
+                            <label><b>User Information :</b></label>
+                            <span style=" margin-left: 100px;">
+                                    <table cellpadding="10" cellspacing="10" style=" margin-left: 190px;">
+                                    	<tr>
+                                            <td>Name:</td>
+                                            <td><? switch($this->bookingData[0]['title'])
+                                                    {
+                                                        case '0': echo "&nbsp;Mr. "; break;
+                                                        case '1': echo "&nbsp;Mrs. "; break;
+                                                        case '2': echo "&nbsp;Miss. "; break;
+                                                        case '3': echo "&nbsp;Ms. "; break;
+                                                        case '4': echo "&nbsp;Dr. "; break;
+                                                    } echo $this->bookingData[0]['first_name']." ".$this->bookingData[0]['last_name']?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Email :</td>
+                                            <td>&nbsp;<?  echo $this->bookingData[0]['email_address'];?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Street Address:</td>
+                                            <td>&nbsp;<?  echo $this->bookingData[0]['address'];?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>City/Location:</td>
+                                            <td>&nbsp;<?  echo $this->bookingData[0]['city_id'];?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>State/Region/Area:</td>
+                                            <td>&nbsp;<?  echo $this->bookingData[0]['state_id'];?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Country:</td>
+                                            <td>&nbsp;<?  echo $this->bookingData[0]['state_id'];?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zip/Postal Code:</td>
+                                            <td>&nbsp;<?  echo $this->bookingData[0]['zipcode'];?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Home Telephone:</td>
+                                            <td>&nbsp;<?  echo $this->bookingData[0]['home_number'];?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Work Telephone:</td>
+                                            <td>&nbsp;<?  echo $this->bookingData[0]['work_number'];?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mobile Telephone:</td>
+                                            <td>&nbsp;<?  echo $this->bookingData[0]['mobile_number'];?></td>
+                                        </tr>
+                                    </table>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mws-form-inline">
+                        <div id="extra_div" class="mws-form-row">
+                            <label><b>Extras :</b></label>
+                            
+                                    <? if(count($this->extraData)>0){ ?>
+                                <span style=" margin-left: 100px;">
+                                    <label> 
+                                    	<table style="width:100%;margin-left: 190px;">
+                                    	<thead>
+                                        	<tr> 
+                                                <td style="width:25%;"><strong>Property Extra</strong></td>
+                                                <td style="width:20%;"><strong>Cost</strong></td>
+                                                <td style="width:27%;"><strong>Optional/Compulsory</strong></td>
+                                                <td style="width:28%;"><strong>Per Night/Stay</strong></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?
+                                            foreach($this->extraData as $values)
+                                            {
+                                           ?>	 
+                                                <tr>
+                                                    <td><?=$values['option_name']?></td>
+                                                    <td>&pound;<?=round($values['option_price'])?></td>
+                                                    <td><?=$values['option_status']=='1'?"Compulsory":"Optional"?></td>
+                                                    <td><?=$values['stay_type']=='0'?"Night":"Stay"?></td>
+                                                </tr>	
+                                           <?    
+                                            }
+                                           ?>
+                                        </tbody>
+                                        </table>
+                                    </label>
+                                </span>
+                                    <?
+                                    }
+                                    else{
+                                        ?><span style=" margin-left: 145px;">
+                                            <label> No Extras</label>
+                                        </span>
+                                    <?php }
+                                    ?>
+                        </div>
+                    </div>
+                    <div class="mws-form-inline">
+                        <div class="mws-form-row">
+                            <label><b>Special Offers :</b></label>
+                            <span style=" margin-left: 100px;" id="special_offer">
+                                <label> 
+                                    <? if($this->bookingData[0]['type_name']){ ?>
+                                    <table style="width:100%;margin-left: 190px;">
+                                    	<thead>
+                                        	<tr> 
+                                                <td style="width:11%;"><strong>Special Offer Name</strong></td>
+                                                <td style="width:20%;"><strong>Discount Offers or Freebies</strong></td>
+                                                <!--<td style="width:27%;"><strong>Optional/Compulsory</strong></td>
+                                                <td style="width:28%;"><strong>Per Night/Stay</strong></td>-->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                    <td><?=$this->bookingData[0]['type_name']?></td>
+                                                    <td><? 
+                                                            switch($this->bookingData[0]['discount_type'])
+                                                            {
+                                                                            case '0':   echo "(".$this->bookingData[0]['promo_code'].") ".$this->bookingData[0]['discount_offer']."%" ; break;
+                                                                            case '1':	echo "(".$this->bookingData[0]['promo_code'].") ".$this->minrate." x ".$this->bookingData[0]['discount_offer']; break;
+                                                                            case '2':	echo "(".$this->bookingData[0]['promo_code'].") "."Free Pool Heating"; break;
+                                                                            case '3':	echo "(".$this->bookingData[0]['promo_code'].") ".$this->bookingData[0]['id']=='6'?"33.3%":"25%"; break;
+                                                            }
+                                                        ?>
+                                                    </td>
+                                                </tr>	
+                                        </tbody>
+                                    </table>
+                                    <?
+                                        }
+                                        else
+                                        echo "No Special Offer";
+                                    ?>
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mws-form-inline">
+                        <div class="mws-form-row">
+                            <label><b>Cost Details :</b></label>
+                            <span style=" margin-left: 100px;">
+                                <label>
+                                    <table width ="50%" style=" margin-left: 190px;">
+                                    	<tr>
+                                			<td>Cost of Holiday Rental: </td>
+                                                        <td>&pound;<input type="text" class="mws-textinput" value="<?=round($this->bookingData[0]['rental_amt'])?>" onblur="calculateDiscount();" id="holiday_rental_cost" name="holiday_rental_cost"/></td>
+                                	    </tr>
+                                        <tr>
+                                			<td>Special Offer Discount/Freebie</td>
+                                            <td>  <?	$cost = $this->bookingData[0]['rental_amt'];
+                                                                switch($this->bookingData[0]['discount_type'])
+                                                                 {
+                                                                       case '0':        $discount = $this->bookingData[0]['discount_offer'];
+                                                                                        echo "(".$this->bookingData[0]['promo_code'].") ".$this->bookingData[0]['discount_offer']."%";  
+                                                                                               $cost = round($this->bookingData[0]['rental_amt'] - $this->bookingData[0]['rental_amt']*($this->bookingData[0]['discount_offer']/100));
+                                                                                               break;
+                                                                       case '1':	echo "(".$this->bookingData[0]['promo_code'].") ".$this->minrate." x ".$this->bookingData[0]['discount_offer']; 
+                                                                                               $cost = round($this->bookingData[0]['rental_amt'] - $this->minrate*$this->bookingData[0]['discount_offer']);
+                                                                                               break;
+                                                                       case '2':	echo "Free Pool Heating"; break;
+                                                                       case '3':	if($this->bookingData[$i]['id']=='6')
+                                                                                               {	
+                                                                                                       echo "(".$this->bookingData[0]['promo_code'].") "."33.3%"; 
+                                                                                                       $cost = round($this->bookingData[0]['rental_amt'] - 0.333*$this->bookingData[0]['rental_amt']);
+                                                                                               }
+                                                                                               else
+                                                                                               {
+                                                                                                       echo "(".$this->bookingData[0]['promo_code'].") 25%";
+                                                                                                       $cost = round($this->bookingData[0]['rental_amt'] - 0.25*$this->bookingData[0]['rental_amt']);
+                                                                                               }
+                                                                                               break;
+                                                                       default:  echo "N/A";
+                                                                 }
+                                               ?>
+                                                &nbsp;<input type="hidden" value="<?php echo $discount;?>" id="sdo">
+                                             </td>
+                                	    </tr>
+                                        <tr>
+                                        	<td>Revised Cost of Holiday Rental:</td>
+                                            <td>&pound;<span id="revised_holiday_cost"><?=round($cost)?></span></td>
+                                        </tr>
+                                        <tr>
+                                        	<td>Cost of Property Extras: </td>
+                                            <td>
+                                            <?php $cost += round(calculate_book_extras($this->bookingData[0]['booking_id'])); ?>
+<!--                                            &pound;<input type="text" class="mws-textinput" value="<?php echo round(calculate_book_extras($this->bookingData[0]['booking_id']));?>" onblur="finalcost();" id="extra_cost" name="extra_cost"/>-->
+                                                &pound;<span id="extra_cost"><?php echo round(calculate_book_extras($this->bookingData[0]['booking_id']));?></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                        	<td>Total Cost of Holiday Rental:</td>
+                                                <td>&pound;<span id="total_rental_cost"><?=round($cost)?></span></td>
+                                        </tr>
+                                    </table>
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mws-form-inline">
+                        <div class="mws-form-row">
+                            <label><b>Check-in Date :</b></label>
+                            <span style=" margin-left: 100px;">
+                                <input type="text" name="date_from" id = "date_from" class="mws-textinput required date" onblur="getDepartureDate();" title = "date from" value="<?=date('d/m/Y',strtotime($this->bookingData[0]['date_from']))?>"/>
+                                <input type="hidden" id = "get_date_from" value="<?=date('d/m/Y',strtotime($this->bookingData[0]['date_from']))?>"/>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mws-form-inline">
+                        <div class="mws-form-row">
+                            <label><b>No Of Nights :</b></label>
+                            <span style=" margin-left: 110px;">
+                                <input type="text" name="no_of_night" id="no_of_night" class="mws-textinput" value='<?=dateDiff($this->bookingData[0]['date_from'],$this->bookingData[0]['date_to'])?>' title = "No of nights" onblur="getDepartureDate();">
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mws-form-inline">
+                        <div class="mws-form-row">
+                            <label><b>Departure Date :</b></label>
+                            <span style=" margin-left: 100px;">
+                                <label> 
+                                    <label><span id="getToDate"><?=date('d/m/Y',strtotime($this->bookingData[0]['date_to']))?></span></label>
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mws-form-inline">
+                        <div class="mws-form-row">
+                            <label><b>Property Availability :</b></label>
+                            <span style=" margin-left: 68px;">
+                                <label> 
+                                    <?
+                                if($this->bookingData[0]['booking_type']==0)
+								{
+									echo "Available";	
+								}
+								else
+								{
+									echo "On Request";
+								}
+								?>
+								<?=$this->booking_message?>
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mws-form-inline">
+                        <div class="mws-form-row">
+                            <label><b>Payment Information :</b></label>
+                            <span style=" margin-left: 100px;">
+                                <label> 
+                                    <table width="50%" style=" margin-left: 190px;">
+                                <?	
+									if($this->bookingData[0]['booking_type'] == '0'):
+									if($this->bookingData[0]['paid_status']== '1')
+									{
+								?>
+                                		<tr>
+                                        	<td>Deposit Payment(20%):</td>
+                                            <td>&pound;<?     echo round(0.2*$cost);   $cost = round(0.2*$cost); ?></td>
+                                        </tr>
+                                        <tr>
+                                        	<td>Fee for credit and debit cards(2.9%):</td>
+                                            <td>&pound;<?  echo round(0.029*$cost);   $cost = round(0.029*$cost)+$cost; ?></td>
+                                        </tr>
+                                        <tr>
+                                        	<td>Amount Paid:</td>
+                                            <td>&pound;<?=$cost?></td>
+                                        </tr>
+                                
+										
+								<?	}
+									else
+									{
+								?>		
+										 <tr>
+                                        	<td>Fee for credit and debit cards(2.9%):</td>
+                                            <td>&pound;<? echo round(0.029*$cost);   $cost = round(0.029*$cost + $cost); ?></td>
+                                        </tr>
+                                        <tr>
+                                        	<td>Amount Paid:</td>
+                                            <td>&pound;<?=$cost?></td>
+                                        </tr>
+								<?	}
+									endif;
+								?>
+                                	</table>
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mws-button-row1" style="margin-left:400px;">
+                        <input type="submit" id="" class="mws-button red" name="" value="Modify Booking Details"/>
+                    </div>
+                </form>
+            </div>
+        </div>	           
+    </div>
+</div>
+                <script type="text/javascript">
+                    var extraCost = 0;
+                    $("#no_adult").keypress(function (e) {
+                        //if the letter is not digit then display error and don't type anything
+                        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                           //display error message
+                           $("#errmsg1").html("Digits Only").show().fadeOut(8000);
+                                  return false;
+                       }
+                      });
+                      $("#no_child").keypress(function (e) {
+                        //if the letter is not digit then display error and don't type anything
+                        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                           //display error message
+                           $("#errmsg2").html("Digits Only").show().fadeOut(8000);
+                                  return false;
+                       }
+                      });
+                      $("#no_infants").keypress(function (e) {
+                        //if the letter is not digit then display error and don't type anything
+                        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                           //display error message
+                           $("#errmsg3").html("Digits Only").show().fadeOut(8000);
+                                  return false;
+                       }
+                      });
+                      function checkValue(obj){
+                          if(obj.value==''){
+                              $('#'+obj.id).val('0');
+                          }
+                      }
+                    function changePrice(val){
+                        var flag = 0;
+                        if($("#no_adult").val()==0 && $("#no_child").val()==0 && $("#no_infants").val()==0){
+                            flag = 1;
+                        }
+                        if(flag==1){
+                            alert('Please enter no of Adult/Child');
+                        }else{
+                            var totalsize = parseInt($("#no_adult").val())+parseInt($("#no_child").val());
+                            $.ajax({
+                                type: "POST",
+                                url: "<?php echo APPLICATION_URL_ADMIN ?>booking/getmemberlimit",
+                                data: {pptycode: $('#propertyId :selected').text()},
+                                async: false,
+                                dataType: "json",
+                                success: function(msg) {
+                                    // if the user exists, it returns a string "true"
+                                    if (msg.maximumOccupancy < totalsize){
+                                        alert('Person limit cross, Decrease capacity');
+                                        $("#no_adult").val(0);
+                                        $("#no_child").val(0);
+                                        //success = false;  // already exists
+                                    }else {
+                                        $('#special_offer').html('<label> No Special Offer </label>');
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "<?php echo APPLICATION_URL_ADMIN ?>booking/checkavailability",
+                                            data: {Adults: <?=$this->bookingData[0]['adult']?>, Children: <?=$this->bookingData[0]['children']?>, date_from: $('#get_date_from').val(), date_to: <?=dateDiff($this->bookingData[0]['date_from'],$this->bookingData[0]['date_to'])?>, partySize: <?php echo ($this->bookingData[0]['adult']+$this->bookingData[0]['children'])?>, pptyId: val},
+                                            async: false,
+                                            dataType: "json",
+                                            success: function(msg) {
+                                                // if the user exists, it returns a string "true"
+                                                if (msg.success == "false"){
+                                                    alert('Not Availability');
+                                                    success = false;  // already exists
+                                                }else {
+                                                    $('#extra_cost').html(msg.cost);
+                                                    success = true;
+                                                }
+                                            }
+                                        });
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "<?php echo APPLICATION_URL_ADMIN ?>booking/getextrabypropertyid",
+                                            data: {propertyId: val},
+                                            async: false,
+                                            dataType: "json",
+                                            success: function(msg) {
+                                                console.log(JSON.stringify(msg));
+                                                if(msg==''){
+                                                    $('#extra_div').html('<label><span style=" margin-left: 145px;"><label> No Extras</label></span>');
+                                                }else{
+                                                    for(var i in msg){
+                                                        var noOfNight = $('#no_of_night').val();
+                                                      //stay_type = 0 : per night cost
+                                                        extraCost  += msg[i].stay_type==0?msg[i].eprice*noOfNight:msg[i].eprice;
+                                                        $('#extra_div').html('<label><b>Extras :</b></label><span style=" margin-left: 100px;"><label><table style="width:100%;margin-left: 190px;"><thead><tr><td style="width:25%;"><strong>Property Extra</strong></td><td style="width:20%;"><strong>Cost</strong></td><td style="width:27%;"><strong>Optional/Compulsory</strong></td><td style="width:28%;"><strong>Per Night/Stay</strong></td></tr></thead><tbody><tr><td>'+msg[i].ename+'</td><td>£'+msg[i].eprice+'</td><td>Compulsory</td><td>'+(msg[i].stay_type==0?"Per Night":"Per Stay")+'</td></tr></tbody></table></label></span>');
+                                                    }
+                                                    $('#extra_cost').val(extraCost);
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                        
+                    }
+                    
+                    function calculateDiscount(){
+                        $('#holiday_rental_cost').val();
+                        
+                        if($('#sdo').val()!=''){
+                            if(isNaN($('#sdo').val())){
+                                var val =  0;
+                            }else{
+                                var val =  Math.round(($('#holiday_rental_cost').val() * $('#sdo').val() / 100));
+                            }
+                        }else{
+                            var val = 0;
+                        }
+                        var revisedCost = $('#holiday_rental_cost').val() - val;
+                        $('#revised_holiday_cost').html(revisedCost);
+                        var extra_cost = parseInt($('#extra_cost').html());
+                        var finalprice = revisedCost + extra_cost;
+                        $('#total_rental_cost').html(finalprice);
+                    }
+                    
+                    function finalcost(){
+                        var holiday_cost = parseInt($('#revised_holiday_cost').html());
+                        //console.log(holiday_cost);
+                        var extra_cost = parseInt($('#extra_cost').val());
+                        //console.log(extra_cost);
+                        var finalprice = holiday_cost + extra_cost;
+                        //console.log(finalprice);
+                        $('#total_rental_cost').html(finalprice);
+                    }
+                    function getDepartureDate(){
+                        var fromDate = $('#date_from').val();
+                        var noOfNight = $('#no_of_night').val();
+                        var fromDataArray = fromDate.split('/');
+                        var a = parseInt(fromDataArray[0]) + parseInt(noOfNight);
+                        var toDate = new Date(fromDataArray[2], fromDataArray[1] - 1, a);
+                        var a = new Date(toDate);
+                        var getdateString = a.toDateString();
+                        var toDateArray = getdateString.split(' ');
+                        $('#getToDate').html(toDateArray[2]+'/'+toDateArray[1]+'/'+toDateArray[3]);
+                        $.ajax({
+                            type: "POST",
+                            url: "<?php echo APPLICATION_URL_ADMIN ?>booking/checkavailability",
+                            data: {Adults: <?=$this->bookingData[0]['adult']?>, Children: <?=$this->bookingData[0]['children']?>, date_from: $('#get_date_from').val(), date_to: <?=dateDiff($this->bookingData[0]['date_from'],$this->bookingData[0]['date_to'])?>, partySize: <?php echo ($this->bookingData[0]['adult']+$this->bookingData[0]['children'])?>, pptyId: $('#propertyId').val()},
+                            async: false,
+                            dataType: "json",
+                            success: function(msg) {
+                                // if the user exists, it returns a string "true"
+                                if (msg.success == "false"){
+                                    alert('Not Availability');
+                                }
+                            }
+                        });   
+                    }
+    // script for rental rates
+    $(document).ready(function(e) {
+                       var today = new Date();
+                        var d = today.getDate();
+                        var m = today.getMonth();
+                        var y = today.getFullYear();
+
+                   $("#date_from").datepicker({
+                        minDate: today,
+                        maxDate: new Date(y+2, m ,d),
+                        dateFormat: "dd/mm/yy" ,
+                        onClose: function() {        
+                            $(this).trigger('blur');
+                        }
+                    });
+      
+    });
+                   </script>
+                <!-- Panels End -->

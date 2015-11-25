@@ -1,0 +1,68 @@
+<?
+    global $mySession;
+    $db = new Db();
+    $myControllerName = Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
+    $myActionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <!--<link href="http://www.profitablemd.com/img/favicon.ico" type="image/x-icon" rel="icon" />-->
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title><?= SITE_NAME ?> <? if ($this->pageTitle != "")
+    {
+        echo " - " . $this->pageTitle;
+    } ?></title>
+
+<!--<link type="text/css" rel="stylesheet" href="<?= CSS_URL ?>mstyle.css" />-->
+        <link type="text/css" rel="stylesheet" href="<?= CSS_URL ?>style.css" />
+        <link type="text/css" rel="stylesheet" href="<?= CSS_URL ?>style2.css" />
+        <link type="text/css" rel="stylesheet" href="<?= CSS_URL ?>jquery.rating.css" />
+
+        <script type="text/javascript" src="<?= JS_URL ?>jquery.js"></script>
+        <script type="text/javascript" src="<?= APPLICATION_URL ?>js/jquery.rating.js"></script>
+        <script type="text/javascript" src="<?= JS_URL ?>general.js"></script>
+
+<? include ("admincssjsheader.phtml"); ?>
+
+    </head>
+
+    <body>
+        <?
+            if (isset($mySession->errorMsg))
+            {
+                ?><div  class="mws-form-message error" id="mws-validate-error"><?= $mySession->errorMsg; ?></div><?
+                unset($mySession->errorMsg);
+            }
+            else
+            {
+                ?><div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div><?
+                }
+
+                if (isset($mySession->sucessMsg))
+                {
+                    ?><div class="mws-form-message success"><?= $mySession->sucessMsg; ?></div><?
+                    unset($mySession->sucessMsg);
+                }
+                else
+                {
+                    ?><div id="mws-validate-success" class="mws-form-message success" style="display:none;"></div><?
+                }
+
+                if (isset($mySession->InfoMsg))
+                {
+                    ?><div class="mws-form-message info"><?= $mySession->InfoMsg; ?></div><?
+            unset($mySession->InfoMsg);
+        }
+        if (isset($mySession->warningMsg))
+        {
+            ?><div class="mws-form-message warning"><?= $mySession->warningMsg; ?></div><?
+            unset($mySession->warningMsg);
+        }
+        echo $this->layout()->content;
+            ?>
+
+    </body>
+
+
+</html>

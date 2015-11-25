@@ -1,0 +1,97 @@
+<div id="InnerPages">
+   <div> 
+
+    <div class="mws-panel-body">
+    <form name="myform" id="mws-validate" method="post"  novalidate="novalidate" class="mws-form" enctype="multipart/form-data">
+
+
+          <div class="mws-form-inline"><div class="mws-form-row"><label>First Name :</label><div class="mws-form-item small"><?=$this->myform->first_name?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Last Name :</label><div class="mws-form-item small"><?=$this->myform->last_name?></div></div></div>
+           <div class="mws-form-inline"><div class="mws-form-row"><label>Street Address<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->address?></div></div></div>
+			<div class="mws-form-inline"><div class="mws-form-row"><label>City/Location<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->city_id?></div></div></div>
+ 			<div class="mws-form-inline"><div class="mws-form-row"><label>State/Region/Area<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->state_id?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Country<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->country_id?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Zip/Postal Code<span class="red">*</span> :</label><div class="mws-form-item small"><?=$this->myform->zipcode?></div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Home Telephone Number <span class="red">*</span>:</label><div class="mws-form-item small"><?=$this->myform->home_number?></div></div></div>           
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Work Telephone Number:</label><div class="mws-form-item small"><?=$this->myform->work_number?></div></div></div>           
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Mobile Telephone Number:</label><div class="mws-form-item small"><?=$this->myform->mobile_number?></div></div></div>           
+
+            <div class="mws-form-inline"><div class="mws-form-row"><label>Web Address :</label><div class="mws-form-item small"><?=$this->myform->webaddress?></div></div></div>
+            <div class="mws-form-inline" ><div class="mws-form-row"><label>Profile Pic :</label><div class="mws-form-item small"><?=$this->myform->photo?></div></div></div>
+		    <div class="mws-button-row2"><input type="submit" value="Update" class="mws-button" /></div>
+    </form>    
+
+	 
+		</div>
+	</div>
+
+
+
+<script type="text/javascript">
+function getCountryState(countryId)
+{
+
+	$.ajax({ url: "<?=APPLICATION_URL."signup/getstatebycountry"?>",
+	type: "POST",
+	data: ({countryId:countryId}),
+	success: function(data)
+	{	
+		
+		
+		EmptyListbox('state_id');
+		AddOptiontoListBox('state_id','','- - State - -');
+		data = $.trim(data);
+		if(data != '')
+		{
+
+			var ArrData=data.split("***");
+		
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('state_id',OptionValue,OptionText);
+				}
+			}
+		}
+		
+	}
+	
+	});	
+}
+function getStateCity(stateId)
+{
+	
+	$.ajax({ url: "<?=APPLICATION_URL."signup/getcitiesbystate"?>",
+	type: "POST",
+	data: ({stateId:stateId}),
+	success: function(data)
+	{
+
+		EmptyListbox('city_id');
+		AddOptiontoListBox('city_id','','- - City - -');
+		data = $.trim(data);
+		if(data!="")
+		{
+			var ArrData=data.split("***");
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('city_id',OptionValue,OptionText);
+				}
+		
+			}
+		}
+		
+	}
+	});	
+}
+
+</script>

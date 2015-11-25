@@ -1,0 +1,56 @@
+<?php
+    global $mySession;
+    $db = new Db();
+?>
+
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-check"><?= $this->pageHeading ?></span>
+    </div>
+    <div class="mws-panel-body">
+        
+        <form name="form" id="mws-validate" action="<?php echo $this->form->getAction(); ?>" method="post" novalidate="novalidate" class="mws-form" enctype="multipart/form-data">
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+            <div class="mws-form-inline">
+            <div class="mws-form-row">
+                <label>Facebook App ID:</label>
+<?= $this->form->facebook_app_id ?> 
+                <br />
+            </div>
+
+            <div class="mws-form-row">
+                <label>Facebook Secret ID:</label>
+<?= $this->form->facebook_secret_id ?>
+                <br />
+            </div>
+
+            <div class="mws-form-row">
+                <label>Twitter Consumer Key:</label>
+<?= $this->form->twitter_consumer_key ?>
+            </div>
+
+            <div class="mws-form-row">
+                <label>Twitter Consumer Secret Key:</label>
+<?= $this->form->twitter_consumer_secret ?>
+            </div>
+
+            <div class="mws-form-row">
+                <label>Twitter Access Token:</label>
+<?= $this->form->twitter_access_token ?>
+            </div>
+
+            <div class="mws-form-row">
+                <label>Twitter Access Secret:</label>
+<?= $this->form->twitter_access_secret ?>
+            </div>
+
+            <div class="mws-form-row">
+                <input class="button" type="submit" value="Update" />
+            </div>
+            </div>
+        </form>
+    
+        
+        
+    </div>
+</div>

@@ -1,0 +1,248 @@
+<style>
+    .recaptchatable #recaptcha_response_field{left:0;}
+    #container{
+        width:100%;
+        height:650px;
+        overflow:hidden;
+        margin:auto;
+    }
+</style>
+<div class="mws-panel-body">
+<link href="<?php echo CSS_URL ?>site.css" rel="stylesheet" type="text/css"/>
+<div class = 'staticPage'>
+    <?= $this->pageContent; ?>
+</div>
+<?
+    if ($this->page_id == '9')
+    {
+        __autoloadPlugin('Contempovacation');
+        $site = new Contempovacation("http://www.flexiblecarhire.com/Tier3/tier4/default.aspx?deeplink=534E8DB2");
+        $websiteContent = $site->getWebsite("534E8DB2", "http://www.flexiblecarhire.com/Tier3/tier4/default.aspx?deeplink=");
+        //pr($websiteContent);
+        $result = $site->getContents($websiteContent, "<div id=\"main\">", "<div id=\"outerpanel\">");
+
+        //$result = file_get_contents("http://www.flexiblecarhire.com/Tier3/tier4/default.aspx?deeplink=534E8DB2");
+        //preg_match('/\<div id\=\"main\"\>(.*?)<\/div\>/', $result, $matches);
+        //pr($result);
+        ?>
+
+        <div id="container">
+            <div id="main">
+            <?php
+            echo $result;
+            ?>
+        </div>
+        <?php
+    }
+
+
+
+    if ($this->page_id == '25')
+    {
+        ?>
+        <div class="left_keywords destination_wrap">
+            <div class="left_panel_heading">Holiday Rental Property Finder</div>
+            <h4 class="left_panel_sub_heading">Villas, Homes, Homes with Pool, Townhouses, Apartments & Condos</h4><br>
+            <div class="">
+                <ul style="list-style-type:none;font-size:12px;">
+                    <?php
+                    foreach ($this->countryArr as $countryKey => $countryVal)
+                    {
+                        ?>
+                        <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "search/property/" . $countryVal['country_name'] ?>"><?php echo $countryVal['country_name']; ?></a></li>
+                        <?php
+                        if (count($this->countryArr) - 1 != $countryKey)
+                            echo "&nbsp;|&nbsp;";
+                    }
+                    ?>
+                </ul>   
+                <ul style="list-style-type:none;font-size:12px;">
+                    <?php
+                    foreach ($this->statesArr as $stateKey => $stateVal)
+                    {
+                        ?>
+                        <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "search/property/" . $stateVal["country_name"] . "/" . $stateVal['state_name'] ?>"><?php echo $stateVal['state_name']; ?></a></li>
+                        <?php
+                        if (count($this->statesArr) - 1 != $stateKey)
+                            echo "&nbsp;|&nbsp;";
+                    }
+                    ?>
+                </ul>
+                <ul style="list-style-type:none;font-size:12px;">
+                    <?php
+                    foreach ($this->citiesArr as $cityKey => $cityVal)
+                    {
+                        ?>
+                        <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "search/property/" . $cityVal["country_name"] . "/" . $cityVal["state_name"] . "/" . $cityVal['city_name']; ?>"><?php echo $cityVal['city_name']; ?></a></li>
+                        <?php
+                        if (count($this->citiesArr) - 1 != $cityKey)
+                            echo "&nbsp;|&nbsp;";
+                    }
+                    ?>
+                </ul>
+                <ul style="list-style-type:none;font-size:12px;">
+                    <?php
+                    foreach ($this->subareasArr as $subareaKey => $subareaVal)
+                    {
+                        ?>
+                        <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "search/property/" . $subareaVal["country_name"] . "/" . $subareaVal["state_name"] . "/" . $subareaVal["city_name"] . "/" . $subareaVal["sub_area_name"]; ?>"><?php echo $subareaVal['sub_area_name']; ?></a></li>
+                        <?php
+                        if (count($this->subareasArr) - 1 != $subareaKey)
+                            echo "&nbsp;|&nbsp;";
+                    }
+                    ?>
+                </ul>
+                <ul style="list-style-type:none;font-size:12px;">
+                    <?php
+                    foreach ($this->localareasArr as $localareaKey => $localareaVal)
+                    {
+                        ?>
+                        <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "search/property/" . $localareaVal["country_name"] . "/" . $localareaVal["state_name"] . "/" . $localareaVal["city_name"] . "/" . $localareaVal['sub_area_name'] . "/" . $localareaVal["local_area_name"]; ?>"><?php echo $localareaVal['local_area_name']; ?></a></li>
+                        <?php
+                        if (count($this->localareasArr) - 1 != $localareaKey)
+                            echo "&nbsp;|&nbsp;";
+                    }
+                    ?>
+                </ul>
+            </div>
+        </div>
+
+        <div class="left_keywords destination_wrap">
+            <div class="left_panel_heading">Holiday Rental Location Information</div>
+            <h4 class="left_panel_sub_heading">Villas, Homes, Homes with Pool, Townhouses, Apartments & Condos</h4><br>
+            <div class="">
+
+                <ul style="list-style-type:none;font-size:12px;">
+                    <?php
+                    foreach ($this->countryArr as $countryKey => $countryVal)
+                    {
+                        ?>
+                        <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "holiday-rentals/" . $countryVal['country_name'] ?>"><?php echo $countryVal['country_name']; ?></a></li>
+                        <?php
+                        if (count($this->countryArr) - 1 != $countryKey)
+                            echo "&nbsp;|&nbsp;";
+                    }
+                    ?>
+                </ul>   
+                <ul style="list-style-type:none;font-size:12px;">
+                    <?php
+                    foreach ($this->statesArr as $stateKey => $stateVal)
+                    {
+                        ?>
+                        <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "holiday-rentals/" . $stateVal["country_name"] . "/" . $stateVal['state_name'] ?>"><?php echo $stateVal['state_name']; ?></a></li>
+                        <?php
+                        if (count($this->statesArr) - 1 != $stateKey)
+                            echo "&nbsp;|&nbsp;";
+                    }
+                    ?>
+                </ul>
+                <ul style="list-style-type:none;font-size:12px;">
+                    <?php
+                    foreach ($this->citiesArr as $cityKey => $cityVal)
+                    {
+                        ?>
+                        <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "holiday-rentals/" . $cityVal["country_name"] . "/" . $cityVal["state_name"] . "/" . $cityVal['city_name']; ?>"><?php echo $cityVal['city_name']; ?></a></li>
+                        <?php
+                        if (count($this->citiesArr) - 1 != $cityKey)
+                            echo "&nbsp;|&nbsp;";
+                    }
+                    ?>
+                </ul>
+                <ul style="list-style-type:none;font-size:12px;">
+                    <?php
+                    foreach ($this->subareasArr as $subareaKey => $subareaVal)
+                    {
+                        ?>
+                        <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "holiday-rentals/" . $subareaVal["country_name"] . "/" . $subareaVal["state_name"] . "/" . $subareaVal["city_name"] . "/" . $subareaVal["sub_area_name"]; ?>"><?php echo $subareaVal['sub_area_name']; ?></a></li>
+                        <?php
+                        if (count($this->subareasArr) - 1 != $subareaKey)
+                            echo "&nbsp;|&nbsp;";
+                    }
+                    ?>
+                </ul>
+                <ul style="list-style-type:none;font-size:12px;">
+                    <?php
+                    foreach ($this->localareasArr as $localareaKey => $localareaVal)
+                    {
+                        ?>
+                        <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "holiday-rentals/" . $localareaVal["country_name"] . "/" . $localareaVal["state_name"] . "/" . $localareaVal["city_name"] . "/" . $localareaVal['sub_area_name'] . "/" . $localareaVal["local_area_name"]; ?>"><?php echo $localareaVal['local_area_name']; ?></a></li>
+                        <?php
+                        if (count($this->localareasArr) - 1 != $localareaKey)
+                            echo "&nbsp;|&nbsp;";
+                    }
+                    ?>
+                </ul>
+
+            </div>
+        </div>
+
+
+        <?php
+    }
+
+
+    if (($this->page_id == '12' || $this->page_id == '63' ) && $this->varsuccess == 0):
+        ?>
+        <div class = 'contactForm'>
+
+            <h3>Your Contact Information </h3>
+            <form name="myform" id="mws-validate"  method="post" novalidate="novalidate" class="mws-form" >
+
+                <div id = "loading" class = 'loading'></div>  
+                <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Full Name<span class="red">*</span></div><div class="mws-form-item small"><?= $this->myform->full_name ?></div></div></div>
+                <!--<div class="mws-form-inline"><div class="mws-form-row"><div class="label">Phone<span class="red">*</span></label><div class="mws-form-item small"><?= $this->myform->phone ?></div></div></div>-->
+                <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Email<span class="red">*</span></div><div class="mws-form-item small"><?= $this->myform->email_address ?> </div></div></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Confirm email<span class="red">*</span></div><div class="mws-form-item small"><?= $this->myform->cemail_address ?> </div></div></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Subject<span class="red">*</span></div><div class="mws-form-item small"><?= $this->myform->subject ?> </div></div></div>
+                <!--<div class="mws-form-inline"><div class="mws-form-row"><div class="label">Message<span class="red">*</span></label><div class="mws-form-item small"><?= $this->myform->comment ?></div></div></div>-->
+                <div>
+                    <h3>Please Note:- </h3>
+                    <p>If you are enquiring about an existing booking please quote your name and booking reference. If you are enquiring about making a new booking please provide the name of property, the type of accommodation, date of arrival and number of nights required.. </p>
+                    <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Your Enquiry<span class="red">*</span></div><div class="mws-form-item small"><?= $this->myform->enquiry ?></div></div></div>
+                </div>
+                <div class="one_line" align="center"><?= recaptcha_get_html(CAPTCHA_PUBLLIC_KEY, $this->error) ?></div>
+
+
+
+
+                <div class="mws-button-row">
+                    <input type="submit" value="Submit" class="mws-button" />
+                </div>
+
+
+            </form> 
+
+        </div>
+        <?
+    endif;
+
+    if ($this->page_id == '80' && $this->varsuccess == 0):
+        ?>
+
+        <form name="myform" id="mws-validate"  method="post" novalidate="novalidate" class="mws-form" >
+
+            <div id = "loading" class = 'loading'></div>  
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Your Name<span class="red">*</span></div><div class="mws-form-item small"><?= $this->myform->full_name ?></div></div></div>
+            <!--<div class="mws-form-inline"><div class="mws-form-row"><div class="label">Phone<span class="red">*</span></label><div class="mws-form-item small"><?= $this->myform->phone ?></div></div></div>-->
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Email Address<span class="red">*</span></div><div class="mws-form-item small"><?= $this->myform->email_address ?> </div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Telephone Number<span class="red">*</span></div><div class="mws-form-item small"><?= $this->myform->phone ?> </div></div></div>
+            <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Property No.</label><div class="mws-form-item small"><?= $this->myform->property_no ?> </div></div></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Subject<span class="red">*</span></div><div class="mws-form-item small"><?= $this->myform->subject ?> </div></div></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><div class="label">Question<span class="red">*</span></div><div class="mws-form-item small"><?= $this->myform->question ?> </div></div></div>
+                <div class="mws-button-row1">
+                    <input type="submit" value="Send" class="mws-button red" />
+                </div>
+
+
+        </form> 
+
+
+
+        <?
+    endif;
+?>
+
+
+
+</div> <!-- mws panel body-->
+

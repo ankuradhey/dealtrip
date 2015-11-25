@@ -1,0 +1,44 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><?=$this->pageHeading?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" valign="middle"><form name="myform" id="myform" action="<?php echo $this->url(array('controller'=>'users', 'action'=>'saveadmin'), 'default', true)?>" method="post"><table width="100%" cellpadding="2" cellspacing="2">
+<tr>
+<td width="12%" align="left" valign="top">First Name :</td>
+<td width="88%" align="left" valign="middle"><?=$this->myform->first_name?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Last Name :</td>
+<td align="left" valign="middle"><?=$this->myform->last_name?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Email Address :</td>
+<td align="left" valign="middle"><?=$this->myform->email_address?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Username :</td>
+<td align="left" valign="middle"><?=$this->myform->username?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Status :</td>
+<td align="left" valign="middle"><?=$this->myform->admin_status?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Password :</td>
+<td align="left" valign="middle"><?=$this->myform->password_o?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Confirm Password :</td>
+<td align="left" valign="middle"><?=$this->myform->password_c?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+<td align="left" valign="top"><input type="submit" name="Submit" id="Submit" value="Submit" class="myButton" /></td>
+</tr>
+</table></form></td>
+</tr>
+</table>

@@ -1,0 +1,129 @@
+<script type="text/javascript">
+
+$(document).ready(function(){	
+	$("#flex1").flexigrid
+			(
+			{
+			url: '<?=APPLICATION_URL_ADMIN."photo/generategrid"?>',
+			dataType: 'json',
+			colModel : [
+				{display: 'S.No.', name : '', width : 20, sortable : false, align: 'center'},
+				{display: '<span id="vdel"><input type="checkbox" name="deletevchk" id="deletevchk" onclick="return checkall(this)" /></span>', name : '', width : 30, sortable : false, align: 'center'},
+				{display: 'Photo Title', name : 'photo_title', width : 200, sortable : true, align: 'left'},
+				{display: 'Date Uploaded', name : 'photo_date', width : 150, sortable : true, align: 'left'},
+				{display: 'View', name : '', width : 30, sortable : false, align: 'left'},
+				{display: 'Status', name : 'photo_status', width : 30, sortable : false, align: 'left'}
+				
+				],
+			buttons : [
+			{name:'Delete', bclass: 'delete', onpress: deletevideo}/*,
+			{name:'Add New Photo', bclass: 'add', onpress: addphoto}*/
+			],
+			searchitems : [
+				{display: 'Photo Title', name : 'photo_title', isdefault:true},
+				{display: 'Date Uploaded', name : 'photo_date', isdefault:false}
+				],
+			sortname: "photo_title",
+			sortorder: "asc",
+			usepager: true,
+			title: 'Manage Photo',
+			useRp: true,
+			rpOptions: ['20','30','40','10'],
+			rp: 10,
+			showTableToggleBtn: true,
+			singleSelect : true,			
+			height: 265,
+			width: 750,
+			autowidth:false
+			}
+			);   
+	
+});
+function sortAlpha(com)
+{ 
+	jQuery('#flex1').flexOptions({newp:1, params:[{name:'letter_pressed', value: com},{name:'qtype',value:$('select[ta=qtype]').val()}]});
+	jQuery("#flex1").flexReload(); 
+}
+function deletevideo(com)
+{
+	var r= "";
+	var s="";
+	var selected=false;
+	for(var i=1;document.getElementById('check'+i);i++){
+		if(document.getElementById('check'+i).checked==true){	
+			r += document.getElementById('check'+i).value+"|";
+			selected = true;
+		}
+	}	
+	
+	r += '0';
+	if(selected){
+		var confirmation = confirm("Are you sure want to delete ?");
+		if(confirmation!=true){
+			return false;
+		}	
+	
+		$.ajax({ url: "<?=APPLICATION_URL_ADMIN."photo/delete"?>",
+		type: "POST",
+		data: ({Id:r}),
+		success: function(data){			
+			jQuery("#flex1").flexReload(); 
+			alert('Selected records have been deleted successfully.');
+		}});
+	} else {
+		alert('Please choose a record to delete.');
+	}
+}
+
+function changestatus(id,vid,vstatus)
+{
+    $.ajax({ 
+				type: "POST", 
+				url: "<?=APPLICATION_URL_ADMIN?>photo/status", 
+				data: ({VID:vid,VStatus:vstatus}),
+				cache: false, 
+				success: function(data){				 
+				 jQuery("#flex1").flexReload(); 
+			    }
+		  });
+}
+
+function changefeaturedstatus(id,pid,pstatus)
+{
+
+    $.ajax({ 
+				type: "POST", 
+				url: "<?=APPLICATION_URL_ADMIN?>photo/featuredstatus", 
+				data: ({PID:pid,PStatus:pstatus}),
+				cache: false, 
+				success: function(data){					 
+				jQuery("#flex1").flexReload(); 
+			    }
+	  });
+}
+
+function addphoto()
+{  
+window.location = "<?=APPLICATION_URL_ADMIN?>photo/update";
+}
+
+</script>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading">Manage Photo</td>
+<td align="right" valign="top"><a href="<?=APPLICATION_URL_ADMIN?>photo/userphoto">User Photo</a></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="left" valign="top" colspan="2"><table width="100%" cellpadding="0" cellspacing="0" align="center">
+<tr>
+<td align="left" valign="top"><table id="flex1" style="display:none;padding:0px;margin:0px;" width="100%" align="center"></table></td>
+</tr>
+</table></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+</table>

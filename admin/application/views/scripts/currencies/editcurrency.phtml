@@ -1,0 +1,48 @@
+<script type="text/javascript">
+$(document).ready(function(e) {
+    
+	jQuery.validator.addMethod("doubles", function(value, element) { 
+    
+	oneDecimal = false
+	inputStr = value.toString()
+	for (var i = 0; i < inputStr.length; i++)
+	{
+		var oneChar = inputStr.charAt(i)
+		if (i == 0) 
+		{
+		continue
+		}
+	if (oneChar == '.' && !oneDecimal) {
+	oneDecimal = true
+	continue
+	}
+	if (oneChar < '0' || oneChar > '9') {
+	return false
+	}
+	}
+	return true
+	
+	
+	
+  }, "Enter Proper Exchange Rate");
+
+	
+});
+
+</script>
+
+
+           <div style="width:85%; margin-left:7%;px" >
+  <div class="mws-panel grid_8">
+    <div class="mws-panel-header"><span class="mws-i-24 i-check"><?=$this->pageHeading?></span></div>
+    <div class="mws-panel-body">
+        <form name="myform" id="mws-validate" action="<?=$this->url(array('controller'=>'currencies', 'action'=>'editcurrency', 'currencyId'=>$this->currencyId), 'default', true)?>" method="post" novalidate="novalidate" class="mws-form">
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><label>Currency Name :</label><div class="mws-form-item large"><?=$this->myform->currency_name?></div></div></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><label>Currency Code :</label><div class="mws-form-item large"><?=$this->myform->currency_code?></div></div></div>
+	            <div class="mws-form-inline"><div class="mws-form-row"><label>Exchange Rate :</label><div class="mws-form-item large"><?=$this->myform->exchange_rate?></div></div></div>
+            <div class="mws-button-row"><input type="submit" tabindex="14" value="Submit" class="mws-button red" /></div>
+        </form>
+    </div>    	
+</div> 
+</div>

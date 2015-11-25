@@ -1,0 +1,94 @@
+<style>
+.recipeIndexPage {
+    float: left;
+    width: 100%;
+}
+.recipeTableIndex {
+    width: 100%;
+}
+.recipeTableIndex th {
+    background-color: #CCCCCC;
+    border: 1px solid #999999;
+    color: #000000;
+    font-family: Tahoma,Geneva,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    padding-top: 10px;
+}
+.recipeTableIndex tr {
+    background-color: #FFFFFF;
+}
+.recipeTableIndex tr:hover {
+    background-color: #0099CC;
+}
+.recipeTableIndex td {
+    border: 1px solid #999999;
+    padding-bottom: 10px;
+    padding-left: 8px;
+    padding-top: 10px;
+    text-align: left;
+}
+table {
+    margin: 5px 0;!important;
+}
+</style>
+<div class="recipeIndexPage" >
+	
+     <table class="recipeTableIndex" cellpadding="0" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th  width="5%">S.No</th>
+                <th align="center" width="10%">Property No.</th>
+                <th width="10%">Review Date</th>
+                <th width="15%">Review Headline</th>
+            <!--    <th width="20%">Comment</th>
+                <th width="20%">Review</th>-->
+                <th width="20%">Rating</th>
+                <th width="10%">Status</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+        <? $i=0; foreach($this->reviewData as $row)
+				 { 
+				 		$start++;$i++;
+	    			    
+						if($row['review_status']==1){ $image ='check_yes.png';  }
+    	   				if($row['review_status']==0){ $image ='cancel1.png';  }
+		?>
+        
+        <tr>
+        	<td style="text-align:center"><?=$i;?></td>
+            <td><a class="biglink_underline" target="_blank" href="<?=APPLICATION_URL?>search/searchdetail/ppty/<?=$row['id']?>"><?=$row['propertycode']?></td>
+            <td><?=date('m-d-Y',strtotime($row['review_date']))?></td>    
+            <td align="center"><?=$row['headline']?></td>    
+<!--        <td><?=$row['comment']?></td>    
+            <td><?=$row['review']?></td> 
+-->
+            <td style="text-align:center">
+                <?=rating_view10($row['rating'])?>
+            </td>    
+            <td style="text-align:center">
+                 <img src="<?=APPLICATION_URL;?>images/<?=$image;?>" border='0' height="22" title='Change Status' alt='Change Status'>
+               
+            </td>
+          
+        </tr>
+        <? } ?>
+        
+        <?
+		if(count($this->reviewData)==0):
+		?>
+		
+                	<td style="text-align:center" colspan="7"><strong>No Review Found</strong></td>
+        <?
+		endif;
+		?>
+        
+        </tbody>
+    </table>
+
+</div>
+

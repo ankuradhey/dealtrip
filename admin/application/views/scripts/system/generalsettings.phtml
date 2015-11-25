@@ -1,0 +1,75 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading">Edit General Settings</td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" valign="middle"><form name="myform" id="myform" action="<?php echo $this->url(array('controller'=>'settings', 'action'=>'updategen'), 'default', true)?>" method="post"><table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="middle" width="200">Site Name :</td>
+<td align="left" valign="middle"><?=$this->myform->Site_Name?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td align="left" valign="middle">Admin Name :</td>
+<td align="left" valign="middle"><?=$this->myform->Admin_Name?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td align="left" valign="middle">Site Email :</td>
+<td align="left" valign="middle"><?=$this->myform->Site_Email?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td align="left" valign="middle">Site Title :</td>
+<td align="left" valign="middle"><?=$this->myform->Site_Title?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td align="left" valign="middle">Site Description :</td>
+<td align="left" valign="middle"><?=$this->myform->Site_Description?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td align="left" valign="middle">Site Keyword :</td>
+<td align="left" valign="middle"><?=$this->myform->Site_keyword?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td align="left" valign="middle">Site PayPal ID :</td>
+<td align="left" valign="middle"><?=$this->myform->Site_Paypal_id?></td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td align="left" colspan="2" valign="top"><input type="submit" name="Update" id="Update" value="Update" class="myButton" /><input type="button" name="Edit" id="Edit" value="Edit" class="myButton" onclick="enable()" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="Cancel" id="Cancel" value="Cancel" class="myButton" onclick="disable()" /></td>
+</tr>
+</table></form></td>
+</tr>
+</table>
+<script>
+
+document.getElementById('Update').style.display = 'none';
+document.getElementById('Cancel').style.display = 'none';
+
+function enable()
+{ 
+ $("input").attr('disabled',false);
+ $("textarea").attr('disabled',false);
+ document.getElementById('Edit').style.display = 'none';
+ document.getElementById('Cancel').style.display = 'inline';
+ document.getElementById('Update').style.display = 'inline';
+}
+
+function disable()
+{
+ $("input").attr('disabled',true);
+ $("textarea").attr('disabled',true);
+ document.getElementById('Edit').style.display = 'block';
+ document.getElementById('Update').style.display = 'none';
+ document.getElementById('Cancel').style.display = 'none';
+ window.location.reload(true);
+}
+
+</script>

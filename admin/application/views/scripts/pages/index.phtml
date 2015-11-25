@@ -1,0 +1,46 @@
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-table-1"><?= $this->pageHeading ?></span>
+    </div>
+    <div class="mws-panel-body">
+        <div class="mws-panel-toolbar top clearfix ">
+            <ul>
+                <li><a class="mws-ic-16 ic-accept" href="<?=APPLICATION_URL_ADMIN?>pages/add" title="Add Page">Add Page</a></li>
+            </ul>
+        </div>
+        <table class="mws-datatable-fn mws-table">
+            <thead>
+                <tr>
+                    <th width="5%">S.No.</th>
+                    <th width="90%">Page Title</th>
+                    <th width="5%" class="">Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?
+                    $i = 0;
+                    foreach ($this->ResData as $row)
+                    {
+                        $i++;
+                        ?>
+                        <tr class="gradeX">
+                            <td><?= $i; ?></td>
+                            <td><?= $row['page_title']; ?></td>
+                            <td class="center">
+                                <a href="<?= APPLICATION_URL_ADMIN; ?>pages/edit/pageId/<?= $row['page_id']; ?>">
+                                    <img src="<?= APPLICATION_URL_ADMIN; ?>css/icons/16/edit.png" border='0' title='Edit' alt='Edit'>
+                                </a>
+                            </td>
+                        </tr>
+                        <?
+                    }
+                ?>
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Panels End -->
+</div>

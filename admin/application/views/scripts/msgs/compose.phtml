@@ -1,0 +1,73 @@
+<div class="mws-panel grid_8">
+                	<div class="mws-panel-header">
+                    	<span class="mws-i-24 i-check"><?=$this->pageHeading?></span>
+                    </div>
+                    <div class="mws-panel-body">
+                    	<form name="myform" id="mws-validate" action="" method="post" novalidate class="mws-form">
+                         
+                        	<div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+                        	<div class="mws-form-inline">
+                            	<div class="mws-form-row">
+                                	<div class="mws-dualbox clearfix">
+                                        	<div class="mws-dualbox-col1">
+
+                                                
+                                                <div class="mws-dualbox-filter clearfix">
+                                                    <label for="box1Filter">Filter</label>
+                                                    <input type="text" id="box1Filter" class="mws-textinput" />
+                                                    <button type="button" id="box1Clear">X</button>
+                                                </div>
+                                                
+                                                <?=$this->myform->box1View?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                                                <span id="box1Counter" class="countLabel"></span>
+                                                <select id="box1Storage" style="width:100%;"></select>
+                               				</div>
+                                            
+                                           <div class="mws-dualbox-col2">
+                                                <button id="to2" type="button">&gt;</button>
+                                                <button id="allTo2" type="button">&gt;&gt;</button>
+                                                <div class="clear"></div>
+                                                <button id="allTo1" type="button">&lt;&lt;</button>
+                                                <button id="to1" type="button">&lt;</button>
+                                            </div>
+                                
+                                			 <div class="mws-dualbox-col3">
+	                                            <div class="mws-dualbox-filter clearfix">
+    	                                            <label for="box2Filter">Filter</label>
+        	                                        <input type="text" id="box2Filter" class="mws-textinput" />
+            	                                    <button type="button" id="box2Clear">X</button>
+                                                </div>
+
+                                                <?=$this->myform->box2View?>
+                                                <span id="box2Counter" class="countLabel"></span>
+                                                <select id="box2Storage" style="width:100%;"></select>
+                                            </div>
+                                            
+                                
+                                	 </div>
+                                
+                                
+                                <div class="mws-form-row">
+                                	<label>Subject:</label>
+                                	<div class="mws-form-item large">
+                                    	<?=$this->myform->message_subject?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                                    </div>
+                                </div>
+                                <div class="mws-form-row">
+                                	<label>Message Body:</label>
+                                	<div class="mws-form-item large">
+                                    	<?=$this->myform->message_text?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                                    </div>
+                                </div>
+                            	 
+                            </div>
+                            <div class="mws-button-row">
+                            	<input type="submit" class="mws-button red" value="Submit">
+                            </div>
+                        </form>
+                    </div>    	
+                </div>
+                
+                
+                
+             

@@ -1,0 +1,184 @@
+<?php
+//echo $this->url(array('page' => $this->next)); die;    
+//prd($this->pagesInRange);
+    $queryString = $this->queryString;
+    
+    //prd($queryString);
+    
+    $adjacents = 1;
+    if ($this->pageCount > 1):
+        ?>
+        <div class="pagging_search">
+
+            <table cellpadding="0" cellspacing="0" width="100%" border="0">
+
+
+                <tr class="paging">
+                    <td>
+
+                        <!-- First Tab -->
+                        <?php
+                        if ($this->current != $this->first)
+                        {
+                            ?>
+                            <a href='<?php echo $this->url() . $this->queryString. (!empty($queryString)?'&start='.$this->first:'?start='.$this->first); ?>' class="pagelink">First</a>&nbsp;
+                            <?php
+                        }
+                        else
+                        {
+                            ?>
+                            <font>First</font>
+                            <?php
+                        }
+                        ?>
+
+                        <!-- Previous page link -->       
+                        <?php if (isset($this->previous)): ?>
+                            <a href='<?php echo $this->url() . $this->queryString.(!empty($queryString)?'&start='.$this->previous:'?start='.$this->previous); ?>' class="pagelink">Previous</a>&nbsp;
+
+                        <?php else: ?>
+                            <font>Previous</font>
+                        <?php endif; ?>
+
+
+
+                        <?php
+                        //foreach ($this->pagesInRange as $page):
+
+                        if ($this->last > 1)
+                        {
+
+                            if ($this->last < 7 + ($adjacents * 2))
+                            {
+                                for ($counter = 1; $counter <= $this->last; $counter++)
+                                {
+                                    if ($counter == $this->current)
+                                    {
+                                        ?>
+                                        <font class='page'>&nbsp;<?php echo $counter; ?>&nbsp;</font>
+                                        <?php
+                                    }
+                                    else
+                                    {
+                                        ?>
+                                        <a href='<?php echo $this->url() . $this->queryString.(!empty($queryString)?'&start='.$counter:'?start='.$counter); ?>' class="pagelink"><?php echo $counter; ?></a>&nbsp;
+
+                                        <?php
+                                    }
+                                }
+                            }
+
+                            if ($this->last > 5 + ($adjacents * 2))
+                            {
+                                if ($this->current < 1 + ($adjacents * 2))
+                                {
+                                    for ($counter = 1; $counter < 4 + ($adjacents * 2); $counter++)
+                                    {
+                                        if ($counter == $this->current)
+                                        {
+                                            ?>
+                                            <font class='page'>&nbsp;<?php echo $this->current; ?>&nbsp;</font>
+                                            <?php
+                                        }
+                                        else
+                                        {
+                                            ?>
+                                            <a href='<?php echo $this->url() . $this->queryString.(!empty($queryString)?'&start='.$counter:'?start='.$counter); ?>' class="pagelink"><?php echo $counter; ?></a>&nbsp;
+                                            <?php
+                                        }
+                                    }
+                                    ?><font>...</font>
+                                    <?php
+                                }
+                                elseif ($this->last - ($adjacents * 2) > $this->current && $this->current > ($adjacents * 2))
+                                {
+                                    ?>   
+                                    <a href='<?php echo $this->url() . $this->queryString.(!empty($queryString)?'&start=1':'?start=1'); ?>' class="pagelink"><?php echo "1"; ?></a>&nbsp;
+                                    <a href='<?php echo $this->url() . $this->queryString.(!empty($queryString)?'&start=2':'?start=2'); ?>' class="pagelink"><?php echo "2"; ?></a>&nbsp;
+                                    <font>...</font>
+                                    <?php
+                                    for ($counter = $this->current - $adjacents + 1; $counter <= $this->current + $adjacents - 1; $counter++)
+                                    {
+                                        if ($counter == $this->current)
+                                        {
+                                            ?>
+                                            <font class='page'>&nbsp;<?php echo $this->current; ?>&nbsp;</font>
+                                            <?php
+                                        }
+                                        else
+                                        {
+                                            ?> 
+                                            <a href='<?php echo $this->url() . $this->queryString.(!empty($queryString)?'&start='.$counter:'?start='.$counter); ?>' class="pagelink"><?php echo $counter; ?></a>&nbsp;
+                                            <?php
+                                        }
+                                    }
+                                    $pagination.= "<li class='dot'>..</li>";
+                                }
+                                else
+                                {
+                                    ?>
+                                    <a href='<?php echo $this->url() . $this->queryString.(!empty($queryString)?'&start=1':'?start=1'); ?>' class="pagelink"><?php echo "1"; ?></a>&nbsp;
+                                    <a href='<?php echo $this->url() . $this->queryString.(!empty($queryString)?'&start=2':'?start=2'); ?>' class="pagelink"><?php echo "2"; ?></a>&nbsp;
+                                    <font>...</font>
+                                    <?php
+                                    for ($counter = $this->last - (2 + ($adjacents * 2)); $counter <= $this->last; $counter++)
+                                    {
+                                        if ($counter == $this->current)
+                                        {
+                                            ?>    
+
+                                            <font class='page'>&nbsp;<?php echo $this->current; ?>&nbsp;</font>
+
+                                            <?php
+                                        }
+                                        else
+                                        {
+                                            ?>
+                                            <a href='<?php echo $this->url() . $this->queryString.(!empty($queryString)?'&start='.$counter:'?start='.$counter); ?>' class="pagelink"><?php echo $counter; ?></a>&nbsp;
+                                            <?php
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        ?>               
+
+
+
+                        <?php //endforeach;  ?>
+
+                        <!-- Next page link -->
+                        <?php if (isset($this->next)): ?>
+                            <a href='<?php echo $this->url() . $this->queryString.(!empty($queryString)?'&start='.$this->next:'?start='.$this->next); ?>' class="pagelink">Next</a>&nbsp;
+
+                        <?php else: ?>
+                            <font>Next</font>
+                        <?php endif; ?>
+
+                        <!-- Last Page link -->    
+                        <?php
+                        if ($this->current != $this->last)
+                        {
+                            ?>
+                            <a href='<?php echo $this->url() . $this->queryString.(!empty($queryString)?'&start='.$this->last:'?start='.$this->last); ?>' class="pagelink">Last</a>&nbsp;
+                            <?php
+                        }
+                        else
+                        {
+                            ?>
+                            <font>Last</font>
+                            <?php
+                        }
+                        ?>
+
+                    </td>
+                    <td width="200" align="left" valign="middle" style="padding:0px;margin:0px;border: solid 0px;">
+                        <div align="right">Showing
+                            <?
+                            echo (($this->current - 1) * 10 + 1) . " - " . (($this->previous) * 10 + $this->currentItemCount) . " of " . $this->totalItemCount;
+                            ?>
+                        </div></td>
+                </tr>
+            </table>
+        </div>
+    <?php endif; ?>

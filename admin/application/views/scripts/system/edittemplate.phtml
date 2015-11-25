@@ -1,0 +1,68 @@
+ <?
+//$strfld_name="email_body";
+//include_once(SITE_ROOT."editor.php");
+
+?> 
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-check"><?=$this->pageHeading?></span>
+    </div>
+    <div class="mws-panel-body">
+        <form name="myform" id="mws-validate" action="" method="post" novalidate="novalidate" class="mws-form">
+          <input type="hidden" name="save_or_send" id="save_or_send" value="1" />
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+            <div class="mws-form-inline">
+                <div class="mws-form-row">
+                    <label>Subject :</label>
+                    <div class="mws-form-item large">
+                        <?=$this->myform->email_subject?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                <label>Message Body</label>
+                <div class="mws-form-item">
+                    <!--<textarea id="elrte" cols="auto" rows="auto"></textarea>-->
+                    <?=$this->myform->email_body?>
+                </div>
+            </div>
+                            
+               
+                               
+<?
+if($this->templateId=='1')
+	{
+		?>
+				<div class="mws-button-row">
+                    <input type="submit" name="Save Newsletter" id="Save Newsletter" value="Save Newsletter" class="mws-button red" onclick="setTmpStat(1);" />
+                 
+                    <input type="button" name="Save and Send Newsletter" id="Save and Send Newsletter" value="Save and Send Newsletter" class="mws-button red" onclick="setTmpStat(2);" />
+                </div>
+                            
+                
+		<?
+	}
+else
+	{
+		?>
+			 <div class="mws-button-row">
+                            	<input type="submit" value="Update Template" class="mws-button red" />
+                            </div>
+		<?
+	}
+?>
+                            	 
+                            	 
+                            	 
+                            	 
+                             
+                           
+                        </form>
+                    </div>    	
+                </div>
+<script language="javascript">
+function setTmpStat(myStat)
+{
+	document.getElementById('save_or_send').value=myStat;
+	document.myform.submit();
+}
+</script>

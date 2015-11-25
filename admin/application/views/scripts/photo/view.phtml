@@ -1,0 +1,34 @@
+<?
+if($this->photoData!="" and count($this->photoData)>0)
+{
+	$DataGallery=$this->photoData[0];
+
+		$UrlVideo="";
+		 
+			$UrlVideo=APPLICATION_URL.'images/photos/'.$videos['photo_path']; 
+		 
+		$hw=450;
+		$hww=700;
+?>
+	<table cellpadding="0" cellspacing="0" border="0" width="100%">
+    	<tr>
+        	<td width="80%"><div style="padding-top:5px;"><?=$DataGallery['photo_title']?></div></td>
+            <td width="20%">
+            
+            	<a href="<?=APPLICATION_URL_ADMIN?>photo/index"> Back</a>
+            </td>
+        </tr>
+        <tr>
+        	<td colspan="2">
+            	<img src="<?=APPLICATION_URL?>image.php?image=images/photos/<?=$DataGallery['photo_path']?>&height=500&width=500" border="0" style="border: solid 1px #cccccc;padding:4px;" alt="<?=$DataGallery['photo_title']?>"  />
+             </object>
+            </td>
+        </tr>
+    </table>
+    
+    
+    
+             
+<?
+}
+?>

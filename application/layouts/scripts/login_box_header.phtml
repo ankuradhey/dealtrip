@@ -1,0 +1,55 @@
+<script type="text/javascript">
+    function unsetsession()
+    {
+        $.ajax({
+            url: "<?= APPLICATION_URL ?>myaccount/unsetsession",
+            type: "GET",
+            sucess: function(data)
+            {
+
+            }
+
+        });
+
+    }
+</script>
+
+<div class="mws-panel-body1" >
+    <div  id="SigninBox">    
+        <div align="center" class="SigninImg"><img src="<?= IMAGES_URL; ?><?= $mySession->LoggedUser['image'] ?>" alt="user"/></div>
+        <div id="SigninLink">
+            <ul>
+                <?
+                    if ($mySession->LoggedUserType == '1')
+                    {
+                        ?>
+                        <li><a href="<?= APPLICATION_URL ?>myaccount">Customer Home Page</a></li>
+                        <li><a href="<?= APPLICATION_URL ?>signup/profile">Profile</a></li>
+                        <li><a href="<?= APPLICATION_URL ?>myaccount/bookingc">Booking List</a></li>
+                        <li><a href="<?= APPLICATION_URL ?>messageboard/inbox">Message Center</a></li>                    
+                        <li><a href="<?= APPLICATION_URL ?>myaccount/addreview">Add a review</a></li>
+                        <li><a href="<?= APPLICATION_URL ?>myaccount/viewreview">view review list</a></li>                    
+                        <li><a href="<?= APPLICATION_URL ?>signup/changepassword">Change Password</a></li>        
+                        <?
+                    }
+                    else
+                    {
+                        ?>
+                        <li><a href="<?= APPLICATION_URL ?>myaccount">Owner Home Page</a></li>
+                        <li><a href="<?= APPLICATION_URL ?>signup/profile">Profile</a></li>
+                        <li><a href="<?= APPLICATION_URL ?>myaccount/bookingc">Booking List</a></li>
+                        <li><a href="<?= APPLICATION_URL ?>contents/pages/slug/owner_faq">Help (FAQ’s)</a></li>
+                        <li><a href="<?= APPLICATION_URL ?>messageboard/inbox">Message Center</a></li>
+        <!--                <li><a href="<?= APPLICATION_URL ?>myaccount/addreview">Add a review</a></li>-->
+                        <li><a href="<?= APPLICATION_URL ?>signup/changepassword">Change Password</a></li>
+                        <li><a href="<?= APPLICATION_URL ?>myaccount/addproperty" onclick="unsetsession();">Add New Property</a></li>
+                        <li><a href="<?= APPLICATION_URL ?>myaccount/propertyportfolio">Property Portfolio</a></li>
+                        <?
+                    }
+                ?>
+
+                <li><a href="<?= APPLICATION_URL ?>signin/signout">Log Out</a></li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,282 @@
+<?
+global $mySession;
+
+?>
+<style>
+#SizeOfParty {
+    margin-bottom: 10px;
+}
+.LightPanel {
+    background-color: #F4F8FB;
+    border: 0 none;
+    margin: 10px;
+    padding: 10px;
+   
+}
+.BookingDetailsLabel {
+    float: left;
+    font-weight: bold;
+    width: 210px;
+}
+
+.discount-code{
+    -moz-box-sizing: border-box;
+    background-color: #FFFFFF;
+    border: 1px solid #CDCDCD;
+    box-shadow: 0 1px 3px rgba(128, 128, 128, 0.1) inset;
+    color: #323232;
+    margin: 0;
+    outline: medium none;
+    padding: 6px 7px;
+}
+
+.ChangeDetails {
+    float: left;
+    margin: 5px 0;
+    width: 100%;
+}
+
+#error
+{
+	color:#903;
+	display:none;
+	width:500px;
+}
+.quote-row-right {
+    text-align: right;
+    vertical-align: top;
+}
+table
+{
+	margin:0px !important;
+}
+#cost
+{
+/*text-decoration:line-through;	*/
+}
+</style>
+
+<fieldset class="LightPanel" id="SizeOfParty">
+                                <h3>View Booking</h3>
+                                <br>
+                                <label class="BookingDetailsLabel">
+                                    Size of party</label>
+                                    
+                               <?=$this->bookingData[0]['adult']?>
+                                Adults,
+                            <?=$this->bookingData[0]['children']?>  Children,
+                             <?=$this->bookingData[0]['infants']?> Infants
+                            <?
+                        $member=$this->bookingData[0]['adult']+$this->bookingData[0]['children'];
+							?>
+                            <br class="clear">
+                                <br>
+                                <label class="BookingDetailsLabel">
+                                    Staying</label>
+                                <span id="Tabs_SizeOfPartyAndOptionalExtras_lblStaying">
+                                <?
+                                echo $statying=(strtotime($this->bookingData[0]['date_to'])-strtotime($this->bookingData[0]['date_from']))/(60*60*24)+1;
+                                ?>
+								</span>
+                                Nights<br class="clear">
+                                <label class="BookingDetailsLabel">
+                                    Arriving</label>
+                                <span id="Tabs_SizeOfPartyAndOptionalExtras_lblStartDate"><?=date('d F Y',strtotime($this->bookingData[0]['date_from']))?></span>
+                                <br class="clear">
+                                <label class="BookingDetailsLabel">
+                                    Leaving</label>
+                                <span id="Tabs_SizeOfPartyAndOptionalExtras_lblEndDate"><?=date('d F Y',strtotime($this->bookingData[0]['date_to']))?></span>
+                                <br class="clear">
+                                <label class="BookingDetailsLabel">
+                                    Property Availability</label>
+                                <span id="Tabs_SizeOfPartyAndOptionalExtras_lblEndDate">
+								<?
+                                if($this->bookingData[0]['booking_type']==0)
+								{
+									echo "Available";	
+								}
+								else
+								{
+									echo "On Request";
+								}
+								?>
+								<?=$this->booking_message?></span>
+                              </fieldset>
+                    
+                    
+                     <? if($this->bookingData[0]['type_name']!="")
+					 {
+					 ?>
+                             <div class="LightPanel" id="Tabs_discount-box">
+				             
+                                
+                               <h3>Special Offer</h3>
+                               <br/>
+                               <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                               <tbody>
+                               
+                               <?
+							   	foreach($this->bookingData as $values):
+								
+								if($values['type_name'] != "" )
+							   ?>
+                                       <tr>
+                                       <td class="quote-row-end"><?=$values['offer_name']?>
+                                       with discount
+									   <?
+                                       $discount=0;
+                                       
+									    switch($values['discount_type'])
+															  {
+																case '0':  echo $values['discount_offer']."%" ; break;
+																case '1':	echo "7 nights"; break;
+																case '2':	echo "Free Pool Heating"; break;
+																case '3':	echo $values['min_nights_type']=='0'?$values[$i]['min_night']." nights":$values['MIN_NIGHTS']." nights"; break;
+																  
+															  }
+									   ?>
+                                        </td>
+                                       </tr>
+                               <?
+							   endforeach;
+							   ?>
+                               
+                               </tbody>
+                               </table>
+                            
+			</div>
+                              
+                          
+              <?
+					 }
+			  $complusoryoption=0;
+			   if(in_array_r('compulsory',$this->bookingData))
+				{
+			?>
+            <div class="LightPanel" id="Tabs_SizeOfPartyAndOptionalExtras_OptionalExtras">
+             <h3>Option Complusory</h3>
+				<table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                    <tbody>
+                                   
+                                    <?
+									
+									 $i=1;
+									 foreach($this->optionComplusoryData as $key=>$option_complusory)
+									{
+										$complusoryoption+=$option_complusory['option_price'];	
+									?>
+                                    <tr class=""><td><b><?=$option_complusory['option_name']?></b></td><td align="right">&pound; <?=$option_complusory['option_price']?></td></tr>
+                                    <? $i++; }?>
+                                    
+                                </tbody></table>
+                                
+                                
+                  </div>     
+                  <?
+				}
+				$extraoption=0;
+				  ?>           
+              <? if(in_array_r('optional',$this->bookingData))
+				{
+			?>
+            <div class="LightPanel" id="Tabs_SizeOfPartyAndOptionalExtras_OptionalExtras">
+             <h3>Option Extra</h3>
+				<table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                    <tbody>
+                                   
+                                    <?
+									 $i=1;
+									 
+									 foreach($this->bookingData as $key=>$option_extra)
+									{
+										if($option_extra['etype'] != NULL )
+										{
+											$extraoption += $option = $option_extra['stay_type']=='0'?$option_extra['eprice']*$statying:$option_extra['eprice'];	
+											?>
+											<tr class=""><td>
+                                            				<b><?=$option_extra['option_name']?></b>
+                                                         </td>
+                                                         <td align="right">
+										   					<?="&pound;".$option?>
+                                                         </td>
+                                             </tr>
+											<? $i++; 
+									
+										}
+									}?>
+                                    
+                                </tbody></table>
+                                
+                                
+                  </div>     
+                  <?
+				}
+				  ?>           
+            <div class="LightPanel">
+                                <!-- <div class="booking-module-title-up">Availability &amp; Cost</div> -->
+                                <span style="color:Red;font-size:Larger;font-weight:bold;" id="Tabs_SizeOfPartyAndOptionalExtras_lblAvailabilityMsg"></span>
+                                
+
+                                <h3>Cost breakdown</h3>
+                                <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                    <tbody>
+                                    <tr class=""><td class="quote-row-end"><span title="includes all booking fees and card charges">Accommodation:</span></td><td style="width:80px">&nbsp;</td><td class="quote-row-end quote-row-right">&pound; <span id="acco"><?=ceil(accommodation_rate(date('d F Y',strtotime($this->bookingData[0]['date_from'])),date('d F Y',strtotime($this->bookingData[0]['date_to'])),$statying,$this->bookingData[0]['PPTY_ID']))?></span></td></tr>
+                                    <tr class=""><td class="quote-row-end">Optional Extras: </td><td style="width:80px">&nbsp;</td><td class="quote-row-end quote-row-right" >&pound; <span id="extra"><?= rate_extras($this->bookingData[0]['PPTY_ID'],3,$statying)?></span></td></tr>
+                                    <tr class=""><td class="quote-row-end">Compulsory Extras:</td><td style="width:80px">&nbsp;</td><td class="quote-row-end quote-row-right"> &pound; <span id="compulsory"><?=rate_extras($this->bookingData[0]['PPTY_ID'],2,$statying)?></span></td></tr>
+                                    <tr class="bold-summary"><td class="quote-row-price">Cost</td><td style="width:80px">&nbsp;</td><td class="quote-row-price quote-row-right">&pound; 
+                                    <span id="cost">
+                                    <?
+                                   		echo $tot = ceil(accommodation_rate(date('d F Y',strtotime($this->bookingData[0]['date_from'])),date('d F Y',strtotime($this->bookingData[0]['date_to'])),$statying,$this->bookingData[0]['PPTY_ID'])) +  rate_extras($this->bookingData[0]['PPTY_ID'],3,$statying) + rate_extras($this->bookingData[0]['PPTY_ID'],2,$statying);
+									?>
+                                    </span></td></tr>
+                                    <tr class="bold-summary"><td class="quote-row-price">Discount</td><td style="width:80px">&nbsp;</td><td class="quote-row-price quote-row-right"><div id="disoffer">&pound;<?=$discount = calc_discount($this->bookingData[0]['booking_id'],$tot)?> </div></td></tr>
+                                    <tr class="bold-summary"><td class="quote-row-price">Total</td><td style="width:80px">&nbsp;</td><td class="quote-row-price quote-row-right">&pound; <span id="total">
+									<?=$finalTotal = ceil($tot-$discount)?>
+									</span></td></tr>
+    	                            <tr class="bold-summary"><td class="quote-row-price">Paid</td><td style="width:80px">&nbsp;</td><td class="quote-row-price quote-row-right"><div id="disoffer">&pound;<?=$this->bookingData[0]['amount_paid']?> </div></td></tr>
+                                </tbody></table>                                                                 
+                                <br>
+                               
+                            </div>
+                            
+                            
+                             <div class="LightPanel">
+                                <!-- <div class="booking-module-title-up">Availability &amp; Cost</div> -->
+                                <span style="color:Red;font-size:Larger;font-weight:bold;" id="Tabs_SizeOfPartyAndOptionalExtras_lblAvailabilityMsg"></span>
+                                
+
+                                <h3>Sender Infomation</h3>
+<table width="80%" cellspacing="0" cellpadding="0" border="0">
+    <tbody>
+    <tr class="">
+        <td class="quote-row-end"><span title="includes all booking fees and card charges">Email-id:</span></td>
+        <td style="width:40px">&nbsp;</td>
+        <td class="quote-row-end quote-row-left"><?=$this->userData[0]['email_address']?></td>
+    </tr>
+    <tr class="">
+        <td class="quote-row-end">Street Address: </td>
+        <td style="width:40px">&nbsp;</td>
+        <td class="quote-row-end quote-row-left" ><?=$this->userData[0]['address']?></td>
+    </tr>
+    <tr class="">
+        <td class="quote-row-end">City/Location:</td>
+        <td style="width:40px">&nbsp;</td>
+        <td class="quote-row-end quote-row-left"> <?=$this->userData[0]['city_id']?></td>
+    </tr>
+    <tr class="bold-summary">
+        <td class="quote-row-price">State/Region/Area</td>
+        <td style="width:40px">&nbsp;</td>
+        <td class="quote-row-price quote-row-left"><?=$this->userData[0]['state_id']?></span></td>
+    </tr>
+    <tr class="bold-summary">
+        <td class="quote-row-price">Country</td>
+        <td style="width:40px">&nbsp;</td>
+        <td class="quote-row-price quote-row-left"><?=$this->userData[0]['country_name']?></td>
+    </tr>
+    
+    </tbody>
+</table>                                                                 
+                                <br>
+                               
+                            </div>
+                                                                        

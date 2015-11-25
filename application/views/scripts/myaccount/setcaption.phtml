@@ -1,0 +1,133 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title><?=SITE_NAME?> <? if($this->pageTitle!="" ) { echo " - ".$this->pageTitle; } ?></title>
+<!-- Required Stylesheets -->
+
+<link type="text/css" rel="stylesheet" href="<?=CSS_URL?>style.css" />
+<link type="text/css" rel="stylesheet" href="<?=CSS_URL?>style2.css" />
+<link type="text/css" rel="stylesheet" href="<?=CSS_URL?>jquery.rating.css" />
+
+<script type="text/javascript" src="<?=JS_URL?>jquery.js"></script>
+
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>css/reset.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>css/text.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>css/fonts/ptsans/stylesheet.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>css/fluid.css" media="screen" />
+
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>css/mws.style.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>css/icons/16x16.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>css/icons/24x24.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>css/icons/32x32.css" media="screen" />
+
+<!-- Demo and Plugin Stylesheets -->
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>css/demo.css" media="screen" />
+
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/colorpicker/colorpicker.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/imgareaselect/css/imgareaselect-default.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/fullcalendar/fullcalendar.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/fullcalendar/fullcalendar.print.css" media="print" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/chosen/chosen.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/prettyphoto/css/prettyPhoto.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/tipsy/tipsy.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/sourcerer/Sourcerer-1.2.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/jgrowl/jquery.jgrowl.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/fileinput/css/fileinput.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/spinner/ui.spinner.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/timepicker/timepicker.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>css/jui/jquery.ui.css" media="screen" />
+
+<!-- Theme Stylesheet -->
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>css/mws.theme.css" media="screen" />
+
+<!-- JavaScript Plugins -->
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>js/jquery.mousewheel-min.js"></script>
+
+<!-- jQuery-UI Dependent Scripts -->
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>js/jquery-ui.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/spinner/ui.spinner.min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/timepicker/timepicker-min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>js/jquery.ui.touch-punch.min.js"></script>
+
+<!-- Plugin Scripts -->
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/imgareaselect/jquery.imgareaselect.min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/duallistbox/jquery.dualListBox-1.3.min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/jgrowl/jquery.jgrowl-min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/fileinput/js/jQuery.fileinput.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/fullcalendar/fullcalendar.min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/datatables/jquery.dataTables-min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/chosen/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/prettyphoto/js/jquery.prettyPhoto-min.js"></script>
+<!--[if lt IE 9]>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/flot/excanvas.min.js"></script>
+<![endif]-->
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/flot/jquery.flot.min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/flot/jquery.flot.pie.min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/flot/jquery.flot.stack.min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/flot/jquery.flot.resize.min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/colorpicker/colorpicker-min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/tipsy/jquery.tipsy-min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/sourcerer/Sourcerer-1.2-min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/placeholder/jquery.placeholder-min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/validate/jquery.validate-min.js"></script>
+<!--<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/validate/jquery.validate"></script>-->
+
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/elrte/js/elrte.min.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>plugins/elfinder/js/elfinder.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/elrte/css/elrte.full.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=APPLICATION_URL_ADMIN;?>plugins/elfinder/css/elfinder.css" media="screen" />
+
+<!-- Core Script -->
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>js/mws.js"></script>
+
+<!-- Themer Script (Remove if not needed) -->
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>js/themer.js"></script>
+
+<!-- Demo Scripts (remove if not needed) -->
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>js/demo.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL_ADMIN;?>js/demo.formelements.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL?>fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+
+</head>
+
+<body>
+<?
+
+if($this->sucessfull == 1)
+{
+?>
+<script type="text/javascript" >
+window.parent.location.href = window.parent.location.href; 
+parent.$.fancybox.close();
+</script>
+<?	
+}
+
+?>
+
+<div class="mws-panel grid_8" style="height:235px;margin:0px;">
+    
+    <div class="mws-panel-body box-sized" style="margin-left:0;width:100%;">
+        <form class="mws-form" id="mws-validate" method="post"  novalidate="novalidate" class="mws-form" >
+            <div class="mws-form-inline">
+                <div class="mws-form-row">
+                    <h1>Enter Caption Here:</h1>
+                    <div class="mws-form-item large" style="margin:0;">
+                        <textarea class="mws-textinput required"  maxlength = "100" name = 'caption' id = 'caption'></textarea>
+                    </div>
+                </div>
+              
+            <div class="mws-button-row">
+                <input type="submit" value="Submit" class="mws-button red" />
+            </div>
+        </form>
+    </div>    	
+</div>
+
+</body>
+</html>

@@ -1,0 +1,461 @@
+<?
+global $mySession;
+?>
+<style>
+#SizeOfParty {
+    margin-bottom: 10px;
+}
+.LightPanel {
+    background-color: #F4F8FB;
+    border: 0 none;
+    margin: 10px;
+    padding: 10px;
+   
+}
+.BookingDetailsLabel {
+    float: left;
+    font-weight: bold;
+    width: 210px;
+}
+
+.discount-code{
+    -moz-box-sizing: border-box;
+    background-color: #FFFFFF;
+    border: 1px solid #CDCDCD;
+    box-shadow: 0 1px 3px rgba(128, 128, 128, 0.1) inset;
+    color: #323232;
+    margin: 0;
+    outline: medium none;
+    padding: 6px 7px;
+}
+
+.ChangeDetails {
+    float: left;
+    margin: 5px 0;
+    width: 100%;
+}
+
+#error
+{
+	color:#903;
+	display:none;
+	width:500px;
+}
+.quote-row-right {
+    text-align: right;
+    vertical-align: top;
+}
+table
+{
+	margin:0px; !important;
+}
+#cost
+{
+text-decoration:line-through;	
+}
+</style>
+
+<fieldset class="LightPanel" id="SizeOfParty">
+                                <h3>View Booking</h3>
+                                
+                                <label class="BookingDetailsLabel">Property No.:</label>
+                               	<?=$this->bookingData[0]['propertycode']?>
+                            	
+                                <br class="clear">
+                                <br>
+                                
+                                
+                                <label class="BookingDetailsLabel">Check-in Date: </label>
+                               	<?=date('d-m-Y',strtotime($this->bookingData[0]['date_from']))?>
+                            	
+                                <br class="clear">
+                                <br>
+                                
+                                <label class="BookingDetailsLabel">Number Of Nights: </label>
+                               	<?=dateDiff($this->bookingData[0]['date_from'],$this->bookingData[0]['date_to'])?>
+                                
+                                <br class="clear">
+                                <br>
+                                
+                                <label class="BookingDetailsLabel">Departure Date: </label>
+                               	<?=date('d-m-Y',strtotime($this->bookingData[0]['date_to']))?>
+                                
+                                <br class="clear">
+                                <br>
+                                                                
+                                <label class="BookingDetailsLabel">Size of party</label>
+                               	<?=$this->bookingData[0]['adult']?>
+                                Adults,
+								<?=$this->bookingData[0]['children']?>  Children,
+                                <?=$this->bookingData[0]['infants']?> Infants
+								
+								<?
+	                            $member=$this->bookingData[0]['adult']+$this->bookingData[0]['children'];
+                                ?>
+                            	
+                                <br class="clear">
+                                <br>
+                                
+                                <label class="BookingDetailsLabel">Cost of your stay: </label>
+                               	&pound;<?=round($this->bookingData[0]['rental_amt'])?>
+                                
+                                <br class="clear">
+                                <br>
+                                
+                                
+                                <label class="BookingDetailsLabel">
+                                    Property Availability</label>
+                                <span id="Tabs_SizeOfPartyAndOptionalExtras_lblEndDate">
+								<?
+                                if($this->bookingData[0]['booking_type']==0)
+								{
+									echo "Available";	
+								}
+								else
+								{
+									echo "On Request";
+								}
+								?>
+								<?=$this->booking_message?></span>
+                                
+                                <br class="clear">
+                                <br>
+                                
+<!--                                <a target="_blank" class="biglink_underline"  href="<?=APPLICATION_URL?>search/searchdetail/ppty/<?=$this->bookingData[0]['pid']?>">View Property</a>-->
+                                <a target="_blank" class="biglink_underline"  href="<?=APPLICATION_URL?>holiday-rentals/<?=$this->propertyData[0]['country_name']?>/<?=$this->propertyData[0]['state_name']?>/<?=$this->propertyData[0]['city_name']?>/<?=($this->propertyData[0]['sub_area_name'] ? $this->propertyData[0]['sub_area_name'] . '/' . ($this->propertyData[0]['local_area_name'] ? $this->propertyData[0]['local_area_name'] . '/' : '') : '').($this->propertyData[0]['bedrooms']?$this->propertyData[0]['bedrooms']:'0') . "-Bed-" . $this->propertyData[0]['bathrooms'] . "-Bath-" . $this->propertyData[0]['ptyle_url'] . "/" . $this->propertyData[0]['propertycode']?>">View Property</a>
+                                
+                              </fieldset>
+                     <? if($this->bookingData[0]['offer_name']!="")
+					 {
+					 ?>
+                             <div class="LightPanel" id="Tabs_discount-box">
+				             
+                                
+                               <h3>Special Offer</h3>
+                               <br/>
+                               <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                               <tbody>
+                               <tr>
+                               <td class="quote-row-end"><?=$this->bookingData[0]['offer_name']?>
+                               <?
+							   $discount=0;
+                               if($this->bookingData[0]['discount']!="")
+							   {
+								    $discount=$this->bookingData[0]['discount'];
+							   ?>
+                               with discount <?=$this->bookingData[0]['discount']?> %
+                               <?
+							   }
+							   ?>
+                                </td>
+                               </tr>
+                               </tbody>
+                               </table>
+                            
+			</div>
+                              
+                          
+              <?
+					 }
+			  $complusoryoption=0;
+			   if(count($this->optionComplusoryData)>0)
+				{
+			?>
+            <div class="LightPanel" id="Tabs_SizeOfPartyAndOptionalExtras_OptionalExtras">
+             <h3>Extras: Compulsory</h3>
+				<table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                    <tbody>
+                                    <?
+									 $i=1;
+									foreach($this->optionComplusoryData as $key=>$option_complusory)
+									{
+									$complusoryoption+=$option_complusory['option_price'];	
+									?>
+                                    <tr class=""><td><b><?=$option_complusory['option_name']."&nbsp;(".($option_complusory['staty_type']=='0'?"Per Night":"Per Stay").")"?></b></td><td align="right">&pound; <?=round($option_complusory['option_price'])?></td></tr>
+                                    <? $i++; 
+									}?>
+                                </tbody></table>
+                  </div>     
+                <?
+				}
+				$extraoption=0;
+				?>           
+            
+              <? if(count($this->optionExtraData)>0)
+				{
+			?>
+                    <div class="LightPanel" id="Tabs_SizeOfPartyAndOptionalExtras_OptionalExtras">
+                     <h3>Extras: Optional</h3>
+                        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                        	<tbody>
+                            <?	
+									  $i=1;
+                                      foreach($this->optionExtraData as $key=>$option_extra)
+                                      {
+                                            $extraoption+=$option_extra['option_price'];	
+                              ?>
+                                       <tr class="">
+                                            <td ><b><?=$option_extra['option_name']."&nbsp;(".($option_extra['stay_type']=='0'?"Per Night":"Per Stay").")"?></b></td>
+                                            <td align="right"> &pound; <?=round($option_extra['option_price'])?></td>
+                                        </tr>
+							  <? 
+                                      $i++; 
+                                      }
+                              ?>
+                              </tbody>
+                          </table>
+                                        
+                                        
+                          </div>     
+                  <?
+				}
+				  ?>           
+                  
+                  
+                  
+               <? if($this->bookingData[0]['offer_id'] != "")
+				{
+			?>
+                        <div class="LightPanel" id="Tabs_SizeOfPartyAndOptionalExtras_OptionalExtras">
+                         <h3>Special Offers</h3>
+                            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                                <tbody>
+                                    
+                                    			<tr class="bold-summary">
+                                                	<td class="quote-row-price"><?=$this->bookingData[0]['type_name']?></td>
+                                                    <td style="width:80px">&nbsp;</td>
+                                                    <td class="quote-row-price quote-row-right">
+                                                    	<div id="disoffer">
+															<?
+																switch($this->bookingData[0]['discount_type'])
+																{
+																		
+																	case '0':   echo "(".$this->bookingData[0]['promo_code'].") ".$this->bookingData[0]['discount_offer']."%" ; break;
+																	case '1':	echo "(".$this->bookingData[0]['promo_code'].") ".$this->minrate." x ".$this->bookingData[0]['discount_offer']; break;
+																	case '2':	echo "(".$this->bookingData[0]['promo_code'].") "."Free Pool Heating"; break;
+																	case '3':	echo "(".$this->bookingData[0]['promo_code'].") ".$this->bookingData[0]['id']=='6'?"33.3%":"25%"; break;
+											
+																
+																}
+															?>
+                                                         </div>
+                                                    </td>
+                                                 </tr>
+                                    			</tbody>
+                                       			       
+                                                </tbody>
+                                                
+                            </table>
+                                            
+                                            
+                              </div>     
+                  <?
+				}
+				  ?>                
+            
+            
+            <div class="LightPanel">
+                                <!-- <div class="booking-module-title-up">Availability &amp; Cost</div> -->
+                                <span style="color:Red;font-size:Larger;font-weight:bold;" id="Tabs_SizeOfPartyAndOptionalExtras_lblAvailabilityMsg"></span>
+                                
+
+                                <h3>Cost breakdown</h3>
+                                <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                    <tbody>
+                                    <tr class="">
+                                    
+                                        <td class="quote-row-end">
+                                        <span title="includes all booking fees and card charges">Cost of Holiday Rental:</span>
+                                        </td>
+                                        <td style="width:80px">&nbsp;</td>
+                                        <td class="quote-row-end quote-row-right">&pound; <span id="acco"><?=round($this->bookingData[0]['rental_amt'])?></span></td>
+                                    </tr>
+                                  
+                                  	<tr>
+                                    	<td>&nbsp;</td>
+                                    </tr>  
+                                    
+                                   <tr class="bold-summary">
+                                        <td class="quote-row-end">
+                                        <span title="includes all booking fees and card charges">Special Offer Discount/Freebie:</span>
+                                        </td>
+                                        <td style="width:80px">&nbsp;</td>
+                                        <td class="quote-row-end quote-row-right">
+                                        <div id="disoffer">
+															<?
+																$cost = $this->bookingData[0]['rental_amt'];
+
+																switch($this->bookingData[0]['discount_type'])
+																{
+																	case '0':   echo "(".$this->bookingData[0]['promo_code'].") ".$this->bookingData[0]['discount_offer']."%";  
+																				$cost = round($this->bookingData[0]['rental_amt'] - $this->bookingData[0]['rental_amt']*($this->bookingData[0]['discount_offer']/100));
+																				break;
+																	case '1':	echo "(".$this->bookingData[0]['promo_code'].") ".$this->minrate." x ".$this->bookingData[0]['discount_offer']; 
+																				$cost = round($this->bookingData[0]['rental_amt'] - $this->minrate*$this->bookingData[0]['discount_offer']);
+																				break;
+																	case '2':	echo "Free Pool Heating"; break;
+																	case '3':	if($this->bookingData[$i]['id']=='6')
+																				{	
+																					echo "(".$this->bookingData[0]['promo_code'].") "."33.3%"; 
+																					$cost = round($this->bookingData[0]['rental_amt'] - 0.333*$this->bookingData[0]['rental_amt']);
+																				}
+																				else
+																				{
+																					echo "(".$this->bookingData[0]['promo_code'].") 25%";
+																					$cost = round($this->bookingData[0]['rental_amt'] - 0.25*$this->bookingData[0]['rental_amt']);
+																				}
+																				break;
+		   															 default:  echo "N/A";																			
+																}
+															?>
+                                        </div>
+                                        
+										</td>
+                                    </tr> 
+
+                                   <tr>
+                                    	<td>&nbsp;</td>
+                                    </tr>  
+                                   
+                                    <tr class="">
+                                    
+                                        <td class="quote-row-end">
+                                        <span title="includes all booking fees and card charges">Revised Cost of Holiday Rental:</span>
+                                        </td>
+                                        <td style="width:80px">&nbsp;</td>
+                                        <td class="quote-row-end quote-row-right">&pound;
+										<?=round($cost)?>                                       
+                                        </td>
+                                    </tr> 
+                                    
+                                    <tr>
+                                    	<td>&nbsp;</td>
+                                    </tr>  
+                                    
+                                    <tr class="">
+                                    
+                                        <td class="quote-row-end">
+                                        <span title="includes all booking fees and card charges">Cost of Property Extras:</span>
+                                        </td>
+                                        <td style="width:80px">&nbsp;</td>
+                                        <td class="quote-row-end quote-row-right">&pound;
+										<?
+													 $cost += round(calculate_book_extras($this->bookingData[0]['booking_id'])); 
+													echo round(calculate_book_extras($this->bookingData[0]['booking_id']));
+											?>                                       
+                                        </td>
+                                    </tr> 
+								
+                                	<tr>
+                                    	<td>&nbsp;</td>
+                                    </tr>  
+
+									<tr class="">
+                                    
+                                        <td class="quote-row-end">
+                                        <span title="includes all booking fees and card charges">Total Cost of Holiday Rental:</span>
+                                        </td>
+                                        <td style="width:80px">&nbsp;</td>
+                                        <td class="quote-row-end quote-row-right">&pound;<?=round($cost)?>                          
+                                        </td>
+                                    </tr> 
+									
+                                </tbody></table>                                                                 
+                                <br>
+                               
+                            </div>
+                            
+             <?
+			 if($this->bookingData[0]['paid_status'] != '0'):
+			 ?>               
+			<div class="LightPanel">
+                                <!-- <div class="booking-module-title-up">Availability &amp; Cost</div> -->
+                                <span style="color:Red;font-size:Larger;font-weight:bold;" id="Tabs_SizeOfPartyAndOptionalExtras_lblAvailabilityMsg"></span>
+                                <h3>Payment Details</h3>
+                                <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                    <tbody>
+                                <?    
+                                   	if($this->bookingData[0]['paid_status']== '1')
+									{
+								?>
+                                    
+                                    <tr class="">
+                                        <td class="quote-row-end">
+                                        <span title="includes all booking fees and card charges">Deposit Payment(20%):</span>
+                                        </td>
+                                        <td style="width:80px">&nbsp;</td>
+                                        <td class="quote-row-end quote-row-right">&pound; <span id="acco"><?     echo round(0.2*$cost);   $cost = round(0.2*$cost); ?></span></td>
+                                    </tr>
+                                    
+                                    <tr class="">
+                                        <td class="quote-row-end">
+                                        <span title="includes all booking fees and card charges">Fee for credit and debit cards(2.9%):</span>
+                                        </td>
+                                        <td style="width:80px">&nbsp;</td>
+                                        <td class="quote-row-end quote-row-right">&pound; <span id="acco"><? echo round(0.029*$cost);   $cost = round(0.029*$cost)+$cost; ?></span></td>
+                                    </tr>
+                                 	
+                                    <tr class="">
+                                        <td class="quote-row-end">
+                                        <span title="includes all booking fees and card charges">Amount Paid:</span>
+                                        </td>
+                                        <td style="width:80px">&nbsp;</td>
+                                        <td class="quote-row-end quote-row-right">&pound; <span id="acco"><?=$cost?></span></td>
+                                    </tr>
+                                    
+								 
+								 <?
+									}
+									else
+									{
+								?>
+                                    
+                                    <tr class="">
+                                         <?php
+                                                    if($this->bookingData[0]['telephonic']){
+                                                    ?>
+                                        <td class="quote-row-end">
+                                        <span title="includes all booking fees and card charges">Fee for credit and debit cards:</span>
+                                        </td>
+                                        <td style="width:80px">&nbsp;</td>
+                                        <td class="quote-row-end quote-row-right">&pound;<? echo round($this->bookingData[0]['card_amount']); ?></span></td>
+                                        <?php
+                                                    }else{
+                                        ?>
+                                        <td class="quote-row-end">
+                                        <span title="includes all booking fees and card charges">Fee for credit and debit cards(2.9%):</span>
+                                        </td>
+                                        <td style="width:80px">&nbsp;</td>
+                                        <td class="quote-row-end quote-row-right">&pound;<? echo round(0.029*$cost);   $cost = round(0.029*$cost + $cost); ?></span></td>
+                                        <?php
+                                                    }
+                                        ?>
+                                    </tr>
+                                    
+                                    <tr class="">
+                                        <td class="quote-row-end">
+                                        <span title="includes all booking fees and card charges">Amount Paid:</span>
+                                        </td>
+                                        <td style="width:80px">&nbsp;</td>
+                                        <?php
+                                        if ($this->bookingData[0]['telephonic']) {
+                                            ?>
+                                        <td class="quote-row-end quote-row-right"><span id="acco">&pound;<?php echo $this->bookingData[0]['amount_paid']; ?></span></td>
+                                        <?php
+                                        }else{
+                                        ?>
+                                        <td class="quote-row-end quote-row-right"><span id="acco">&pound;<?=$cost?></span></td>
+                                        <?php
+                                        }
+                                        ?>
+                                    </tr>
+								 <?
+									}
+								 ?> 
+                                  </tbody>
+                                 </table> 
+                               
+                            </div> 
+			  <?
+              endif;
+              ?>                                                                       

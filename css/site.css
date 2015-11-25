@@ -1,0 +1,166 @@
+
+body {
+    font-family: 'Alegreya Sans',sans-serif;
+    font-size: 15px;
+}
+.ajax__calendar_body {
+    width: 200px !important;
+}
+#searchdiv td {
+    padding-bottom: 0;
+    padding-top: 5px;
+}
+#wrapper {
+    width: 100%;
+}
+#header, #footer {
+    height: 90px;
+    margin-left: 4px;
+    margin-top: 0;
+    padding: 15px 30px 15px 0;
+    width: 933px;
+}
+h1 {
+    font-family: 'Yanone Kaffeesatz',sans-serif;
+    font-size: 50px;
+    margin: 0;
+}
+#footer {
+    display: none;
+    height: 70px;
+    margin-top: 10px;
+}
+#header {
+    top: 0;
+}
+#content {
+    height: 650px;
+    margin: 0 auto;
+    padding: 10px;
+    width: 1010px;
+}
+#headerinner, #footerinner {
+    margin: 0 auto;
+    padding-right: 120px;
+    text-align: center;
+    width: 1000px;
+}
+#main, #success {
+    float: left;
+    height: 650px;
+    margin: 10px;
+    overflow: hidden;
+    width: 730px;
+}
+#panel {
+    height: 400px;
+    overflow: hidden;
+    width: 220px;
+}
+#outerpanel {
+    float: left;
+    height: 652px;
+    margin: 10px 0;
+    overflow: hidden;
+    width: 222px;
+}
+#staticPnl {
+    height: 208px;
+    margin-top: 20px;
+    overflow: hidden;
+    padding: 10px;
+    width: 200px;
+}
+.leftrightc {
+    height: 45px;
+    margin: 5px;
+    padding: 5px;
+}
+.ddl, .textbox, .datebox, .ddl2, .textbox2, .ddl3, .textbox3 {
+    background: none repeat scroll 0 0 #f8f8f8;
+    border: 2px solid #dddddd;
+    color: #212121;
+    cursor: pointer;
+    font-family: 'Alegreya Sans',sans-serif;
+    font-size: 15px;
+    padding: 3px;
+}
+.ddl, .textbox, .ddl2, .textbox2 {
+    width: 300px;
+}
+.datebox {
+    width: 140px;
+}
+.ddl3, .textbox3 {
+    width: 120px;
+}
+.timebox {
+    background: none repeat scroll 0 0 #f8f8f8;
+    border: 2px solid #dddddd;
+    color: #212121;
+    cursor: pointer;
+    font-family: 'Alegreya Sans',sans-serif;
+    font-size: 15px;
+    margin: auto;
+    padding: 3px;
+}
+.calendar {
+    left: 100px;
+    position: relative;
+    top: 100px;
+    z-index: 100;
+}
+.controlButton {
+    border-width: 0;
+    cursor: pointer;
+    font-family: 'Alegreya Sans',sans-serif;
+    font-size: 20px;
+}
+.controlButton2 {
+    cursor: pointer;
+    font-family: 'Alegreya Sans',sans-serif;
+    font-size: 15px;
+}
+#mainheader {
+    font-family: 'Yanone Kaffeesatz',sans-serif;
+    font-size: 35px;
+    padding: 15px;
+}
+.headerimage {
+    margin: 15px;
+}
+#contentheader {
+    margin: 15px;
+}
+#searchdiv, #results, #enterdetails {
+    float: left;
+    width: 730px;
+}
+#slider {
+    width: 4000px;
+}
+#panelslider {
+    width: 5000px;
+}
+
+body {
+    background-color: #dff4f7;
+}
+#header, #footer {
+    background-color: #ffffff;
+    border: 1px solid #8080ff;
+    color: #0080c0;
+}
+#panel, #main, #staticPnl {
+    background-color: #ffffff;
+    border: 1px solid #8080ff;
+    color: #0080c0;
+}
+.controlButton {
+    background-color: #0080c0;
+    color: #ffffff;
+}
+.controlButton:hover {
+    background-color: #ff0000;
+    color: #ffffff;
+}

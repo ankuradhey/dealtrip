@@ -1,0 +1,100 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><?=$this->pageHeading?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr> 
+<tr>
+<td align="center" valign="top"><form name="myform" id="myform" action="<?php echo $this->url(array('controller'=>'system', 'action'=>'savedefaultimages'), 'default', true)?>" method="post" enctype="multipart/form-data"><table width="100%" cellpadding="5" cellspacing="5" style="line-height:25px;">
+<tr>
+<td width="20%" align="left" valign="top">Business</td>
+<td width="6%" align="center" valign="top"><strong>:</strong></td>
+<td width="74%" align="left" valign="top"><?=$this->myform->default_business_image?>
+<?
+if($this->imagesData['default_business_image']!="")
+{
+?>
+<div style="clear:both;padding-top:5px;">
+<img src="<?=APPLICATION_URL?>image.php?image=images/businesses/<?=$this->imagesData['default_business_image']?>&height=80&width=80" border="0" />
+</div>
+<?	
+}
+?>
+</td>
+</tr>
+<tr>
+<td align="left" valign="top">Event :</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->myform->default_event_image?>
+<?
+if($this->imagesData['default_event_image']!="")
+{
+?>
+<div style="clear:both;padding-top:5px;">
+<img src="<?=APPLICATION_URL?>image.php?image=images/events/<?=$this->imagesData['default_event_image']?>&height=80&width=80" border="0" />
+</div>
+<?	
+}
+?>
+</td>
+</tr>
+<tr>
+<td align="left" valign="top"><strong>User Profile</strong></td>
+<td align="left" valign="top" colspan="2">&nbsp;</td>
+</tr>
+<tr>
+<td align="left" valign="top">Male :</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->myform->default_male_image?>
+<?
+if($this->imagesData['default_male_image']!="")
+{
+?>
+<div style="clear:both;padding-top:5px;">
+<img src="<?=APPLICATION_URL?>image.php?image=images/profileimgs/<?=$this->imagesData['default_male_image']?>&height=80&width=80" border="0" />
+</div>
+<?	
+}
+?>
+</td>
+</tr>
+<tr>
+<td align="left" valign="top">Female :</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->myform->default_female_image?>
+<?
+if($this->imagesData['default_female_image']!="")
+{
+?>
+<div style="clear:both;padding-top:5px;">
+<img src="<?=APPLICATION_URL?>image.php?image=images/profileimgs/<?=$this->imagesData['default_female_image']?>&height=80&width=80" border="0" />
+</div>
+<?	
+}
+?>
+</td>
+</tr>
+<tr>
+<td align="left" valign="top">No Gender Provided:</td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->myform->default_both_image?>
+<?
+if($this->imagesData['default_both_image']!="")
+{
+?>
+<div style="clear:both;padding-top:5px;">
+<img src="<?=APPLICATION_URL?>image.php?image=images/profileimgs/<?=$this->imagesData['default_both_image']?>&height=80&width=80" border="0" />
+</div>
+<?	
+}
+?>
+</td>
+</tr>
+<tr>
+<td align="left" colspan="2" valign="top">&nbsp;</td>
+<td align="left" valign="top"><input type="submit" name="Set Default Images" id="Set Default Images" value="Set Default Images" class="myButton" /></td>
+</tr>
+</table></form></td>
+</tr>
+</table>

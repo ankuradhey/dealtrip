@@ -1,0 +1,113 @@
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-table-1"><?=$this->pageHeading?></span>
+    </div>
+
+    <div class="mws-panel-body">
+        <div class="mws-panel-toolbar top clearfix ">
+            <ul>
+                <li><a class="mws-ic-16 ic-accept" href="<?=APPLICATION_URL_ADMIN?>location/addlocalarea" title="Add">Add</a></li>
+                <li><a class="mws-ic-16 ic-cross" href="javascript:void(0)" title="Delete" onclick="deleteitem()">Delete</a></li>
+            </ul>
+        </div>
+        <!--<table class="mws-table">-->
+         <table class="mws-datatable-fn mws-table">
+            <thead>
+                <tr>
+                    <th width="5%">S.No</th>
+                    <th width="5%"><input type="checkbox" name="deletebcchk" id="deletebcchk" onclick="return checkall(this)" /></th>
+                    <th width="30%">Local Area Name</th>
+                    <th width="30%">Sub Area Name</th>
+                    <th width="30%">City Name</th>
+                    <th width="30%">State Name</th>
+                    <th width="25%">Country Name</th>
+                    <th width="5%">Edit</th>
+                    <th width="5%">Visit Page</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?
+				 
+                $i=0;
+                foreach($this->ResData as $row)
+                {
+                    $start++;$i++;
+                    
+ 
+                    ?>
+                        <tr class="gradeX">
+                            <td><?=$i;?></td>
+                            <td>
+                                <input name='check<?=$i;?>' id='check<?=$i;?>' value='<?=$row['local_area_id'];?>' 
+                                    onchange='return check_check("bcdel","deletebcchk")' type='checkbox'>
+                                    
+                                <script>
+                                    $(document).ready(function(){
+                                        $('#bcdel').html(''); document.getElementById('deletebcchk').checked = false;
+                                    });
+                                </script>
+                            </td>
+                            <td><?=$row['local_area_name'];?></td>
+                            <td><?=$row['sub_area_name'];?></td>
+                            <td><?=$row['city_name'];?></td>
+                            <td><?=$row['state_name'];?></td>
+                            <td><?=$row['country_name'];?></td>
+                            <td>
+                                <a href="<?=APPLICATION_URL_ADMIN;?>location/editlocalarea/lId/<?=$row['local_area_id'];?>">
+                                        <img src="<?=APPLICATION_URL_ADMIN;?>css/icons/32/application_form_edit.png" height="16" width="16"   border='0' title='Edit' alt='Edit'>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?php echo APPLICATION_URL_ADMIN; ?>location/page/localareaId/<?=$row['local_area_id'];?>">
+                                    <img src="<?=APPLICATION_URL_ADMIN;?>css/icons/32/building_edit.png" height="16" width="16"   border='0' title='Edit' alt='Edit'>
+                                </a>
+                            </td>
+                        </tr>
+                    <?
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>    	
+</div>
+<script>
+function deleteitem()
+{
+	var r= "";
+	var s="";
+	var selected=false;
+	for(var i=1;document.getElementById('check'+i);i++){
+		if(document.getElementById('check'+i).checked==true){	
+			r += document.getElementById('check'+i).value+"|";
+			selected = true;
+		}
+	}	
+	
+	r += '0';
+	if(selected){
+		var confirmation = confirm("Are you sure want to delete ?");
+		if(confirmation!=true){
+			return false;
+		}	
+	
+		$.ajax({ url: "<?=APPLICATION_URL_ADMIN."location/deletelocalarea"?>",
+		type: "POST",
+		data: ({Id:r}),
+		success: function(data){
+			alert('record successfully deleted');
+			 window.location.href=window.location.href;
+		}});
+	} else {
+		alert('Please choose a record to delete.');
+	}
+}
+
+function checkall(thisid)
+{
+  for(var i=1;document.getElementById('check'+i);i++)
+  {
+	  if(document.getElementById(thisid.id).checked==true){document.getElementById('check'+i).checked = true;}
+	  if(document.getElementById(thisid.id).checked==false){document.getElementById('check'+i).checked = false;}
+	}	
+}
+</script>

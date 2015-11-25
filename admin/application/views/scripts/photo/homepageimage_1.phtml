@@ -1,0 +1,61 @@
+<!-- Panels Start -->
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        $("a[rel^='prettyPhoto']").prettyPhoto();
+    });
+</script>    
+<?
+    $imageWidth = "100";
+    $imageHeight = "80";
+?>
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header"><span class="mws-i-24 i-polaroids"><?= $this->pageHeading ?></span></div>
+    <div class="mws-panel-body">
+        <div class="mws-panel-toolbar top clearfix ">
+            <ul>
+                <li><a class="mws-ic-16 ic-accept" href="<?= APPLICATION_URL_ADMIN ?>photo/homepageimageadd" title="Add">Add</a></li>
+            </ul>
+        </div>
+
+        <div class="mws-panel-content">
+            <?
+                $i = 0;
+                if (count($this->ResData) > 0)
+                {
+                    echo "<ul id='mws-gallery' class='clearfix'>";
+                    foreach ($this->ResData as $row)
+                    {
+                        $start++;
+                        $i++;
+                        ?>
+                        <li>
+                            <a href="<?= APPLICATION_URL ?>uploads/<?= $row['img_name']; ?>" rel="prettyPhoto[gallery1]">
+                                <img src="<?= APPLICATION_URL ?>image.php?image=uploads/<?= $row['img_name']; ?>&height=<?= $imageHeight ?>&width=<?= $imageWidth ?>" alt="slider images" title="<?= $row['image_title']; ?>" />
+                                <span class="mws-gallery-overlay"><span class="mws-gallery-zoom"></span></span></a>
+
+                            <span><br />
+                                <a style="text-align:center"  href="<?= APPLICATION_URL_ADMIN; ?>photo/homepageimgdelete/Id/<?= $row['id']; ?>">
+                                    <img  align="middle" style="text-align:center ; float:right;" src="<?= APPLICATION_URL_ADMIN; ?>css/icons/16/trash1.png" height="20px;" border='0' title='Delete' alt='Delete'>
+                                </a>
+                            </span>
+                        </li>
+                        <?
+                    }
+                    echo "</ul>";
+                    ?>
+
+        <?
+    }
+    else
+    {
+        echo "<div align='center'>No data available in table</div>";
+    }
+?>			           			
+
+
+
+        </div>
+    </div>
+</div>
+
+<!-- Panels End -->

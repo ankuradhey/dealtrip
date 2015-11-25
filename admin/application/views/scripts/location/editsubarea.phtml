@@ -1,0 +1,107 @@
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-check"><?=$this->pageHeading?></span>
+    </div>
+    <div class="mws-panel-body">
+        <form name="myform" id="mws-validate" action="" method="post" novalidate="novalidate" class="mws-form">
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+            <div class="mws-form-inline">
+                <div class="mws-form-row">
+                    <label>Select Country :</label>
+                    <div class="mws-form-item large">
+                        <?=$this->myform->country_id?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Select Name :</label>
+                    <div class="mws-form-item large">
+                        <?=$this->myform->state_id?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Select City:</label>
+                    <div class="mws-form-item large">
+                        <?=$this->myform->city_name?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Sub Area Name :</label>
+                    <div class="mws-form-item large">
+                        <?=$this->myform->sub_area_name?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                    </div>
+                </div>
+            <div class="mws-button-row">
+                <input type="submit" value="Submit" class="mws-button red" />
+            </div>
+        </form>
+    </div>    	
+</div> 
+
+ 
+ 
+
+
+
+ 
+<script language="javascript">
+function getCountryState(countryId)
+{
+	$.ajax({ url: "<?=APPLICATION_URL_ADMIN."location/getstatebycountry"?>",
+	type: "POST",
+	data: ({countryId:countryId}),
+	success: function(data)
+	{
+		EmptyListbox('state_id');
+		AddOptiontoListBox('state_id','','- - State - -');
+		if(data!="")
+		{
+			var ArrData=data.split("***");
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('state_id',OptionValue,OptionText);
+				}
+			}
+		}
+		
+	}});	
+}
+
+function getStateCity(stateId)
+{
+	
+	$.ajax({ url: "<?=APPLICATION_URL_ADMIN."location/getcitiesbystate"?>",
+	type: "POST",
+	data: ({stateId:stateId}),
+	success: function(data)
+	{
+
+		EmptyListbox('city_name');
+		AddOptiontoListBox('city_name','','- - City - -');
+		data = $.trim(data);
+		if(data!="")
+		{
+			var ArrData=data.split("***");
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('city_name',OptionValue,OptionText);
+				}
+		
+			}
+		}
+		
+	}
+	});	
+
+}
+
+</script>

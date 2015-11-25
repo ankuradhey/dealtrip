@@ -1,0 +1,251 @@
+<?
+global $mySession;
+
+?>
+<style>
+#SizeOfParty {
+    margin-bottom: 10px;
+}
+.LightPanel {
+    background-color: #F4F8FB;
+    border: 0 none;
+    margin: 10px;
+    padding: 10px;
+   
+}
+.BookingDetailsLabel {
+    float: left;
+    font-weight: bold;
+    width: 120px;
+}
+
+.discount-code{
+    -moz-box-sizing: border-box;
+    background-color: #FFFFFF;
+    border: 1px solid #CDCDCD;
+    box-shadow: 0 1px 3px rgba(128, 128, 128, 0.1) inset;
+    color: #323232;
+    margin: 0;
+    outline: medium none;
+    padding: 6px 7px;
+}
+
+.ChangeDetails {
+    float: left;
+    margin: 5px 0;
+    width: 100%;
+}
+a {
+    color: #D74B14;
+    text-decoration: underline;
+}
+
+.quote-row-right {
+    text-align: right;
+    vertical-align: top;
+}
+</style>
+<script type="application/javascript">
+function __doPostBack() {
+   window.location.href='<?=APPLICATION_URL?>search/searchdetail/ppty/<?=$this->ppty?>/property/availability';
+}
+function __doTotal()
+{
+	var acco=document.getElementById('option_accommodation').value;
+	var option_extra=document.getElementById('option_extra').value;
+	var compulsory=document.getElementById('compulsory').innerHTML;
+	var extra=0.0;
+	
+	if(option_extra!="")
+	{
+		for(i=1;i<=option_extra;i++)
+		{
+			if(document.getElementById('option_extra_eprice_'+i).checked==true)
+			{
+				extra=extra + parseFloat(document.getElementById('option_extra_eprice_'+i).value); 
+			}
+		} 
+	
+	
+	}
+	
+	document.getElementById('extra').innerHTML=extra;
+	
+	var total_option=(parseFloat(extra)+parseFloat(compulsory))*(parseFloat(document.getElementById('Adults').value)+ parseFloat(document.getElementById('Children').value));;
+	
+	acc=parseFloat(acco)*(parseFloat(document.getElementById('Adults').value)+ parseFloat(document.getElementById('Children').value));
+	document.getElementById('acco').innerHTML=acc;
+	document.getElementById('total').innerHTML=total_option+acc;
+}
+</script>
+<form action="" method="post">
+<fieldset class="LightPanel" id="SizeOfParty">
+                                <h3>Booking details</h3>
+                                <br>
+                                <label class="BookingDetailsLabel">
+                                    Size of party</label>
+                                <select id="Adults"  name="Adults" onchange="__doTotal();">
+				<option value="1" selected="selected">1</option>
+                				<? for($i=2;$i<11;$i++)
+								{
+								?>
+                                	<option value="<?=$i?>"><?=$i?></option>
+                                <?
+								}
+								?>    
+									
+							</select>
+                                Adults,
+                            <select id="Children"  name="Children" onchange="__doTotal();">
+				 					<? for($i=0;$i<4;$i++)
+								{
+								?>
+                                	<option value="<?=$i?>"><?=$i?></option>
+                                <?
+								}
+								?>    
+				
+			</select>
+                                Children,
+                            <select id="Infants"  name="Infants">
+				 					<? for($i=0;$i<3;$i++)
+								{
+								?>
+                                	<option value="<?=$i?>"><?=$i?></option>
+                                <?
+								}
+								?>    
+				
+			</select>
+                                Infants
+                            <br class="clear">
+                                <br>
+                                <label class="BookingDetailsLabel">
+                                    Staying</label>
+                                <span id="Tabs_SizeOfPartyAndOptionalExtras_lblStaying"><?=$this->Staying?></span>
+                                Nights<br class="clear">
+                                <label class="BookingDetailsLabel">
+                                    Arriving</label>
+                                <span id="Tabs_SizeOfPartyAndOptionalExtras_lblStartDate"><?=date('d F Y',strtotime($this->dateval_from))?></span>
+                                <br class="clear">
+                                <label class="BookingDetailsLabel">
+                                    Leaving</label>
+                                <span id="Tabs_SizeOfPartyAndOptionalExtras_lblEndDate"><?=date('d F Y',strtotime($this->dateval_to))?></span>
+                               <br>
+                                <a href="javascript:__doPostBack();" class="ChangeDetails" id="Tabs_SizeOfPartyAndOptionalExtras_lbBackToAvailabilityPage">Go back to the calendar</a>
+                            </fieldset>
+                            <div class="LightPanel" id="Tabs_SizeOfPartyAndOptionalExtras_OptionalExtras">
+				
+                                
+                                
+                                <br class="clear">
+                                <div id="discount-box">
+                                    <span style="color: #807E7E">Got a discount voucher code?</span>
+                                    <input type="text" class="discount-code" id="SpecialDiscount" maxlength="25" name="Tabs$SizeOfPartyAndOptionalExtras$SpecialDiscountTB">
+                             &nbsp;       <input type="button"  class="mws-button" id="Tabs_SizeOfPartyAndOptionalExtras_btnUpdateQuote" value="Apply voucher" name="Tabs$SizeOfPartyAndOptionalExtras$btnUpdateQuote" style="cursor:pointer;" onclick="fetchdiscount(document.getElementById('SpecialDiscount').value);">
+                               
+                                </div>
+                                <br class="clear">
+                            
+			</div>
+              <? if(count($this->option_complusory)>0)
+				{
+			?>
+            <div class="LightPanel" id="Tabs_SizeOfPartyAndOptionalExtras_OptionalExtras">
+             <h3>Option Complusory</h3>
+				<table width="35%" cellspacing="0" cellpadding="0" border="0">
+                                    <tbody>
+                                   
+                                    <?
+									 $i=1;
+									 foreach($this->option_complusory as $key=>$option_complusory)
+									{
+										
+									?>
+                                    <tr class=""><td ><b><?=$option_complusory['ename']?></b></td><td align="left"><input type="hidden" id="option_complusory_ename_<?=$i?>" value="<?=$option_complusory['eprice']?>" name="option_complusory_ename_<?=$i?>" /><input type="hidden" id="option_complusory_eprice_<?=$i?>" value="<?=$option_complusory['eprice']?>" name="option_complusory_eprice_<?=$i?>" /><?=$this->propertyData[0]['currency_code']?> <?=$option_complusory['eprice']?></td></tr>
+                                    <? $i++; }?>
+                                    
+                                </tbody></table>
+                                
+                                
+                  </div>     
+                  <?
+				}
+				  ?>           
+              <? if(count($this->option_extra)>0)
+				{
+			?>
+            <div class="LightPanel" id="Tabs_SizeOfPartyAndOptionalExtras_OptionalExtras">
+             <h3>Option Extra</h3>
+				<table width="35%" cellspacing="0" cellpadding="0" border="0">
+                                    <tbody>
+                                   
+                                    <?
+									 $i=1;
+									 foreach($this->option_extra as $key=>$option_extra)
+									{
+										
+									?>
+                                    <tr class=""><td ><b><?=$option_extra['ename']?></b></td><td align="left">
+                                    <input type="hidden" id="option_extra_ename_<?=$i?>" value="<?=$option_extra['eprice']?>" name="option_extra_ename_<?=$i?>" /><input type="checkbox" id="option_extra_eprice_<?=$i?>" value="<?=$option_extra['eprice']?>" name="option_extra_eprice_<?=$i?>" onclick="__doTotal()" />&nbsp<?=$this->propertyData[0]['currency_code']?> <?=$option_extra['eprice']?></td></tr>
+                                    <? $i++; }?>
+                                    
+                                </tbody></table>
+                                
+                                
+                  </div>     
+                  <?
+				}
+				  ?>           
+            <div class="LightPanel">
+                                <!-- <div class="booking-module-title-up">Availability &amp; Cost</div> -->
+                                <span style="color:Red;font-size:Larger;font-weight:bold;" id="Tabs_SizeOfPartyAndOptionalExtras_lblAvailabilityMsg"></span>
+                                
+
+                                <h3>Cost breakdown</h3>
+                                <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                    <tbody><tr class=""><td class="quote-row-end"><span title="includes all booking fees and card charges">Accommodation:</span></td><td style="width:80px">&nbsp;</td><td class="quote-row-end quote-row-right"><?=$this->propertyData[0]['currency_code']?> <span id="acco"><?=$this->perprice?></span></td></tr><tr class=""><td class="quote-row-end">Optional Extras: </td><td style="width:80px">&nbsp;</td><td class="quote-row-end quote-row-right" ><?=$this->propertyData[0]['currency_code']?> <span id="extra">0</span></td></tr><tr class=""><td class="quote-row-end">Compulsory Extras:</td><td style="width:80px">&nbsp;</td><td class="quote-row-end quote-row-right"> <?=$this->propertyData[0]['currency_code']?> <span id="compulsory">0</span></td></tr><tr class="bold-summary"><td class="quote-row-price">Total Cost</td><td style="width:80px">&nbsp;</td><td class="quote-row-price quote-row-right"><?=$this->propertyData[0]['currency_code']?> <span id="total"></span></td></tr>
+                                </tbody></table>
+                                <br>
+                                <br>
+                                <h3>Payment Schedule</h3>
+                                <table style="width: 100%;">
+                                    <tbody><tr><td class="payment-schedule-row">Late booking: The full amount must be paid as soon as the booking is confirmed.</td><td width="90px" style="text-align: right" class="quote-row-deposit"></td></tr>
+                                </tbody></table>
+
+                            </div>
+     <input type="hidden" name="total" /><input type="hidden" name="option_extra" id="option_extra" value="<?=count($this->option_extra)?>" /><input type="hidden" name="option_complusory" id="option_complusory" value="<?=count($this->option_complusory)?>" /> <input type="hidden" name="option_accommodation" id="option_accommodation" value="<?=$this->perprice?>" /> <input type="hidden" name="per_price" id="per_price" value="<?=$this->perprice?>" />   
+                                                                     
+</form>      
+  <script type="text/javascript">
+  var option_complusory=document.getElementById('option_complusory').value;
+  //var option_extra=document.getElementById('option_extra').value;
+  var compulsory=0.0;
+ // var extra=0.0;
+  if(option_complusory!="")
+  {
+	  for(i=1;i<=option_complusory;i++)
+	  {
+		 compulsory=compulsory + parseFloat(document.getElementById('option_complusory_eprice_'+i).value); 
+	  } 
+	  
+	  
+  }
+  document.getElementById('compulsory').innerHTML=compulsory;
+  document.getElementById('total').innerHTML=parseFloat(compulsory)+parseFloat(document.getElementById('per_price').value);
+  function fetchdiscount(fobj)
+  {
+	 
+	
+	$.ajax({ url: "<?=APPLICATION_URL."booking/getvoucher"?>",
+	type: "POST",
+	data: ({vocode:fobj}),
+	success: function(data)
+	{
+		
+	}
+	});	
+
+  
+  }
+  </script>

@@ -1,0 +1,78 @@
+ <div style="width:85%; margin-left:7%;px" >
+  <div class="mws-panel grid_8">
+    <div class="mws-panel-header"><span class="mws-i-24 i-check"><?=$this->pageHeading?></span></div>
+    <div class="mws-panel-body">
+        <form name="myform" id="mws-validate" action="<?=$this->url(array('controller'=>'property', 'action'=>'savespecification'), 'default', true)?>" method="post" novalidate="novalidate" class="mws-form">
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><label>Category :</label><div class="mws-form-item large"><?=$this->myform->category?></div></div></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><label>Question :</label><div class="mws-form-item large"><?=$this->myform->question?></div></div></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><label>Type of Answer:</label><div class="mws-form-item large"><?=$this->myform->input_type?></div></div></div>              
+                <div class="mws-form-inline"><div class="mws-form-row"><label>Status :</label><div class="mws-form-item large"><?=$this->myform->spec_status?></div></div></div>
+             	<div class="mws-form-inline" id = "no_of_opt" style="display:none;"><div class="mws-form-row"><label>Number of Options:</label><div class="mws-form-item large"><?=$this->myform->no_of_options?></div></div></div>   
+                <?
+				 for($i = 1;$i<=53;$i++)
+				 {
+					 $options_add = "options_add".$i;
+			   ?>
+                <div class="mws-form-inline" id = "opt<?=$i?>" style="display:none;"><div class="mws-form-row"><label>Option <?=$i?>:</label><div class="mws-form-item large"><?=$this->myform->$options_add?></div></div></div>   
+            	<?
+                 }
+				?>
+                <div class="mws-form-inline"><div class="mws-form-row"><label>Mandatory :</label><div class="mws-form-item large" style="width:100px;"><?=$this->myform->mandatory?></div></div></div>
+                <div class="mws-button-row"><input type="submit" tabindex="14" value="Submit" class="mws-button red" /></div>
+        </form>
+    </div>    	
+</div> 
+</div>
+
+
+<script type="text/javascript">
+
+/** if radio or combo box is selected then number of options is asked **/
+function displayoption(value)
+{
+
+	var x = 0;
+	$.ajax({ url: "<?=APPLICATION_URL_ADMIN."property/getoptions"?>",
+		type: "POST",
+		data: ({Id:value}),
+		async:false,
+		success: function(data)
+		{	
+			
+			data = $.trim(data);
+			x = data;
+				
+			
+		}
+	});	
+	
+
+	if(x == 1)
+	$("#no_of_opt").show();
+	else
+	{	$("#no_of_opt").hide();
+		for(var c = 1;c<=53;c++)
+	{
+		$("#opt"+c).hide();	
+	}
+	
+	}
+}
+
+
+function addoptions(value)
+{
+
+	for(var c = 1;c<=53;c++)
+	{
+		$("#opt"+c).hide();	
+	}
+	
+	for(var c = 1;c<=value;c++)
+	{
+		$("#opt"+c).show();	
+	}
+	
+}
+</script>

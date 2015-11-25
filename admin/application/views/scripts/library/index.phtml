@@ -1,0 +1,271 @@
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-table-1"><?= $this->pageHeading ?></span>
+    </div>
+
+    <div class="mws-panel-body">
+        <div class="mws-panel-toolbar top clearfix ">
+            <ul>
+                <!--<li><a class="mws-ic-16 ic-accept" href="<?= APPLICATION_URL_ADMIN ?>property/addamenity" title="Add">Add</a></li>-->
+                <li><a class="mws-ic-16 ic-cross" href="javascript:void(0)" title="Delete" onclick="deleteitem()">Delete</a></li>
+                <li><a class="mws-ic-16 ic-arrow-right" href="javascript:void(0)" title="Move" onclick="moveitem()">Move</a></li>
+            </ul>
+        </div>
+        <!--<table class="mws-table">-->
+        <table class="mws-datatable-fn mws-table">
+            <thead>
+                <tr>
+                    <th width="3%">S.No</th>
+                    <th width="2%"><input type="checkbox" name="deletebcchk" id="deletebcchk" onclick="if (event.stopPropagation) {
+                        event.stopPropagation();
+                    }
+                    event.cancelBubble = true; return checkall(this)" /></th>
+                    <th width="10%">Property No.</th>
+                    <th width="20%">State</th>
+                    <th width="20%">City</th>
+                    <th width="20%">Sub area</th>
+                    <th width="20%">Local area</th>
+                    <th width="20%">Property Type</th>
+                    <th width="10%">Date added</th>
+                    <th width="10%">Status</th>
+                    <th width="3%">Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?
+                    $i = 0;
+                    $j = 1;
+                    foreach ($this->ResData as $row)
+                    {
+                        $start++;
+                        $i++;
+
+
+                        if ($row['is_spcl'] == 1)
+                        {
+                            $image = 'tick.png';
+                        }
+
+                        if ($row['is_spcl'] == 0)
+                        {
+                            $image = 'cross.png';
+                        }
+
+                        if ($row['is_popular'] == 1)
+                        {
+                            $image1 = 'tick.png';
+                        }
+                        if ($row['is_popular'] == 0)
+                        {
+                            $image1 = 'cross.png';
+                        }
+
+
+                        switch ($row['status'])
+                        {
+                            case '1': $status1 = 'selected="selected"';
+                                $status2 = "";
+                                $status3 = "";
+                                $status4 = "";
+                                break;
+                            case '2': $status1 = '';
+                                $status2 = 'selected="selected"';
+                                $status3 = "";
+                                $status4 = "";
+                                break;
+                            case '3': $status1 = '';
+                                $status2 = "";
+                                $status3 = 'selected="selected"';
+                                $status4 = "";
+                                break;
+                            case '4': $status1 = '';
+                                $status2 = "";
+                                $status3 = "";
+                                $status4 = 'selected="selected"';
+                                break;
+                        }
+
+                        if ($cClass == "gradeX odd")
+                        {
+                            $cClass = "gradeX even";
+                        }
+                        else
+                        {
+                            $cClass = "gradeX odd";
+                        }
+                        ?>
+                        <tr class="gradeX">
+                            <td style="text-align:center"><?= $i; ?></td>
+                            <td style="text-align:center">
+                                <input name='check<?= $j; ?>' id='check<?= $j; ?>' value='<?= $row['id']; ?>' 
+                                       onchange='return check_check("bcdel","deletebcchk")' type='checkbox'>
+
+                                <script type="text/javascript">
+                                $(document).ready(function(){
+                                    $('#bcdel').html(''); 
+                                    document.getElementById('deletebcchk').checked = false;
+                                })
+                                
+                                </script>
+                            </td>
+                            <td><?= $row['propertycode'] ?></td>
+                            <td><?= $row['state_name']?></td>
+                            <td><?= $row['city_name']?></td>
+                            <td><?= !empty($row['sub_area_name'])?$row['sub_area_name']:"--N.A--"; ?></td>
+                            <td><?= !empty($row['local_area_name'])?$row['local_area_name']:"--N.A--" ?></td>
+                            <td><?= $row['ptyle_name'] ?></td>                            
+                            <td><?= date('d-m-Y', strtotime($row['date_added'])) ?></td>                            
+                            <td>
+                                <select class="chzn-select" name = "status<?= $i ?>" id = "status<?= $i ?>" onchange='changestatus("<?= $row['id']; ?>",this.value)'>
+                                    <option <?= $status1 ?> value="1">Incomplete</option>
+                                    <option <?= $status2 ?> value="2">Pending Approval</option>
+                                    <option <?= $status3 ?> value="3">Live</option>                               
+                                    <option <?= $status4 ?> value="4">Suspended</option>
+                                </select>
+                            </td>
+                            <td>
+                                <a href="<?= APPLICATION_URL_ADMIN ?>property/editproperty/pptyId/<?= $row['id'] ?>/step/0"><img src="<?= APPLICATION_URL_ADMIN; ?>css/icons/32/application_form_edit.png" height="16" width="16"   border='0' title='Edit' alt='Edit'></a>
+                            </td>
+                        </tr>
+        <?
+        $j++;
+    }
+?>
+            </tbody>
+        </table>
+    </div>    	
+</div>
+<script>
+function deleteitem()
+{
+    var r= "";
+    var s="";
+    var selected=false;
+    var checkedEl = $('table.mws-table tbody input:checkbox:checked:visible:first');
+    if(checkedEl.length)
+    {    selected = true;
+                
+        $('table.mws-table tbody input:checkbox:checked:visible').each(function(index,el){
+            r += $(this).val()+"|";   
+        });   
+    }
+	
+    r += '0';
+    if(selected){
+        var confirmation = confirm("Are you sure want to delete ?");
+        if(confirmation!=true){
+            return false;
+        }	
+	
+        $.ajax({ url: "<?= APPLICATION_URL_ADMIN . "property/deleteproperty" ?>",
+            type: "POST",
+            data: ({Id:r}),
+            success: function(data){			
+			
+			
+                alert('Selected records have been deleted successfully.');
+			
+                window.location.href=window.location.href;
+            }});
+    } else {
+        alert('Please choose a record to delete.');
+    }
+}
+
+
+function checkall(thisid)
+{
+        
+    var mainEl = $('table.mws-table input:checkbox:visible:first')[0];
+    var checkedEl = $('table.mws-table tbody input:checkbox:visible');
+    
+    checkedEl.each(function(index,el){
+
+        //console.log(mainEl.checked);
+        if(mainEl.checked)
+            el.checked = true;
+        else
+            el.checked = false;    
+    });   
+    
+
+}
+
+function changestatus(Id,Status)
+{
+    $.ajax({ 
+        type: "POST", 
+        url: "<?= APPLICATION_URL_ADMIN ?>property/changepptystatus", 
+        data: ({Id:Id,Status:Status}),
+        cache: false, 
+        success: function(data){				 
+            window.location.href=window.location.href;
+        }
+    });
+}
+
+function changespclstatus(Id,Status)
+{
+
+
+    $.ajax({ 
+        type: "POST", 
+        url: "<?= APPLICATION_URL_ADMIN ?>property/changespclstatus", 
+        data: ({Id:Id,Status:Status}),
+        cache: false, 
+        success: function(data){				 
+            window.location.href=window.location.href;
+        }
+    });
+}
+
+function changepstatus(Id,Status)
+{
+    $.ajax({ 
+        type: "POST", 
+        url: "<?= APPLICATION_URL_ADMIN ?>property/changepopularstatus", 
+        data: ({Id:Id,Status:Status}),
+        cache: false, 
+        success: function(data){				 
+            window.location.href=window.location.href;
+        }
+    });
+	
+}
+function moveitem()
+{
+    var r= "";
+    var s="";
+    var selected=false;
+    var checkedEl = $('table.mws-table tbody input:checkbox:checked:visible:first');
+    if(checkedEl.length)
+    {    selected = true;
+                
+        $('table.mws-table tbody input:checkbox:checked:visible').each(function(index,el){
+            r += $(this).val()+"|";   
+        });   
+    }
+	
+    r += '0';
+    if(selected){
+        var confirmation = confirm("Are you sure want to move?");
+		
+        if(confirmation!=true){
+            return false;
+        }	
+	
+        $.ajax({ url: "<?= APPLICATION_URL_ADMIN . "inhouse/moveproperty" ?>",
+            type: "POST",
+            data: ({Id:r,moveto:'inhouse'}),
+            success: function(data){			
+			
+			
+                alert('Selected records have been moved successfully.');
+			
+                window.location.href=window.location.href;
+            }});
+    } else {
+        alert('Please choose a record to move.');
+    }
+}
+</script>

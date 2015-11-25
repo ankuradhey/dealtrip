@@ -1,0 +1,166 @@
+ <script type="text/javascript">
+   show = '0';
+   $(document).ready(function(e){
+	   
+	  $(".dataTables_filter").addClass("actionbar");
+	   
+   	$("table").nextAll("div").wrapAll("<div class = 'bottomPager'>")
+   
+   	$(".dataTables_length, .dataTables_filter, .selectAll").wrapAll("<div class = 'action_above'></div>");
+   
+   
+   $(".recipeTableIndex tr").not('tr.viewTr').hover(function(e){
+	   $(this).toggleClass("msgHover");
+   },
+   function(e){
+	   
+	$(this).toggleClass("msgHover")   ;
+   }
+   );
+   
+   
+   });
+   
+ 	
+	function viewmessage(id,ptr)
+	{  
+			
+			if(show === id)
+			{
+				$("tr.viewTr").remove();
+				$("#"+ptr).css("background-color","#FFFFFF");
+				$("#"+ptr).toggleClass("msgRead");
+				show = '0';
+				
+			}
+			else
+			{
+				$("tr.viewTr").remove();   		
+				$("#"+ptr).after("<tr class = 'viewTr'><td colspan = '5'><div class = 'viewBox'><div class = 'action'><a class = 'deleteMsg' href = '"+SITEURL+"messageboard/deletemessage/messageId/"+id+"/del/inbox'>delete</a></div><div class = 'viewNow'></div><div class = 'action'><a class = 'deleteMsg' href = '"+SITEURL+"messageboard/deletemessage/messageId/"+id+"/del/inbox'>delete</a></div></td></tr>")	
+				$(".viewNow").load("<?=APPLICATION_URL?>messageboard/viewmessage/messageId/"+id);
+				$("#"+ptr).toggleClass("msgRead");
+				$("#"+ptr).next("tr").css("background-color","#FFC");
+				
+				show = id;		
+			}
+			
+	}
+   
+   
+   
+   
+   
+   
+   function showmessage(id)
+   {
+        $( "#"+id ).dialog();
+   }
+   
+   
+   
+   
+   
+   
+    </script>	
+ 
+	<div class = "messageContainer">
+    
+         
+            <div class = "msg_board_tab" style="float:right;">
+                <ul>
+                    <li><a class = "active" href="<?=APPLICATION_URL?>messageboard/inbox" class="">Inbox</a></li>
+                    <li><a href="<?=APPLICATION_URL?>messageboard/outbox" class="mws-ic-16 ic-accept">Outbox</a></li>
+                    <li><a href="<?=APPLICATION_URL?>messageboard/compose" class="mws-ic-16 ic-accept">Compose</a></li>
+                </ul>
+            </div>
+         <div class="messagebox">
+         	
+	          <div class="selectAll">
+              	<input type="checkbox" id = "checkAll"  onclick="return checkall(this)"/>&nbsp;<label for="checkAll">select all</label>&nbsp;&nbsp;<a href="javascript:void(0);" style="text-decoration:underline;color:#000;" onclick="deleteitem();">Delete</a>
+              </div>  
+         
+         <table class="mws-datatable-fn recipeTableIndex" cellpadding="0" cellspacing="0" border="0">
+            <thead>
+                <tr>
+                    <th width="5%">S.No</th>
+                    <th width="15%">Sender</th>
+                    <th width="15%">Subject</th>
+                    <th width="15%">Date Received</th>
+                    <th width="5%">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+               <?
+if($this->messagesData!="" and count($this->messagesData)>0)
+{
+	$i=1;
+
+	foreach($this->messagesData as $key=>$messageData)
+	{
+		
+		if($messageData['read'] == '0')
+		$class = "class='unread'";
+		else
+		$class = "";
+?>
+                   
+                        <tr <?=$class?> id = "msg_<?=$i?>" onclick="viewmessage('<?=md5($messageData['message_id'])?>',this.id)">
+                            <td class = "chkBox" style="text-align:center"><input type="checkbox" name="check<?=$i?>" id = "check<?=$i?>" value="<?=md5($messageData['message_id'])?>"  /></td>
+                            <td><?=$messageData['SenderName']?></td>
+                            <td class = "subject"><?=$messageData['message_subject']?></td>
+                            <td><?=date(DATEFORMAT,strtotime($messageData['date_message_sent']))?></td>
+                            <td><a href="#" class="ViewMessage" onclick = 'showmessage("dialog<?=$i?>")'><img class = "mws-tooltip-n" src="<?=IMAGES_URL?>msg_view.png" border="0" align="View Message" title="View Message" alt = 'view' height='20' width ='20'/></a><a href="<?=APPLICATION_URL?>messageboard/deletemessage/messageId/<?=md5($messageData['message_id'])?>/del/inbox" onclick="return hrefHandler();"><img  class = "mws-tooltip-n" src="<?=IMAGES_URL?>msg_delete.png" border="0" align="absmiddle" alt="Delete Message" title="Delete Message" width="20" height="20" /></a></td>
+                             <!--<iframe   style = 'display:none;' src="<?=APPLICATION_URL?>messageboard/viewmessage/messageId/<?=md5($messageData['message_id'])?>" id = "dialog<?=$i?>"></iframe>                  -->
+                        </tr>
+                    <?
+					$i++;
+    }
+}
+                ?>
+            </tbody>
+        </table>
+		</div>
+	</div> 	
+
+
+<script type="text/javascript">
+function deleteitem()
+{
+	var r= "";
+	var s="";
+	var selected=false;
+	for(var i=1;document.getElementById('check'+i);i++){
+		if(document.getElementById('check'+i).checked==true){	
+			r += document.getElementById('check'+i).value+"|";
+			selected = true;
+		}
+	}	
+	
+	r += '0';
+	
+	
+
+	if(selected){
+		var confirmation = confirm("Are you sure want to delete ?");
+		if(confirmation!=true){
+			return false;
+		}	
+		$.ajax({ url: "<?=APPLICATION_URL."messageboard/deletemessage/del/inbox"?>",
+		type: "POST",
+		data: ({Id:r}),
+		success: function(data){	
+			alert('Selected records have been deleted successfully.');		
+			window.location.href=window.location.href;
+		}});
+	} else {
+		alert('Please choose a record to delete.');
+	}
+}
+
+
+</script>
+
+
+
+

@@ -1,0 +1,466 @@
+<!--<script type="text/javascript" src="<?=JS_URL?>jquery.nivo.slider.js"></script>-->
+<script type="text/javascript" src="<?=JS_URL?>jquery.easing.1.3.js"></script>
+<link href="<?=CSS_URL?>bx_styles/bx_styles.css" rel="stylesheet" />
+<script type="text/javascript" src="<?=JS_URL?>jquery.bxslider.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(e) {
+/*
+$('.slider_image').nivoSlider(
+  {
+	 controlNav: false  
+  }); */
+  
+  
+var s= 	  $('.sliders').bxSlider({
+		  autoControls: false,
+		  adaptiveHeight:true,
+		  pager:false,
+		  controls:false
+		  });
+
+
+$('#nexts').click(function(){
+
+  s.goToNextSlide();
+  return false;
+});
+
+$('#prevs').click(function(){
+
+  s.goToPrevSlide();
+  return false;
+});
+		
+		var selectedDate = new Date(); 
+  			var msecsInADay = 604800000;
+		 $("#Datefrom").datepicker({ minDate: new Date() });
+		 $("#Dateto").datepicker({minDate: new Date(selectedDate.getTime()+msecsInADay)});
+	
+	
+	$("#laterDate").click(function(){
+		if($("#laterDate").attr('checked'))
+		{
+			$("input[type='text']").val("");
+			$("input[type='text']").attr("disabled","disabled");
+			
+		}
+		else
+		$("input[type='text']").removeAttr("disabled","disabled");
+	});
+
+}); //end ready function
+
+
+function checkoutdate(value)
+{
+
+
+		var selectedDate = new Date(value);
+	    if(selectedDate == "")
+		{
+			selectedDate = new Date(); 
+		}
+		var m = selectedDate.getMonth();
+	    var y = selectedDate.getYear();
+		var d = selectedDate.getDate();
+				
+		var msecsInADay = 604800000;
+		var endDate = new Date(selectedDate.getTime()+msecsInADay);
+		$("#Dateto").datepicker( "option", "minDate", endDate );
+			
+
+}
+
+
+</script>
+
+<!-- code to fetch keywords-->
+<?
+
+$availableTags='[';
+	$i=1;
+	foreach($this->keyword as $key=>$row)
+	{
+		$availableTags.= '"'.$row.'"';
+		$availableTags.=',';
+	}
+	
+	$availableTags = substr($availableTags,0,strlen($availableTags)-1);
+	$availableTags.=']';
+
+?>
+
+
+ <script>
+    
+	var arr = [];
+	
+	
+	$(function() {
+        var availableTags = <?=$availableTags?>;
+        $( "#keySearch" ).autocomplete({
+            source: availableTags
+        });
+    });
+    </script>
+
+<style type="text/css">
+.bx-viewport
+{
+	height:340px !important	
+}
+
+</style>
+
+<? 
+$db=new Db();
+/*$qry="select * from ".PROPERTY." as p
+			  inner join ".PROPERTY_TYPE." as pt on pt.ptyle_id = p.property_type
+			  inner join ".USERS."  as u on u.user_id = p.user_id
+			  where p.status='3' order by p.property_title";  
+		$resData = $db->runQuery("$qry");
+	$availableTags='[';
+	$i=1;
+	foreach($resData as $key=>$row)
+	{
+		$availableTags.='"'.$row['property_title'].'"';
+		if(count($resData)!=$i)
+		{
+			$availableTags.=',';
+		}
+	$i++;		
+	}
+	$availableTags.=']';*/	
+$countryData=$db->runQuery("select * from ".COUNTRIES." order by country_name");	
+		?>
+ <script>
+  /*  $(function() {
+		
+        var availableTags =<?=$availableTags?>;
+        $( "#textfield" ).autocomplete({
+            source: availableTags
+        });
+    });*/
+    </script>
+ <div class="banner_header">
+ <!-- Search Panel With Baner Start-->
+ <div class="search_panel_index">
+    <div class="sp_heding">SEARCH HOLIDAY RENTALS</div>
+    <!--<div class="search_category">
+   <div class="search_cat_icon"><a href="#" class="active"><img src="<?=IMAGES_URL;?>hotel_icon.png"><span>Hotel</span></a></div>
+      <div class="search_cat_icon"><a href="#"><img src="<?=IMAGES_URL;?>floght_icon.png" width="44" height="42"><span style="vertical-align:bottom;">Hotel</span></a></div>
+      <div class="search_cat_icon"><a href="#"><img src="<?=IMAGES_URL;?>holiday_icon.png" width="44" height="42"><span style="vertical-align:bottom;">Hotel</span></a></div>
+      <div class="search_cat_icon"><a href="#"><img src="<?=IMAGES_URL;?>trains_icon.png" width="44" height="42"><span style="vertical-align:bottom;">Hotel</span></a></div>
+    </div>-->
+    <form  action = '<?php echo $this->url(array('controller'=>'search', 'action'=>'index'), 'default', true) ?>' method="get" name="hotelsearch" > 
+    <div class="form_area_row search_box_padding">
+        <div class="form_area_row_inner1">
+          <div class="form_area_row_text">Country</div>
+          <div class="form_area_row_box">
+           <select name="country_id" id="country_id" onchange="getCountryState(this.value);">
+           <option value="">---All Countries----</option>
+           <?
+           foreach($countryData as $key=>$countryRow)
+		   {
+				echo "<option value=".$countryRow["country_id"].">".$countryRow['country_name']."</option>";   
+		   }
+		   ?>
+           </select>
+          </div>
+        </div>
+      </div>
+    <div class="form_area_row" id="state_id_div" style="display:none;">
+        <div class="form_area_row_inner1">
+          <div class="form_area_row_text">State-Area-Region</div>
+          <div class="form_area_row_box">
+           <select name="state_id" id="state_id" onchange="getStateCity(this.value);">
+           <option value="">---All States----</option>
+           </select>
+          </div>
+        </div>
+      </div>
+     <div class="form_area_row" id="city_id_div" style="display:none;">
+        <div class="form_area_row_inner1">
+          <div class="form_area_row_text">City Location</div>
+          <div class="form_area_row_box">
+           <select name="city_id" id="city_id" onchange="getCitySubarea(this.value);">
+           <option value="">---All Cities----</option>
+           </select>
+          </div>
+        </div>
+      </div>   
+       <div class="form_area_row" id="sub_area_id_div" style="display:none;">
+        <div class="form_area_row_inner1">
+          <div class="form_area_row_text">Sub Area</div>
+          <div class="form_area_row_box">
+           <select name="sub_area_id" id="sub_area_id" onchange="getSubareaLocalarea(this.value);" >
+           <option value="">---All Sub Areas----</option>
+           </select>
+          </div>
+        </div>
+      </div>   
+      
+       <div class="form_area_row" id="local_area_id_div" style="display:none;">
+        <div class="form_area_row_inner1">
+          <div class="form_area_row_text">Local Area</div>
+          <div class="form_area_row_box">
+           <select name="local_area_id" id="local_area_id">
+           <option value="">---All Local Areas----</option>
+           </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form_area_row" id="local_area_id_div" >
+        <div class="form_area_row_inner1">
+          <div class="form_area_row_text">Check-in-date</div>
+          <div class="form_area_row_box">
+			<input type="text" name = "Datefrom" id = "Datefrom" onchange="checkoutdate(this.value);"/>
+	       </div>
+        </div>
+      </div>   
+      
+      <div class="form_area_row" id="local_area_id_div" >
+        <div class="form_area_row_inner1">
+          <div class="form_area_row_text">Check-out-date</div>
+          <div class="form_area_row_box">
+			<input type="text" name = "Dateto" id = "Dateto"  />
+	       </div>
+        </div>
+      </div>   
+      
+      <div class="form_area_row" id="local_area_id_div" >
+        <div class="form_area_row_inner1">
+          <div class="form_area_row_text">I will decide dates later</div>
+          <div class="form_area_row_box">
+			<input type="checkbox" name="laterDate" id="laterDate" />
+	       </div>
+        </div>
+      </div>   
+    
+    <div class="check_bttn"><input type="image" src="<?=IMAGES_URL;?>check_avil.png" /></div>
+    </form>
+  </div>
+  <div class="banner">
+  	<!--Baner Search box-->
+    <div class="search_main">
+        <div class="search_box">
+          <label>
+          <input type="text" name="keySearch" id="keySearch">
+          </label>
+        </div>
+        <div class="search_box_bttn">
+          <p><a href="#"><img src="<?=IMAGES_URL;?>search_icon.png" width="28" height="24"></a></p>
+        </div>
+ 	</div>
+  
+   <!-- Baner Search box End-->
+    <div class="slider_image" >
+    <ul class="sliders" style="list-style-type:none;list-style:none;margin:0px;padding:0px;"><!--Baner Image-->
+ <?
+ 	foreach($this->slideArr as $values)
+	{
+ ?>   
+    <li><img src="<?=APPLICATION_URL?>uploads/<?=$values['img_name']?>" ></li>
+    <!--<img src="<?=APPLICATION_URL?>uploads/071212_080029.jpg" >-->
+ <?
+	}
+ ?>   
+    <!--Baner Image-->
+    </ul>   
+    </div>
+   <div class="slide_arrow">
+    	<a href="#" id="prevs"><img src="<?=IMAGES_URL;?>left_slide_arrwo.png" width="32" height="32"></a>&nbsp;&nbsp;<a href="#" id="nexts"><img src="<?=IMAGES_URL;?>right_slide_arrwo.png" width="32" height="32"></a>
+    </div>
+  </div>
+</div>
+<script>
+
+function getCountryState(countryId)
+{
+countryId = $.trim(countryId);
+	if(countryId=="")
+	{
+		$( "#state_id_div" ).hide();
+		$( "#city_id_div" ).hide();
+		$( "#sub_area_id_div" ).hide();
+		$( "#local_area_id_div" ).hide();
+	}
+	else
+	{
+		$( "#state_id_div" ).show();
+	}
+	$.ajax({ url: "<?=APPLICATION_URL."index/getstatebycountry"?>",
+	type: "POST",
+	data: ({countryId:countryId}),
+	success: function(data)
+	{	
+		
+		
+		EmptyListbox('state_id');
+		AddOptiontoListBox('state_id','','- - All State - -');
+		data = $.trim(data);
+		if(data != '')
+		{
+
+			var ArrData=data.split("***");
+		
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('state_id',OptionValue,OptionText);
+				}
+			}
+			
+		}
+		else
+		{
+			$( "#city_id_div" ).hide();
+			$( "#sub_area_id_div" ).hide();
+			$( "#local_area_id_div" ).hide();	
+		}
+		
+	}
+	
+	});	
+}
+function getStateCity(stateId)
+{	
+	if(stateId=="")
+	{
+		$( "#city_id_div" ).hide();
+		$( "#sub_area_id_div" ).hide();
+		$( "#local_area_id_div" ).hide();
+	}
+	else
+	{
+		$( "#city_id_div" ).show();
+	}
+	
+	$.ajax({ url: "<?=APPLICATION_URL."index/getcitiesbystate"?>",
+	type: "POST",
+	data: ({stateId:stateId}),
+	success: function(data)
+	{
+
+		EmptyListbox('city_id');
+		AddOptiontoListBox('city_id','','- - All City - -');
+		data = $.trim(data);
+		if(data!="")
+		{
+			var ArrData=data.split("***");
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('city_id',OptionValue,OptionText);
+				}
+		
+			}
+			
+		}
+		else
+		{
+			$( "#sub_area_id_div" ).hide();
+			$( "#local_area_id_div" ).hide();
+		}
+	}
+	});	
+
+}
+
+function getCitySubarea(cityId)
+{	
+	if(cityId=="")
+	{
+		$( "#sub_area_id_div" ).hide();
+		$( "#local_area_id_div" ).hide();
+	}
+	else
+	{
+		$( "#sub_area_id_div" ).show();
+	}
+	
+	$.ajax({ url: "<?=APPLICATION_URL."index/getsubareabycity"?>",
+	type: "POST",
+	data: ({cityId:cityId}),
+	success: function(data)
+	{
+
+		EmptyListbox('sub_area_id');
+		AddOptiontoListBox('sub_area_id','','- - All Sub Area - -');
+		data = $.trim(data);
+		if(data!="")
+		{
+			var ArrData=data.split("***");
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('sub_area_id',OptionValue,OptionText);
+				}
+		
+			}
+			
+		}
+		else
+		{
+			$( "#local_area_id_div" ).hide();
+		}
+		
+	}
+	});	
+
+}
+
+function getSubareaLocalarea(subId)
+{	
+	if(subId=="")
+	{
+		$( "#local_area_id_div" ).hide();
+	}
+	else
+	{
+		$( "#local_area_id_div" ).show();
+	}
+	
+	$.ajax({ url: "<?=APPLICATION_URL."index/getlocalareabysub"?>",
+	type: "POST",
+	data: ({subId:subId}),
+	success: function(data)
+	{
+
+		EmptyListbox('local_area_id');
+		AddOptiontoListBox('local_area_id','','- - All Local Area - -');
+		data = $.trim(data);
+		if(data!="")
+		{
+			var ArrData=data.split("***");
+			if(ArrData.length>0)
+			{
+				for(var i=0;i<ArrData.length;i++)
+				{
+					var mySplit=ArrData[i].split("|||");
+					var OptionValue=mySplit[0];
+					var OptionText=mySplit[1];
+					AddOptiontoListBox('local_area_id',OptionValue,OptionText);
+				}
+		
+			}
+		}
+		
+	}
+	});	
+
+}
+</script>

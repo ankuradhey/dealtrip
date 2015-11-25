@@ -1,0 +1,21 @@
+<div class="mailDtl ft12">
+    <div class="mailSubj readMailInWid">
+        Subject:&nbsp;<span id="mailSubject"><?=$this->messageData['message_subject']?></span>
+    </div>
+    <div class="readMailInWid">
+        To:&nbsp;<span id="mailSender"><?=$this->messageData['admin_email']?></span>&nbsp;<span id="mailTime" class="grey"><?=date(DATEFORMAT,strtotime($this->messageData['date_message_sent']))?></span>
+    </div>
+</div>
+<div class="adjustdiv"></div>
+<div class="line margT10" id="mailBodySeparator" style="display: block;" align="center"></div>
+<div class="adjustdiv"></div>
+<div class="mailMsgBodyContainer" id="mailMsgBodyContainer">
+	<div class="mailMsgBody" id="mailMsgBody">
+    	<?=$this->messageData['message_text']?>
+    </div>
+</div>
+<div class="adjustdiv"></div>
+
+<?
+exit;
+?>

@@ -1,0 +1,44 @@
+<?
+if($this->videoData!="" and count($this->videoData)>0)
+{
+	$DataGallery=$this->videoData[0];
+
+		$UrlVideo="";
+		if($DataGallery['path_type']=='1')
+		{
+			$UrlVideo=APPLICATION_URL.'images/videos/'.$videos['video_path']; 
+		}
+		else
+		{
+			$UrlVideo=$DataGallery['video_path'];
+			$explode=explode('/',$UrlVideo);
+			$countE=count($explode);
+			$UrlVideo='http://www.youtube.com/v/'.$explode[$countE-1].'?autoPlay=no';
+		}
+		$hw=450;
+		$hww=700;
+?>
+	<table cellpadding="0" cellspacing="0" border="0" width="100%">
+    	<tr>
+        	<td width="80%"><div style="padding-top:5px;"><?=$DataGallery['video_title']?></div></td>
+            <td width="20%">
+            
+            	<a href="<?=APPLICATION_URL_ADMIN?>video/index"> Back</a>
+            </td>
+        </tr>
+        <tr>
+        	<td colspan="2">
+            	<object width="<?=$hww;?>" height="<?=$hw;?>">
+             <PARAM name="CONTROLLER" VALUE="false">
+             <embed src="<?=$UrlVideo?>"  PLUGINSPAGE="http://www.apple.com/quicktime/download/" width="<?=$hww;?>" height="<?=$hw;?>" autostart="false" allowscriptaccess="always" allowfullscreen="true"  style="border: solid 1px #cccccc;padding:5px;"></embed>
+             </object>
+            </td>
+        </tr>
+    </table>
+    
+    
+    
+             
+<?
+}
+?>

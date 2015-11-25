@@ -1,0 +1,112 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="left" valign="top" class="main_heading"><?=$this->pageHeading?></td>
+</tr>
+<tr>
+<td align="left" valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td align="center" valign="middle"><form name="myform" id="myform" action="<?php echo $this->url(array('controller'=>'services', 'action'=>'updatebusiness','businessId'=>$this->businessId), 'default', true)?>" method="post" enctype="multipart/form-data"><table width="100%" cellpadding="5" cellspacing="5">
+<tr>
+<td width="20%" align="left" valign="top">Name of Business <span class="error">*</span></td>
+<td width="6%" align="center" valign="top"><strong>:</strong></td>
+<td width="74%" align="left" valign="top"><?=$this->myform->business_title?></td>
+</tr>
+<tr>
+  <td align="left" valign="top">Category</td>
+  <td align="center" valign="top"><strong>:</strong></td>
+  <td align="left" valign="top"><?=$this->myform->business_category_id?></td>
+</tr>
+<tr>
+  <td align="left" valign="top">Description <span class="error">*</span></td>
+  <td align="center" valign="top"><strong>:</strong></td>
+  <td align="left" valign="top"><?=$this->myform->description?></td>
+</tr>
+<tr>
+  <td align="left" valign="top">Keywords</td>
+  <td align="center" valign="top"><strong>:</strong></td>
+  <td align="left" valign="top"><?=$this->myform->search_keywords?></td>
+</tr>
+<tr>
+  <td align="left" valign="top">Address <span class="error">*</span></td>
+  <td align="center" valign="top"><strong>:</strong></td>
+  <td align="left" valign="top"><?=$this->myform->address?></td>
+</tr>
+<tr>
+<td align="left" valign="top">City <span class="error">*</span></td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="middle"><?=$this->myform->city_name?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Zip <span class="error">*</span></td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="middle"><?=$this->myform->zipcode?></td>
+</tr>
+<tr>
+<td align="left" valign="top">State <span class="error">*</span></td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="middle"><?=$this->myform->state_id?></td>
+</tr>
+<?
+$cDiv1="block";
+$cDiv2="none";
+if($this->CountryName=="")
+{
+$cDiv1="none";
+$cDiv2="block";
+}
+?>
+<tr>
+<td align="left" valign="top">Country <span class="error">*</span></td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="middle"><div id="DisplayCountry" style="display:<?=$cDiv1?>;"><?=$this->CountryName?>&nbsp;&nbsp;<a onclick="ChangeCountry();" style="cursor:pointer;">Change</a></div><div id="ChooseCountry" style="display:<?=$cDiv2?>;"><?=$this->myform->country_id?></div></td>
+</tr>
+<tr>
+<td align="left" valign="top">Phone Number <span class="error">*</span></td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="middle"><?=$this->myform->phone_number?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Email Address <span class="error">*</span></td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="middle"><?=$this->myform->email_address?></td>
+</tr>
+<tr>
+<td align="left" valign="top">Website <span class="error">*</span></td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="middle"><?=$this->myform->website?></td>
+</tr>
+<?
+if($this->businessImage!="")
+{
+$explode=explode(",",$this->businessImage);
+}
+for($counter=1;$counter<=$this->totImage;$counter++)
+{
+	$imageName='business_image'.$counter;
+	$ImagePath='old_business_image'.$counter;
+?>
+<tr>
+<td align="left" valign="top">Business Image <?=$counter?></td>
+<td align="center" valign="top"><strong>:</strong></td>
+<td align="left" valign="top"><?=$this->myform->$imageName?><?=$this->myform->$ImagePath?></td>
+</tr>
+<?
+if(@$explode[$counter-1]!="" and file_exists(SITE_ROOT.'images/businesses/'.@$explode[$counter-1]))
+{
+?>
+<tr>
+<td align="left" valign="top"></td>
+<td align="center" valign="top"></td>
+<td align="left" valign="top"><a href="<?=APPLICATION_URL?>download.php?download_file=<?='images/businesses/'.$explode[$counter-1]?>">View/Download Business Image</a></td>
+</tr>
+<?
+}
+}
+?>
+<tr>
+<td align="center" valign="top" colspan="3"><input type="submit" name="Update Business" id="Update Business" value="Update Business" class="myButton" /></td>
+</tr>
+</table></form></td>
+</tr>
+</table>

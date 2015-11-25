@@ -1,0 +1,32 @@
+ 
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-check"><?= $this->pageHeading ?></span>
+    </div>
+    <div class="mws-panel-body">
+        <form name="myform" id="mws-validate" action="" method="post" novalidate="novalidate" class="mws-form" enctype="multipart/form-data" >
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+            <div class="mws-form-inline">
+                <div class="mws-form-row">
+                    <label>Photo Path :</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->photo_path2 ?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                        <label style="width:auto">Image size should be height:650px and width :332px</label>
+                    </div>
+                </div>
+
+                <div class="mws-form-row">
+                    <label>Photo Caption :</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->image_text ?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                    </div>
+                </div>
+
+                <div class="mws-button-row">
+                    <input type="submit" value="Submit" class="mws-button red" />
+                </div>
+        </form>
+    </div>    	
+</div> 
+
+

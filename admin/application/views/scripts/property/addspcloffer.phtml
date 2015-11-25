@@ -1,0 +1,17 @@
+ <div style="width:85%; margin-left:7%;px" >
+  <div class="mws-panel grid_8">
+    <div class="mws-panel-header"><span class="mws-i-24 i-check"><?=$this->pageHeading?></span></div>
+    <div class="mws-panel-body">
+        <form name="myform" id="mws-validate" action="<?=$this->url(array('controller'=>'property', 'action'=>'processspcloffer'), 'default', true)?>" method="post" novalidate class="mws-form">
+            <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><label>Offer Name :</label><div class="mws-form-item large"><?=$this->myform->offer_name?></div></div></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><label>Promo Code :</label><div class="mws-form-item large"><?=$this->myform->promo_code?></div></div></div>
+	            <div class="mws-form-inline"><div class="mws-form-row" ><label>Minimum Nights :</label><div class="mws-form-item large" style="width:200px;"><?=$this->myform->min_nights?></div></div></div>               
+                <div class="mws-form-inline"><div class="mws-form-row" ><label>Discount Type :</label><div class="mws-form-item large" style="width:200px;"><?=$this->myform->discount_type?></div></div></div>
+                <div class="mws-form-inline"><div class="mws-form-row"><label>Status :</label><div class="mws-form-item large"><?=$this->myform->status?></div></div></div>
+                
+            <div class="mws-button-row"><input type="submit" tabindex="14" value="Submit" class="mws-button red" /></div>
+
+    </div>    	
+</div> 
+</div>

@@ -1,0 +1,157 @@
+<?
+    global $mySession;
+    $myControllerName = Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
+    $myActionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
+    $SystemDisplay = "none"; $DashboardDisplay = "none"; $PagesDisplay = "none"; $UsersDisplay = "none"; $ServicesDisplay = "none";
+    $SubscriptionDisplay = "none"; $SubadminDisplay = "none"; $MsgsDisplay = "none"; $PropertyDisplay = "none";
+    $updaterDisplay = "none";
+    
+    $SystemClass = "class='closed'";
+    $LocationsClass = "class='closed'";
+    $UsersClass = "class='closed'";
+    $updaterClass = "class='closed'";
+
+    if ($myControllerName == "system" || $myControllerName == "pages")
+    {
+        $SystemDisplay = "block";
+        $SystemClass = " ";
+    }
+    if ($myControllerName == "location")
+    {
+        $LocationsDisplay = "block";
+        $LocationsClass = " ";
+    }
+    if ($myControllerName == "users")
+    {
+        $UsersDisplay = "block";
+        $UsersClass = " ";
+    }
+    if ($myControllerName == "msgs")
+    {
+        $MsgsDisplay = "block";
+        $MsgsClass = " ";
+    }
+    if ($myControllerName == "property")
+    {
+        $PropertyDisplay = "block";
+        $PropertyClass = " ";
+    }
+    if ($myControllerName == "booking")
+    {
+        $PropertyDisplay = "block";
+        $PropertyClass = " ";
+    }
+    
+?>
+<style>
+
+    .bd_image
+    {
+        background-position:left;
+        background-position:18px;
+        background-size:18px;
+    }
+
+</style>
+<div id="mws-navigation">
+    <ul>
+        <li><a href="<?= APPLICATION_URL_ADMIN ?>" class="mws-i-24 i-home">Dashboard</a></li>
+        <li>
+            <a href="#" class="mws-i-24 i-tools">System</a>
+            <ul <?= $SystemClass; ?> style="display:<?= $SystemDisplay; ?>">
+                <li><a class="mws-ic-16 ic-cog bd_image" href="<?= APPLICATION_URL_ADMIN ?>system/configuration">Configurations</a></li>
+                <li><a class="mws-ic-16 ic-email bd_image" href="<?= APPLICATION_URL_ADMIN ?>system/emailtemplates">Email Templates</a></li>
+                <li><a class="mws-ic-16 ic-page-white-stack bd_image" href="<?= APPLICATION_URL_ADMIN ?>pages/index">Static Pages</a></li>
+                <li><a class="mws-ic-16 ic-page-white-stack bd_image" href="<?= APPLICATION_URL_ADMIN ?>system/meta">Meta Information</a></li>
+                <li><a class="mws-ic-16 ic-page-white-stack bd_image" href="<?= APPLICATION_URL_ADMIN ?>social">Social Media</a></li>
+                <!--<li><a class="mws-i-24 i-piggy-bank" href="<?= APPLICATION_URL_ADMIN ?>currencies/index" >Manage Currency</a></li>
+                 <li><a href="<?= APPLICATION_URL_ADMIN ?>photo/homepageimage" >Homepage Images</a></li>-->
+            </ul>
+        </li>
+
+        <li>
+            <a href="#" class="mws-i-24 i-flatscreen">Property Slides</a>
+            <ul <?= $SystemClass; ?> style="display:<?= $SystemDisplay; ?>">
+                <li><a class="mws-i-24 i-power bd_image" href="<?= APPLICATION_URL_ADMIN ?>slides/latestppty"  >Latest Property</a></li>
+                <li><a class="mws-i-24 i-digg-3 bd_image" href="<?= APPLICATION_URL_ADMIN ?>slides/popularppty" >Star Buy Rentals</a></li>
+                <li><a class="mws-i-24 i-unfavorite bd_image" href="<?= APPLICATION_URL_ADMIN ?>slides/spclppty" >Special Offers</a></li>
+                <li><a class="mws-i-24 i-ichat bd_image" href="<?= APPLICATION_URL_ADMIN ?>slides/latestreview" >Latest Review</a></li>                            
+            </ul>
+        </li>
+
+        <li>
+            <a href="#" class="mws-i-24 i-users">Manage Users</a>
+            <ul <?= $UsersDisplay; ?> style="display:<?= $UsersDisplay; ?>">
+                <li><a class="mws-i-24 i-users bd_image" href="<?= APPLICATION_URL_ADMIN ?>users/index/uType/1"  >Customer</a></li>
+                <li><a class="mws-i-24 i-users bd_image" href="<?= APPLICATION_URL_ADMIN ?>users/index/uType/2" > Owner</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="<?= APPLICATION_URL_ADMIN ?>currencies/index" class="mws-i-24 i-piggy-bank">Manage Currecy</a>
+        </li> 
+
+        <li><a href="<?= APPLICATION_URL_ADMIN ?>photo/homepageimage" class="mws-i-24 i-polaroids">Home Images</a></li> 
+
+        <li><a href="<?= APPLICATION_URL_ADMIN ?>photo/homepageimage" class="mws-i-24 i-mail">Messages</a>
+            <ul  <?= $MsgsClass ?>  style="display:<?= $MsgsDisplay; ?>">
+                <li><a class="mws-i-24 i-new-message bd_image" href="<?= APPLICATION_URL_ADMIN ?>msgs">Inbox</a></li>
+                <li><a class="mws-i-24 i-mail bd_image" href="<?= APPLICATION_URL_ADMIN ?>msgs/sent">Sent</a></li>
+                <li><a class="mws-i-24 i-create bd_image" href="<?= APPLICATION_URL_ADMIN ?>msgs/compose">Compose</a></li>
+            </ul>
+        </li> 
+
+        <li>
+            <a href="#" class="mws-i-24 i-globe">Location</a>
+            <ul <?= $LocationsClass; ?> style="display:<?= $LocationsDisplay; ?>">
+                <li><a class="mws-i-24 i-globe-2 bd_image" href="<?= APPLICATION_URL_ADMIN ?>location/countries">Country</a></li>
+                <li><a class="mws-i-24 i-globe-2 bd_image" href="<?= APPLICATION_URL_ADMIN ?>location/state">State</a></li>
+                <li><a class="mws-i-24 i-globe-2 bd_image" href="<?= APPLICATION_URL_ADMIN ?>location/cities">City</a></li>
+                <li><a class="mws-i-24 i-globe-2 bd_image" href="<?= APPLICATION_URL_ADMIN ?>location/subarea">Sub Area</a></li>                            
+                <li><a class="mws-i-24 i-globe-2 bd_image" href="<?= APPLICATION_URL_ADMIN ?>location/localarea">Local Area</a></li>                            
+                <!--<li><a class="mws-i-24 i-globe-2 bd_image" href="<?= APPLICATION_URL_ADMIN ?>location/faq">Local Area</a></li>-->                            
+            </ul>
+        </li>
+
+        <li>
+            <a href="#" class="mws-i-24 i-tag">Inhouse Property</a>
+            <ul <?= $PropertyClass; ?> style="display:<?= $PropertyDisplay; ?>">
+                <li><a class="mws-i-24 i-home-1 bd_image" href="<?= APPLICATION_URL_ADMIN ?>library/">Library</a></li>
+                <li><a class="mws-i-24 i-home-1 bd_image" href="<?= APPLICATION_URL_ADMIN ?>library/subscriber">Supplier List</a></li>
+                <li><a class="mws-i-24 i-home-1 bd_image" href="<?= APPLICATION_URL_ADMIN ?>property/inhousepropertylist">Property List</a></li>
+                <li><a class="mws-i-24 i-home-1 bd_image" href="<?= APPLICATION_URL_ADMIN ?>inhouse/addproperty">Add new Property</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#" class="mws-i-24 i-tag">Owner Property</a>
+            <ul <?= $PropertyClass; ?> style="display:<?= $PropertyDisplay; ?>">
+                <li><a class="mws-i-24 i-home-1 bd_image" href="<?= APPLICATION_URL_ADMIN ?>property/index">Property List</a></li>
+                <li><a class="mws-ic ic-newspaper bd_image" href="<?= APPLICATION_URL_ADMIN ?>property/news">News Updates</a></li>  
+            </ul>
+        </li>
+        <li>
+            <a href="#" class="mws-i-24 i-tag">Property Management</a>
+            <ul <?= $PropertyClass; ?> style="display:<?= $PropertyDisplay; ?>">
+                <li><a class="mws-i-24 i-list-image bd_image" href="<?= APPLICATION_URL_ADMIN ?>property/protype">Property Type</a></li>
+                <li><a class="mws-i-24 i-umbrella bd_image" href="<?= APPLICATION_URL_ADMIN ?>property/amenity">Amenities</a></li>
+                <li><a class="mws-i-24 i-list-images bd_image" href="<?= APPLICATION_URL_ADMIN ?>property/propertyspeccat">Property Specification Category</a></li>
+                <li><a class="mws-i-24 i-documents-1 bd_image" href="<?= APPLICATION_URL_ADMIN ?>property/specification">Property Specification</a></li>
+                <li><a class="mws-i-24 i-documents-1 bd_image" href="<?= APPLICATION_URL_ADMIN ?>property/attributes">Prime Attributes</a></li>
+                <li><a class="mws-ic ic-ribbon bd_image" href="<?= APPLICATION_URL_ADMIN ?>property/spcloffer">Special Offers</a></li>
+                <li><a class="mws-i-24 i-flag bd_image" href="<?= APPLICATION_URL_ADMIN ?>booking/index">Booking list</a></li>   
+                <li><a class="mws-i-24 i-flag bd_image" href="<?= APPLICATION_URL_ADMIN ?>booking/manage">Telephone Booking</a></li>   
+                <li><a class="mws-i-24 i-user-comment bd_image" href="<?= APPLICATION_URL_ADMIN ?>property/reviews">Reviews & Comments</a></li>  
+                <li><a class="mws-i-24 i-cross bd_image" href="<?= APPLICATION_URL_ADMIN ?>property/deletedproperty">Deleted Properties</a></li>                                                                                 
+<!--	                            <li><a href="<?= APPLICATION_URL_ADMIN ?>property/ownerhome">Owner Home Page</a></li>   -->                        
+            </ul>
+        </li>
+        <li>
+            <a href="#" class="mws-i-24 i-tag">Property Updater</a>
+            <ul <?= $myControllerName == 'updater'?'class="closed"':''; ?> style="display:<?=  $myControllerName=='updater'?'block':'none'; ?>">
+                <li><a class="mws-i-24 i-list-image bd_image" href="<?= APPLICATION_URL_ADMIN ?>updater">Open Updater</a></li>
+            </ul>
+        </li>
+
+
+    </ul>
+</div>

@@ -1,0 +1,175 @@
+<!-- Created on November 9,2012 -->
+<script type="text/javascript">
+$(document).ready(function() {
+		$("#date_from").datepicker({
+			minDate: new Date()
+		});
+		
+		
+		$("#date_to").datepicker({
+			minDate: new Date()
+		});
+		
+	jQuery.validator.addMethod("dateCheck", function(value, element) { 
+    return ($("#date_to").val() > $("#date_from").val()); 
+  }, "Choose Proper Date");
+		
+});
+
+function do_save_cal()
+{
+	$.ajax({
+		type: 'POST',
+		url: '<?=APPLICATION_URL?>myaccount/savecalendarstat',
+		async:false,
+		data: ({Datef:$("#date_from").val(),Datet:$("#date_to").val(),Status:$("#status").val()}),
+		success: function(data){
+
+		//window.location = window.localation.href;
+		
+		}
+		
+	});
+	
+	return false;
+}
+</script>
+
+<?
+
+	if($this->nexts == '1')
+	{
+		$prevurl = APPLICATION_URL."myaccount/calendarkijai";
+		$nexturl = "javascript:void(0)";
+		$nextText = "Previous";
+		$current_year  = date('Y')+1;
+		$current_mnth = $mnth_display = date('m');
+		$next_style = "style = 'width:86%;'";
+		
+	}
+	else
+	{
+		$prevurl = "javascript:void(0)";
+		$nexturl = APPLICATION_URL."myaccount/calendarkijai/cal/1";
+		$nextText = "Next";		
+		$current_year  = date('Y');
+		$current_mnth = $mnth_display = date('m');
+		$next_style = "style = 'margin-bottom:20px;width:86%'";
+		$next_btn = "style = 'float:right'";
+	}
+
+	$week = array('S','M','T','W','T','F','S');
+?>
+
+
+
+<div  class = "container_cal"> <!-- main wrapper div container -->
+
+<div style="width:80%;">
+
+<form name="myform" id="mws-validate" method="post"  novalidate="novalidate" class="mws-form" onsubmit="do_save_cal();">
+    <div class="mws-form-inline"><div class="mws-form-row"><label>Date From:</label><div class="mws-form-item large"><?=$this->myform->date_from?> </div></div></div>
+    <div class="mws-form-inline"><div class="mws-form-row"><label>Date To:</label><div class="mws-form-item large"><?=$this->myform->date_to?> </div></div></div>
+    <div class="mws-form-inline"><div class="mws-form-row"><label>Status:</label><div class="mws-form-item large"><?=$this->myform->status?> </div></div></div>
+    <div class="mws-button-row1"> <input type="submit" value="Process" class="mws-button red" /></div> 
+</form>
+</div>
+
+
+<div>
+    <div style='float:left;'>
+    <a href = "<?=$prevurl?>"><input class="mws-button black small" type="button" value="Prev"></a>	
+    </div>
+    
+    <div style='margin-right:100px;'>
+    <a href = "<?=$nexturl?>" style="float:right;"><input class="mws-button black small" type="button" value="Next"></a>	
+    </div>
+
+</div>
+
+<br />
+<br />
+
+
+
+<?
+
+//echo $this->calArr[]['date_from'];
+//exit;
+	for($t=1;$t<=12;$t ++) /***main loop**/
+	{  
+?>    
+
+    
+    <div class = 'calendar_box'><!-- first calendar box-->
+		<div class = 'calendar_head'>
+        <label><?=date('F Y',mktime(0, 0, 0, $current_mnth,date('d'),$current_year))?></label>
+        </div>	
+<?
+        for($w=0;$w<7;$w++)
+		{
+?>	
+        <div class = 'date_block' align="center"><!--smaller blocks of week-->
+       <label><?= $week[$w]?></label>
+        </div>
+<?
+		}
+		//if($t == 10)
+		//echo date('w',mktime(0, 0, 0, $current_mnth,1,$current_year)); 
+			for($i=0,$k=1;$i<42;$i++)
+			{
+				$block_class = 'date_block';				
+				for($s=0;$s<count($this->calArr);$s++)
+				{
+					
+					//checking from database that if user has specified the status of the dates
+					if( date('Y-m-d',strtotime($current_year."-".$current_mnth."-".$k)) >= date('Y-m-d',strtotime($this->calArr[$s]['date_from'])) && date('Y-m-d',strtotime($current_year."-".$current_mnth."-".$k)) <= date('Y-m-d',strtotime($this->calArr[$s]['date_to'])) && $i >= date('w',mktime(0, 0, 0, $current_mnth,1,$current_year))  && $k <= date('t',mktime(0, 0, 0, $current_mnth,date('d'),$current_year)) ) 
+					{	
+						
+						switch($this->calArr[$s]['cal_status'])			
+						{
+							case 0:	$block_class = 'date_block1'; break;
+							case 1: $block_class = 'date_block2'; break;
+							case 2: $block_class = 'date_block3'; break;
+						}
+				
+					}
+				}
+		?>			<div class = '<?=$block_class?>' align="center"><!--smaller blocks of dates--> 	
+        				<?	
+						if($i < date('w',mktime(0, 0, 0, $current_mnth,1,$current_year)) || $k > date('t',mktime(0, 0, 0, $current_mnth,date('d'),$current_year)))
+						echo "&nbsp";
+						else
+						{	echo $k;
+							$k++;
+						}
+						?>
+                        
+					</div>			
+		<?	
+
+			}
+		?>
+    
+    </div><!-- first calendar box ends-->
+    <!-- CHECKING IF THE DISPLAYED MONTH WAS THE LAST MONTH OR NOT -->
+   <?
+
+	if($current_mnth == 12)
+	{	$current_mnth = 1;
+		$current_year = $current_year+1;
+	}
+	else
+	$current_mnth++;
+	
+	
+}
+	
+	
+	/***main loop ends **/
+	?>
+   
+    
+    
+    
+ </div>  

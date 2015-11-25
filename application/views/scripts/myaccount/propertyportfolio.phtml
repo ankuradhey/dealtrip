@@ -1,0 +1,132 @@
+<?
+	global $mySession;
+?>
+<script type="text/javascript">
+function isdelete(cond, is)
+{
+
+	if(cond == "delete")
+	var c = confirm("are you sure you want to delete this property");
+	else
+	{	
+		
+		var c = confirm("are you sure you want to "+((is==0)?'suspend':'re-activate')+" this property");
+		
+	}
+	if(c)
+	return true;
+	else
+	return false;
+}
+
+
+</script>
+
+<div style="height:auto;width:100%;display:inline-block;" ><!-- edit property tab-->
+<?
+	foreach($this->propertyData as $values)
+	{
+		
+		if($values['image_name'])
+		$image = $values['image_name'];
+		else
+		$image = "generic.gif";
+?>	
+		<div class="ppty_list">
+
+            <div class="ppty_status">
+            	<span class = 'tab_box_heading_status'>
+                	Property Status: <?  
+													switch($values['status'])
+													{
+														case '1': echo "Incomplete"; break;
+														case '2': echo "Pending Approval"; break;
+														case '3': echo "Live"; break;
+														case '4': echo "Suspended"; break;	
+													}
+					
+												?>
+                </span>
+        	</div>	
+            
+            
+            
+            <div class = 'left_panel_heading_ppty'> <!-- top div -->
+            	<!--<!--<div>
+				<? if($values['address']) echo $values['address']; else echo "[No Location described]";?>  
+                </div>-->
+                <span class="ppty_no">Property No: <?=$values['propertycode']?></span>
+            </div> <!-- top div ends -->           
+
+            
+        	<div class = 'inn_content'><!-- big div--> 
+            	<!-- image content-->
+                <div class = 'img_wrapper'>
+                	<? if(is_special_offer($values['id'])): ?>
+                    <div class = 'spcl_offer_badge'  >
+                    <img src="<?=IMAGES_URL?>offer.png" style="box-shadow:none;" />
+                    </div>                    
+                    <? endif; ?>
+                	<img src="<?=IMAGES_URL?>property/<?=$image?>" >
+                </div>
+                <!-- image content ends-->
+                <div class = 'ppty_desc tab_box_dis'>
+                	<?=$values['property_title']?>
+                    <br>
+					<?=$values['brief_desc']?>
+                </div>
+             </div>   
+            <!-- div for buttons -->
+            <div class="edit_btns" style = 'float:left;'>
+                <div class="btns" align="center"><!-- first div -->
+                <a href='<?=APPLICATION_URL?>myaccount/editproperty/ppty/<?=$values['id']?>'>Edit Property</a>
+                </div>
+                
+                <div class="btns" align="center"><!-- 2nd div -->
+                <a href='<?=APPLICATION_URL?>myaccount/editproperty/ppty/<?=$values['id']?>/step/6'>Update Calendar</a>
+                </div>
+                
+                <div class="btns" align="center"><!-- 3rd div-->
+                <a target="_blank" href='<?=APPLICATION_URL?>myaccount/preview/ppty/<?=$values['id']?>'>Preview Property</a>
+                </div>
+                
+                <div class="btns" align="center"><!-- 4th div-->
+                <a href='<?=APPLICATION_URL?>myaccount/editproperty/ppty/<?=$values['id']?>/step/8'>Add a review</a>
+                </div>
+                
+                <div class="btns" align="center"><!-- 5th div-->
+<?
+                if($values['status'] != '4')
+				{
+?>
+                <a href='<?=APPLICATION_URL?>myaccount/suspend/ppty/<?=$values['id']?>' onclick = 'return isdelete("suspend",0);'>Suspend</a>
+<?
+				}
+				else
+				{
+?>               
+				<a href='<?=APPLICATION_URL?>myaccount/reactivate/ppty/<?=$values['id']?>' onclick = 'return isdelete("suspend",1);'>Re-Activate</a>
+<?
+				}
+?> 
+                </div>
+                
+                <div class="btns" align="center"><!-- 6th div-->
+                <a href='<?=APPLICATION_URL?>myaccount/deleteppty/ppty/<?=$values['id']?>' onclick = 'return isdelete("delete",1);'>Delete</a>
+                </div>
+                
+            </div>
+            <!-- div for button ends -->
+                
+            </div><!-- big div ends-->
+<?		
+	}
+?>
+
+
+	<?=	myPaging($this->now,$this->total,$this->start,$this->limit);?>
+
+		</div>	
+
+
+

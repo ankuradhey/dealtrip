@@ -1,0 +1,28 @@
+<div class="mws-panel-header">
+    <span class="mws-i-24 i-check"><?= $this->pageHeading ?></span>
+</div>
+<div class="mws-panel-body">
+    <form name="myform" id="mws-validate" action="" method="post" novalidate="novalidate" class="mws-form">
+        <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+        <div class="mws-form-inline">
+            <div class="mws-form-row">
+                <label>Select Country :</label>
+                <div class="mws-form-item large">
+                    <?= $this->myform->country_id ?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>State Name :</label>
+                <div class="mws-form-item large">
+                    <?= $this->myform->state_name ?><!--<input type="text" class="mws-textinput required" name="reqField">-->
+                </div>
+            </div>
+
+            <div class="mws-button-row">
+                <input type="submit" value="Submit" class="mws-button red" />
+            </div>
+    </form>
+</div>    	
+</div> 
+
+

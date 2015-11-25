@@ -1,0 +1,395 @@
+<link rel="stylesheet" href="<?php echo CSS_URL ?>jcarousel.css">
+<!--<script type="text/javascript" src="<?php echo JS_URL ?>jquery.jcarousel.min.js"></script>-->
+<script type="text/javascript" src="<?php echo JS_URL ?>jcarousel.js"></script>
+<script type="text/javascript" src="<?php echo JS_URL ?>jquery_002.js"></script>
+<script type="text/javascript" src="<?= JS_URL ?>main.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+
+<?php
+    $breadCrumbArray = $this->breadCrumbArray;
+    $property_no = $this->propertyData[0]['propertycode'];
+    echo breadcrumb_location($breadCrumbArray['country_name'], $breadCrumbArray['state_name'], $breadCrumbArray['city_name'], $breadCrumbArray['sub_area_name'], $breadCrumbArray['local_area_name'], $this->record['loc_information']);
+?>
+<span style="display:block"><?= rating_views($this->record['loc_rating'], 'star_ranks'); ?></span>
+<br>
+<h1  style="color:#0f6bb5;">
+    <?php echo $this->record['loc_heading']; ?>
+</h1>
+<h3 class="staticPage seo-header-tag" style="margin-bottom:20px;font-size:15px;"><?php echo $this->record['loc_information']; ?></h3>
+<br>
+<ul class="feature-list">
+    <?php
+        $features = explode(',', $this->record['loc_key_features']);
+        //pr($features);
+        foreach ($features as $featVal)
+        {
+            ?>
+            <li style="display:inline;" class="feature-name"><?php echo $this->featureData[$featVal]; ?></li>
+            <?
+        }
+    ?>
+</ul>
+<br>
+<div id = "property-nav_result" style="display:block">
+    <ul>
+        <li style="padding:5px 45px;"><a href = "#overview">Overview</a></li>
+        <li style="padding:5px 45px;"><a href = "#rental-types" >Types of Rentals</a></li>            
+        <li style="padding:5px 45px;"><a href = "#amenities">Amenities</a></li>
+        <li style="padding:5px 45px;"><a href = "#video" >Video</a></li>            
+        <li style="padding:5px 45px;"><a href = "#location" >Where is it?</a></li>            
+        <li style="padding:5px 45px;"><a href = "#reviews" >Reviews</a></li>            
+    </ul>
+</div>
+<div class="clear"></div>
+<div class="connected-carousels">
+    <div class="stage">
+        <div data-jcarousel="true" class="carousel carousel-stage">
+            <ul style="left: 0px; top: 0px;height:100%;">
+                <?php
+                    $files = glob(SITE_ROOT . "images/location/" . trim($this->Location) . "/*");
+                    $caption = objectToArray(json_decode($this->record['loc_images']));
+                    foreach ($files as $imgKey => $imgVal)
+                    {
+                        $filename = array_pop(explode("/", $imgVal));
+                        ?>
+                        <li>
+                            <img src="<?php echo IMAGES_URL; ?>location/<?php echo $this->Location . "/" . $filename; ?>" alt="">
+                            <div class="caption-text box-sized">
+                                <?php echo $caption[$filename]['caption']; ?>
+                            </div>
+                        </li>
+                        <?php
+                    }
+                ?>
+            </ul>
+        </div>
+        <a data-jcarouselcontrol="true" href="#" class="prev prev-stage inactive"><span>‹</span></a>
+        <a data-jcarouselcontrol="true" href="#" class="next next-stage"><span>›</span></a>
+    </div>
+    <div class="navigation">
+        <a data-jcarouselcontrol="true" href="#" class="prev prev-navigation inactive">‹</a>
+        <a data-jcarouselcontrol="true" href="#" class="next next-navigation">›</a>
+        <div data-jcarousel="true" class="carousel carousel-navigation box-sized">
+            <ul style="left: 0px; top: 0px;">
+                <?php
+                    foreach ($files as $imgKey => $imgVal)
+                    {
+                        $filename = array_pop(explode("/", $imgVal));
+                        ?>
+                        <li <?php echo $imgKey == '0' ? 'class="active"' : ''; ?> data-jcarouselcontrol="true">
+                            <img src="<?php echo IMAGES_URL; ?>location/<?php echo $this->Location . "/" . $filename; ?>" alt="" height="100" width="100">
+                        </li>
+                        <?php
+                    }
+                ?>
+            </ul>
+        </div>
+    </div>
+</div>
+<hr>
+<!-- overview section -->
+<h2 class="pageTitles" id="overview"><?php echo $this->Location; ?> Overview</h2><br>
+<p class="staticPage"><?php echo $this->record['loc_overview_text']; ?></p>
+<hr>
+
+<!-- Amenities and rental types, sizes -->
+<div class="part-1-2">
+    <h2 class="pageTitles" id="amenities"><?php echo $this->Location; ?> Amenities</h2>
+    <br>
+    <p class="staticPage" style="margin-bottom:10px;">
+        <?php echo $this->record['loc_amenity_description']; ?>
+    </p>
+    <ul class="amenity-list staticPage">
+        <?php
+            $this->record['loc_amenities'] = explode(',', $this->record['loc_amenities']);
+            foreach ($this->record['loc_amenities'] as $amenityKey => $amenityVal)
+            {
+                ?>
+                <li><?php echo $this->amenityData[$amenityVal]; ?></li>
+                <?php
+            }
+        ?>
+    </ul>
+</div>
+<div class="part-1-2">
+    <h2 class="pageTitles" id="rental-types"><?php echo $this->Location; ?> Rental Types and Size</h2>
+    <br>
+    <ul class="rental-list staticPage">
+        <?php
+            $rental_overview = explode(',', $this->record['loc_rental_overview']);
+            foreach ($rental_overview as $rentalKey => $rentalVal)
+            {
+                ?>
+                <li><?php echo $rentalVal; ?></li>
+                <?php
+            }
+        ?>
+    </ul>
+    <br>
+    <a style="margin-left:30px;" href="<?php echo APPLICATION_URL ?>search/property/<?php echo $this->locationTree; ?>">View all our <?php echo $this->Location; ?> Rental Properties</a>
+</div>
+<br>
+<hr class="clear" style="margin-top:20px;float:left;width:100%;">
+
+<!-- video and map -->
+<div class="part-1-2">
+    <h2 class="pageTitles" id="video"><?php echo $this->Location; ?> Video</h2>
+    <br>
+    <iframe src="http://www.youtube.com/embed/<?php echo $this->record['loc_youtube_video']; ?>" style="width:90%;display:block;margin:auto;height:300px;"></iframe>
+    <br>
+    <a href="https://www.youtube.com/user/dealatriprentalhomes" target="_blank" style="margin-left:30px;">View all our videos on Youtube</a>
+</div>
+<div class="part-1-2">
+    <h2 class="pageTitles" id="location">Where is <?php echo $this->Location; ?></h2>
+    <br>
+    <div class = "ppty_location" style="display:none;">
+        <div class="mws-form-item large"><input type="hidden" name="latitude" id = "latitude" value = "<?= $this->record['loc_lat'] ?>"/><input type="hidden" name = "longitude" id ="longitude" value = "<?= $this->record['loc_long']; ?>"/></div>
+    </div>
+
+    <div id="map_canvas" style="width:96%;height:300px;margin: auto;" align="center"></div>
+    <br>
+    <p class="staticPage">
+        <?php echo $this->record['loc_address']; ?>
+    </p>
+</div>
+
+<!-- location quick faqs -->
+<br>
+<hr class="clear" style="margin-top:20px;width:100%;">
+<h2 class="pageTitles"><?php echo $this->Location; ?> Quick FAQs</h2><br>
+<!-- row 1 starts(Destination Levels)-->
+<?php
+    $loc_answers = json_decode($this->record['loc_answers']);
+    foreach ($loc_answers as $qKey => $qVal)
+    {
+
+        if (empty($qVal->value))
+            continue;
+        ?>
+
+        <div class="property-overview-row-frame">
+
+            <div class="location-faq-row-title">
+                <?php
+                echo $this->question[$qVal->id] . " ?";
+                ?>
+            </div>
+
+            <div class="location-faq-row-info">
+
+                <?php
+                echo $qVal->value;
+                ?>
+
+            </div>
+
+        </div>
+
+        <?php
+    }
+    foreach($this->fixedQuestion as $rVal){
+        if ($rVal['ques_fixed'] == '0')
+            continue;
+        ?>
+        <div class="property-overview-row-frame">
+
+            <div class="location-faq-row-title">
+                <?php
+                echo $rVal['ques_content'] . " ?";
+                ?>
+            </div>
+
+            <div class="location-faq-row-info">
+
+                <?php
+                echo $rVal['ques_answer'];
+                ?>
+
+            </div>
+
+        </div>
+<?php
+    }
+?>
+<br>
+<hr class="clear" style="margin-top:20px;width:100%;">
+<h2 class="pageTitles" id="reviews"><?php echo $this->Location; ?> Customer Reviews</h2><br>
+<div class = "ppty_review" >
+    <div class = 'review_wraps' ><!-- wrapper for reviews -->
+        <?
+            if (count($this->reviewArr) == 0)
+            {
+                ?>	
+                <div class="no_review_blck" align="center">
+                    No Review Found
+                </div>	
+
+                <?
+            }
+
+
+            foreach ($this->reviewArr as $values)
+            {
+                if (!$values['owner_image'])
+                {
+                    $images = "no_owner_pic.jpg";
+                }
+                else
+                {
+
+                    $images = $values['owner_image'];
+                }
+                ?>
+                <div class = "reviewList" >
+                    <div class="revImg">
+                        <img src="<?= APPLICATION_URL ?>image.php?image=<?= IMAGES_URL ?>profile/<?= $images ?>&height=100&width=100" />
+                        <h4 align="center"><?= $values['guest_name'] ?></h4>
+                        <p align="center">(<?= $values['location'] ?>)</p>
+                    </div>
+
+                    <div class = "review_bx">
+                        <?php
+                        $url = APPLICATION_URL . "holiday-rentals/" . $values['country_name'] . "/" . $values['state_name'] . "/" . $values['city_name'] . "/";
+                        if (!empty($values['sub_area']))
+                        {
+                            $url .= $values['sub_area_name'] . "/";
+
+                            if (!empty($values['local_area_name']))
+                                $url .= $values['local_area_name'] . "/";
+                        }
+
+                        $url .= ($values['bedrooms'] ? $values['bedrooms'] : '0') . "-Bed-" . $values['bathrooms'] . "-Bath-" . $values['ptyle_url'] . "/" . $values['propertycode'];
+                        ?>
+                        <a style="color:#0066ff;font-weight:bold;font-size:14px;" href="<?php echo $url; ?>"><?= $values['property_title']; ?></a>
+                        <h5><?= $values['headline'] ?><span class = 'posted_on'>Reviewed on <?= date('d-m-Y', strtotime($values['review_date'])) ?></span></h5>
+                        <p>
+                            <?= $values['review'] ?>
+                        </p>
+                        <p>
+                            Comment(Top Tip):- <?= $values['comment'] ?>
+                        </p>
+                        <p class = "posted_on_left">
+                            Check-in Date: <?= date('d-m-Y', strtotime($values['check_in'])) ?>
+                        </p>
+                        <p class = "posted_on_left">
+                            Rating: <? rating_view10($values['rating']) ?>
+                        </p>
+                    </div>
+
+                    <?
+                    if (is_array($values['child']))
+                    {
+                        if ($values['owner_image'])
+                            $child_img = $values['owner_image'];
+                        else
+                            $child_img = "no_owner_pic.jpg";
+                        ?>
+                        <div class = "response_blck">
+                            <div class = 'response_blck_img' style = ''>
+                                <img src="<?= APPLICATION_URL ?>image.php?image=<?= IMAGES_URL ?><?= $values['image'] ?>&height=90&width=90" />
+                            </div>
+                            <div class = "aftr_reponse_blck_img" >
+                                <div class="reply_blck">
+                                    <div class="one_line">
+                                        <h5>Owner Response</h5>
+                                        <span class= 'posted_on'>Replied on <?= date('d-m-Y', strtotime($values['review_date'])) ?></span>                    
+                                    </div>
+                                    <p>
+                                        <?= $values['child'][0]['comment'] ?>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <?
+                    }
+                    ?>
+                </div>
+                <?
+            }
+        ?>
+        <div class = "clear"></div>
+    </div>
+</div>
+<div class="left_keywords destination_wrap">
+    <div class="left_panel_heading">Holiday Rental Location Information</div>
+    <h4 class="left_panel_sub_heading">Villas, Homes, Homes with Pool, Townhouses, Apartments & Condos</h4><br>
+    <div class="">
+
+        <ul style="list-style-type:none;font-size:12px;">
+            <?php
+                foreach ($this->countryArr as $countryKey => $countryVal)
+                {
+                    ?>
+                    <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "holiday-rentals/" . $countryVal['country_name'] ?>"><?php echo $countryVal['country_name']; ?></a></li>
+                    <?php
+                    if (count($this->countryArr) - 1 != $countryKey)
+                        echo "&nbsp;|&nbsp;";
+                }
+            ?>
+        </ul>   
+        <ul style="list-style-type:none;font-size:12px;">
+            <?php
+                foreach ($this->statesArr as $stateKey => $stateVal)
+                {
+                    ?>
+                    <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "holiday-rentals/" . $stateVal["country_name"] . "/" . $stateVal['state_name'] ?>"><?php echo $stateVal['state_name']; ?></a></li>
+                    <?php
+                    if (count($this->statesArr) - 1 != $stateKey)
+                        echo "&nbsp;|&nbsp;";
+                }
+            ?>
+        </ul>
+        <ul style="list-style-type:none;font-size:12px;">
+            <?php
+                foreach ($this->citiesArr as $cityKey => $cityVal)
+                {
+                    ?>
+                    <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "holiday-rentals/" . $cityVal["country_name"] . "/" . $cityVal["state_name"] . "/" . $cityVal['city_name']; ?>"><?php echo $cityVal['city_name']; ?></a></li>
+                    <?php
+                    if (count($this->citiesArr) - 1 != $cityKey)
+                        echo "&nbsp;|&nbsp;";
+                }
+            ?>
+        </ul>
+        <ul style="list-style-type:none;font-size:12px;">
+            <?php
+                foreach ($this->subareasArr as $subareaKey => $subareaVal)
+                {
+                    ?>
+                    <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "holiday-rentals/" . $subareaVal["country_name"] . "/" . $subareaVal["state_name"] . "/" . $subareaVal["city_name"] . "/" . $subareaVal["sub_area_name"]; ?>"><?php echo $subareaVal['sub_area_name']; ?></a></li>
+                    <?php
+                    if (count($this->subareasArr) - 1 != $subareaKey)
+                        echo "&nbsp;|&nbsp;";
+                }
+            ?>
+        </ul>
+        <ul style="list-style-type:none;font-size:12px;">
+            <?php
+                foreach ($this->localareasArr as $localareaKey => $localareaVal)
+                {
+                    ?>
+                    <li style="display:inline;"><a style="text-decoration:underline" href="<?php echo $this->baseUrl() . "/" . "holiday-rentals/" . $localareaVal["country_name"] . "/" . $localareaVal["state_name"] . "/" . $localareaVal["city_name"] . "/" . $localareaVal['sub_area_name'] . "/" . $localareaVal["local_area_name"]; ?>"><?php echo $localareaVal['local_area_name']; ?></a></li>
+                    <?php
+                    if (count($this->localareasArr) - 1 != $localareaKey)
+                        echo "&nbsp;|&nbsp;";
+                }
+            ?>
+        </ul>
+
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(e){
+        $('.carousel.carousel-stage ul li').width($('.carousel.carousel-stage').width());
+        
+        //adjusting place of caption of images
+        $('.caption-text').each(function(e){
+            var blockHeight = $(this).parent('li').height();
+            var ImgHeight = $(this).prev('img').height()>=653?653:$(this).prev('img').height();
+            
+            var bottomSpace = (blockHeight - ImgHeight)/2;
+            $(this).css('bottom',bottomSpace+'px');
+        })
+    })
+</script>

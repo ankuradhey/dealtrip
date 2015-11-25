@@ -1,0 +1,556 @@
+<script type="text/javascript" src="<?= JS_URL ?>main.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<div class="mws-panel-header">
+    <span class="mws-i-24 i-check"><?= $this->pageHeading ?></span>
+</div>
+<div class="mws-panel-body">
+    <form name="myform" id="mws-validate" action="" method="post" novalidate="novalidate" class="mws-form" enctype="multipart/form-data">
+        <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
+        <div class="mws-form-inline">
+            <div class="mws-form-row">
+                <label>Location Name :</label>
+                <div class="mws-form-item large">
+                    <?php echo $this->location_name; ?>
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Location Heading :</label>
+                <div class="mws-form-item large">
+                    <textarea class="mws-textinput required" name="loc_heading" maxlength="120"><?php echo $this->record['loc_heading']; ?></textarea>
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Location Information :</label>
+                <div class="mws-form-item large">
+                    <textarea class="mws-textinput required" name="loc_information" style="height:20em"><?php echo $this->record['loc_information']; ?></textarea>
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Meta Keyword :</label>
+                <div class="mws-form-item large">
+                    <textarea style="height:5em;" class="mws-textinput required" name="loc_meta_keywords"><?php echo $this->record['loc_meta_keywords']; ?></textarea>
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Meta Description :</label>
+                <div class="mws-form-item large">
+                    <textarea style="height:5em;" class="mws-textinput required" name="loc_meta_description"><?php echo $this->record['loc_meta_description']; ?></textarea>
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Amenity Description :</label>
+                <div class="mws-form-item large">
+                    <textarea style="height:5em;" class="mws-textinput required" name="loc_amenity_description"><?php echo $this->record['loc_amenity_description']; ?></textarea>
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Location Overview :</label>
+                <div class="mws-form-item large">
+                    <textarea style="height:5em;" class="mws-textinput required" name="loc_overview_text"><?php echo $this->record['loc_overview_text']; ?></textarea>
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Key features:</label>
+                <div class="mws-form-item large" id="key-features-tick">
+                    <div class="mws-form-row" id="feature-list">
+                        <?php
+                            $key_features = explode(',', $this->record['loc_amenities']);
+                            //pr($this->record['loc_key_features']);
+                            foreach ($this->features as $Key => $Val)
+                            {
+                                ?>
+                                <label for="loc_amenities[]"><input type="checkbox" <?php echo in_array($Val['feature_id'], $key_features) ? 'checked="checked"' : ''; ?>  name="loc_amenities[]" value="<?php echo $Val['feature_id'] ?>"> <?php echo $Val['feature_name']; ?></label>
+                                <?php
+                            }
+                        ?>
+                    </div>
+                    <div class="mws-form-message error hide" id="feature-error">
+                        Feature field is empty. Please enter Feature.
+                    </div>
+                    <div class="mws-form-inline">
+                        <div class="mws-form-row bordered" id="feature-area" style="position:relative;">
+                            <label><input type="text" class="mws-textinput small" name="feature-text" id="feature-text"></label>
+                            <div class="mws-form-item small">
+                                <input id="add-feature" type="button" class=" mws-ui-button ui-button ui-widget ui-state-default ui-corner-all" value="Add Feature" role="button" aria-disabled="false">
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>5 Key Features:</label>
+                <div class="mws-form-item large">
+                    <div class="mws-dualbox clearfix">
+                        <div class="mws-dualbox-col1">
+                            <div class="mws-dualbox-filter clearfix">
+                                <label for="box1Filter">Filter</label>
+                                <input type="text" id="box1Filter" class="mws-textinput" />
+                                <button type="button" id="box1Clear">X</button>
+                            </div>
+
+                            <select id="box1View" multiple="multiple" size="15">
+                                <?php
+                                    $key_features = explode(',', $this->record['loc_key_features']);
+                                    foreach ($this->features as $Key => $Val)
+                                    {
+                                        if (in_array($Val['feature_id'], $key_features))
+                                            continue;
+                                        ?>
+                                        <option value="<?php echo $Val['feature_id'] ?>"><?php echo $Val['feature_name']; ?></option>
+                                        <?php
+                                    }
+                                ?>
+                            </select>
+                            <span id="box1Counter" class="countLabel"></span>
+                            <select id="box1Storage" ></select>
+                        </div>
+                        <div class="mws-dualbox-col2">
+                            <button id="to2" type="button">&gt;</button>
+                            <button id="allTo2" type="button">&gt;&gt;</button>
+                            <div class="clear"></div>
+                            <button id="allTo1" type="button">&lt;&lt;</button>
+                            <button id="to1" type="button">&lt;</button>
+                        </div>
+                        <div class="mws-dualbox-col3">
+                            <div class="mws-dualbox-filter clearfix">
+                                <label for="box2Filter">Filter</label>
+                                <input type="text" id="box2Filter" class="mws-textinput" />
+                                <button type="button" id="box2Clear">X</button>
+                            </div>
+                            <select id="box2View" multiple="multiple" size="15" name="loc_key_features[]">
+                                <?php
+                                    foreach ($key_features as $featureVal)
+                                    {
+                                        ?>
+                                        <option value="<?php echo $featureVal; ?>"><?php echo $this->features[in_array_custom($featureVal, $this->features, 'feature_id')]['feature_name']; ?></option> 
+                                        <?php
+                                    }
+                                ?>
+
+                            </select>
+                            <span id="box2Counter" class="countLabel"></span>
+                            <select id="box2Storage"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Pin Point Location :</label>
+                <div class="mws-form-item large">
+                    <div id="map_canvas" style = 'height:150px;width:805px;'></div>
+                    <input type="hidden" name="loc_lat" id="latitude" value="<?php echo $this->record['loc_lat']; ?>">
+                    <input type="hidden" name="loc_long" id="longitude" value="<?php echo $this->record['loc_long']; ?>">
+
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Address :</label>
+                <div class="mws-form-item large">
+                    <textarea style="height:5em;" class="mws-textinput required" name="loc_address"><?php echo $this->record['loc_address']; ?></textarea>
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Rental Types and Sizes :</label>
+                <div class="mws-form-item large" id="loc_rental_type_size">
+                    <select id="bedroom" name="bedroom[]" style="width:60px;float:left;">
+                        <?php
+                            for ($i = 1; $i <= 10; $i++)
+                            {
+                                ?>
+                                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                                <?php
+                            }
+                        ?>
+                    </select>
+                    <span style="float:left;font-size:14px;line-height:31px;">&nbsp;Bed&nbsp;-</span>
+                    <select id="type" name ="type[]" style="float:left;width:200px;margin-left:10px;">
+                        <?php
+                            foreach ($this->propertyType as $typeKey => $typeVal)
+                            {
+                                ?>
+                                <option value="<?php echo $typeVal['ptyle_name']; ?>"><?php echo $typeVal['ptyle_name']; ?></option>
+                                <?php
+                            }
+                        ?>
+                    </select>
+                    <span style="float:left;font-size:14px;line-height:31px;">&nbsp;-&nbsp;Sleeps&nbsp;</span>
+                    <select id="maximum_occupancy" name ="maximum_occupancy[]" style="float:left;width:60px;margin-left:10px;">
+                        <?php
+                            for ($i = 1; $i <= 20; $i++)
+                            {
+                                ?>
+                                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                                <?php
+                            }
+                        ?>
+                    </select>
+                    <span style="float:left;">&nbsp;&nbsp;</span>
+                    <input type="text" style="float:left;width:200px;" class="mws-textinput" name="rental_text" id="rental_text">
+                    <input style="float:left;" id="add-rental" type="button" class="mws-ui-button ui-button ui-widget ui-state-default ui-corner-all" value="+" role="button" aria-disabled="false">
+                    <?php
+                        $rental_overview = explode(',', $this->record['loc_rental_overview']);
+                    ?>
+                    <!--<select id="loc_rental_type_size" name="loc_rental_type_size[]" multiple="multiple" style="clear:left;margin-top:10px;">-->
+                    <?php
+                        if (!empty($rental_overview[0]))
+                            foreach ($rental_overview as $rentKey => $rentVal)
+                            {
+                                ?>
+                                                                                    <!--<option value="<?php echo $rentVal; ?>" selected="selected"><?php echo $rentVal; ?></option>-->
+                                <input type="text" class="mws-textinput rental-type-size _<?php echo $rentKey; ?>" name="loc_rental_type_size[]" value="<?php echo $rentVal ?>" style="width:90%;float:left;">
+                                <input style="float:left;" data-id="<?php echo $rentKey; ?>" id="delete-rental-<?php echo $rentKey; ?>" type="button" class="delete-rental mws-ui-button ui-button ui-widget ui-state-default ui-corner-all" value="-" role="button" aria-disabled="false">
+                                <?php
+                            }
+                    ?>
+                    <!--</select>-->
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Youtube Video :</label>
+                <div class="mws-form-item large">
+                    <input type="text" class="mws-textinput required" name="loc_youtube_video" value="<?php echo $this->record['loc_youtube_video']; ?>">
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Youtube Page Link :</label>
+                <div class="mws-form-item large">
+                    <input type="text" class="mws-textinput required" name="loc_youtube_page" value="<?php echo $this->record['loc_youtube_page']; ?>">
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Images:</label>
+                <div class="mws-form-item large">
+                    <input type="file" class="no-custom" id="loc_images" name="loc_images" multiple="multiple" >
+                </div>
+                <div id="fileDisplayArea">
+                    <?php
+                        $files = glob(SITE_ROOT . "images/location/" . trim($this->location_name) . "/*");
+                        $caption = objectToArray(json_decode($this->record['loc_images']));
+                        //echo $caption[1]->caption."sdfds";
+                        foreach ($files as $iKey => $iVal)
+                        {
+                            $filename = array_pop(explode("/", $iVal));
+                            ?>
+                            <div style="display:block;margin-bottom:10px;">
+                                <img style="float:left;" src="<?php echo APPLICATION_URL ?>images/location/<?php echo trim($this->location_name) . "/" . ($filename); ?>" width="200" height="200">
+                                <a href="<?php echo APPLICATION_URL_ADMIN ?>location/deleteimage/location/<?php echo $this->location_name; ?>/img/<?php echo $filename; ?>/locationId/<?php echo $this->record['loc_id']; ?>?url=<?php echo urlencode(curPageURL()); ?>"><img src="<?php echo IMAGES_URL ?>cancel1.png" width="20" height="20"></a>
+                                <br><br>
+                                <div class="mws-form-item large" style="margin-left:0;">
+                                    <input type="text" class="mws-textinput" name="caption[]" value="<?php echo $caption[$filename]['caption']; ?>">
+                                </div>
+                            </div>                    
+                            <?php
+                        }
+                    ?>
+                </div>
+            </div>
+            <div class="mws-form-row">
+                <label>Quick FAQs</label>
+                <div class="mws-form-item large">
+                    <div class="mws-form-block sortable" id="question-list">
+
+                        <?php
+                            $loc_answers = json_decode($this->record['loc_answers']);
+                            foreach ($this->questions as $qKey => $qVal)
+                            {
+                                ?>
+                                <div class="mws-form-row" id="ques_wrap_<?php echo $qKey; ?>">
+                                    <label><span><?php echo $qVal['ques_content']; ?>?</span><a style="margin-left:40px;" onclick="$(this).parent().toggleClass('hide');$(this).parent().next('div').toggleClass('hide');"><img src="<?php echo IMAGES_URL ?>pencil_pen_edit.png" width="15" height="15"></a></label>
+                                    <div class="hide mws-form-item small">
+                                        <input class="mws-textinput" type="text" name="ques_content" id="ques_content_<?php echo $qKey; ?>" value="<?php echo $qVal['ques_content']; ?>" style="outline:medium solid wheat">
+                                        <img class="accept" data-area="<?php echo $qKey; ?>" src="<?php echo IMAGES_URL ?>accept.png" width="20" height="20">
+                                        <img class="cancel" onclick="$(this).parent().toggleClass('hide');$(this).parent().prev().toggleClass('hide');" src="<?php echo IMAGES_URL ?>cancel.png" width="20" height="20">
+                                        <input type="hidden" id="ques_id_<?php echo $qKey; ?>" value="<?php echo $qVal['ques_id']; ?>">
+                                    </div>
+                                    <div class="mws-form-item small">
+                                        <?php
+                                            if(!$qVal['ques_fixed']){
+                                            ?>
+                                        <input type="hidden" name="question_ids[]" value="<?php echo $qVal['ques_id']; ?>">
+                                        <input type="text" class="mws-textinput" name="question_answers[]" value="<?php echo $loc_answers[$qKey]->value; ?>">
+                                        <?php
+                                            }else{
+                                            ?>
+                                        <div class="box-sized" style="background-color:#fff;padding:6px 7px;border:1px solid #c5c5c5;box-shadow:0 1px 3px rgba(128, 128, 128, 0.1) inset;border:1px solid #c5c5c5;border-radius:4px;min-height:28px;">
+                                            <?php echo $qVal['ques_answer']; ?>
+                                        </div>
+                                        <?php
+                                            }
+                                            ?>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                        ?>
+                    </div>
+                    <div class="mws-form-message error hide" id="question-error">
+                        Question field is empty. Please enter Question.
+                    </div>
+                    <div class="mws-form-row bordered" id="question-area" style="position:relative;">
+                        <input type="text" class="mws-textinput" name="question-text" id="question-text">
+                        <input type="hidden" name="ques_loc_id" id="ques_loc_id" value="<?php echo $this->record['loc_id']; ?>">
+                        <input id="add-question" type="button" class="mws-ui-button ui-button ui-widget ui-state-default ui-corner-all" value="Add Question" role="button" aria-disabled="false">
+                    </div>
+                </div>
+            </div>
+            <div class="mws-form-inline">
+                <div class="mws-form-row">
+                    <label>Rating<span class="red">*</span>:</label>
+                    <div style="float:left;padding-top:7px;">
+                        <?php
+                            $RatingChk = $this->record['loc_rating'];
+                        ?>
+                        <input type="radio" name = "loc_rating" class = "star required" value="1"  <?php echo $RatingChk == '1' ? 'checked="checked"' : ''; ?> />
+                        <input type="radio" name = "loc_rating" class = "star" value="2" <?php echo $RatingChk == '2' ? 'checked="checked"' : ''; ?> />
+                        <input type="radio" name = "loc_rating" class = "star" value="3" <?php echo $RatingChk == '3' ? 'checked="checked"' : ''; ?>/>
+                        <input type="radio" name = "loc_rating" class = "star" value="4" <?php echo $RatingChk == '4' ? 'checked="checked"' : ''; ?>/>
+                        <input type="radio" name = "loc_rating" class = "star" value="5" <?php echo $RatingChk == '5' ? 'checked="checked"' : ''; ?>/>                                                                                
+                    </div>
+                </div>
+            </div>
+            <div class="mws-button-row">
+                <input type="submit" value="Submit" class="mws-button red" />
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(e){
+       
+        
+        
+        //checking if the key features have crossed the limit of 5
+        //        $('#key-features-tick input:checkbox').click(function(e){
+        //            var count = $('#key-features-tick input:checkbox:checked').length;
+        //            if(count > 5){
+        //                e.preventDefault();
+        //                alert('Maximum limit is reached');
+        //                //$('#key-features-tick input').attr('disabled','disabled');
+        //            }
+        //        });
+        
+        var loc_id = $('#ques_loc_id').val();
+        $( ".sortable" ).sortable();
+        //editing questions
+        $('.accept').live('click',function(e){
+            var _this = $(this);
+            var ques = $(this).prev('input').val();
+            var id = $(this).data('area');
+            var ques_id = $('#ques_id_'+id).val();
+            loading($('#ques_wrap_'+id),'<?php echo APPLICATION_URL_ADMIN ?>images');
+            if(!ques)
+            {
+                alert('Please enter question');
+            }
+            else{
+                $.ajax({
+                    url:'<?php echo APPLICATION_URL_ADMIN; ?>location/editquestion',
+                    dataType:'json',
+                    type:"post",
+                    data:({question:ques,ques_id:ques_id}),
+                    success:function(data){
+                        
+                        if(data.result = 'true'){
+                            _this.parent().prev('label').children('span').empty().html(data.question);
+                            _this.prev('input').val(data.question);
+                        }
+                        else{
+                            alert('oops.. some error occurred!');
+                        }
+                    }
+                    
+                });
+            }
+            loadingComplete();
+            $(this).parent().toggleClass('hide');
+            $(this).parent().prev().toggleClass('hide');
+        });
+        
+        
+        //deleting rental types and sizes
+        $('.delete-rental').live('click',function(e){
+            var id = $(this).data('id');
+            $('._'+id).remove();
+            $(this).remove();
+        });
+        
+        //adding rental types and sizes
+        $('#add-rental').click(function(e){
+            
+            var option_val = '';
+            var type = $('#type').val();
+            var bedroom = $('#bedroom').val();
+            var maximum_occupancy = $('#maximum_occupancy').val();
+            var rental_text = $('#rental_text').val();
+            option_val = '<input type="text" name="loc_rental_type_size[]" class="mws-textinput rental-type-size _'+$('.rental-type-size').length+'" style="float:left;width:90%;" value= "'+bedroom+' Bed - '+type+' - Sleeps '+maximum_occupancy+' - '+rental_text+'">';
+            option_val += '<input data-id="'+$('.rental-type-size').length+'" style="float:left;" id="delete-rental-'+$('.rental-type-size').length+'" type="button" class="delete-rental mws-ui-button ui-button ui-widget ui-state-default ui-corner-all" value="-" role="button" aria-disabled="false">';
+            $('#loc_rental_type_size').append(option_val);
+        });
+        
+        //adding feature
+        $('#add-feature').click(function(e){
+            
+            loading($('#feature-area'),'<?php echo APPLICATION_URL_ADMIN ?>images');
+            
+            //check if question is input or not
+            var ques = $('#feature-text').val();
+            
+            if(!ques){
+                $('#feature-error').removeClass('hide');
+            }else{
+                
+                $.ajax({
+                    url:'<?php echo APPLICATION_URL_ADMIN; ?>location/addfeature',
+                    dataType:'json',
+                    type:"post",
+                    data:({feature:ques}),
+                    success:function(data){
+                        
+                        if(data.result == 'true')
+                        {
+                            $('#feature-error').addClass('hide');
+                            var ques_html =  '<label><input type="checkbox" value="'+data.featureId+'" name="loc_amenities[]">'+data.featureVal+'</label>';
+                            $('#feature-list').append(ques_html);
+                            
+                        }else{
+                            $('#feature-error').empty().html(data.reason);
+                            $('#feature-error').removeClass('hide');
+                        }
+                            
+                        $('#feature-text').val("");    
+                    }
+                })
+            }
+            
+            loadingComplete();
+            
+        });
+        
+        
+        
+        //adding question
+        $('#add-question').click(function(ev){
+            
+            loading($('#question-area'),'<?php echo APPLICATION_URL_ADMIN ?>images');
+            
+            //check if question is input or not
+            var ques = $('#question-text').val();
+    
+            if(!ques){
+                $('#question-error').removeClass('hide');
+            }else{
+                
+                $.ajax({
+                    url:'<?php echo APPLICATION_URL_ADMIN; ?>location/addquestion',
+                    dataType:'json',
+                    type:"post",
+                    data:({question:ques,loc_id:loc_id}),
+                    success:function(data){
+                        
+                        if(data.result == 'true')
+                        {
+                            $('#question-error').addClass('hide');
+                            var ques_html = '<div class="mws-form-row">';
+                            ques_html +=        '<label><span>'+data.question+'?</span><a style="margin-left:40px;" onclick="$(this).parent().toggleClass(\'hide\');$(this).parent().next(\'div\').toggleClass(\'hide\');"><img src="<?php echo IMAGES_URL ?>pencil_pen_edit.png" width="15" height="15"></a></label>';
+                    
+                            ques_html +=        '<div class="hide mws-form-item small">';
+                            ques_html +=            '<input type="text" style="outline:medium solid wheat" value="'+data.question+'" id="ques_content_'+($('.accept').length+1)+'" name="ques_content" class="mws-textinput">';
+                            ques_html +=            '<img width="20" height="20" src="<?php echo IMAGES_URL; ?>accept.png" data-area="'+($('.accept').length+1)+'" class="accept">';
+                            ques_html +=            '<img width="20" height="20" src="<?php echo IMAGES_URL; ?>cancel.png" onclick="$(this).parent().toggleClass(\'hide\');$(this).parent().prev().toggleClass(\'hide\');" class="cancel">';
+                            ques_html +=            '<input type="hidden" value="'+data.question_id+'" id="ques_id_'+($('.accept').length+1)+'">';
+                            ques_html +=        '</div>';
+                            ques_html +=        '<div class="mws-form-item small">';
+                            ques_html +=            '<input type="hidden" name="question_ids[]" value="'+data.question_id+'">';
+                            ques_html +=            '<input type="text" class="mws-textinput" name="question_answers[]">';
+                            ques_html +=        '</div>';
+                            ques_html +=    '</div>';
+                            $('#question-list').append(ques_html);
+                            
+                        }else{
+                            $('#question-error').removeClass('hide');
+                        }
+                            
+                    }
+                })
+            }
+            $('#question-text').val("");
+            loadingComplete();
+        })
+       
+    });
+    
+    $(document).on("change", '#loc_images', function(ev) {
+        
+        //$('#fileDisplayArea').empty();
+
+        $.ajaxFileUpload({
+			
+            url: '<?php echo APPLICATION_URL_ADMIN; ?>location/doajaxfileupload',
+            secureuri:false,
+            fileElementId:'loc_images',
+            dataType: 'json',
+            data:{location:'<?php echo $this->location_name; ?>'},
+            success: function (data, status)
+            {
+					
+                dataObj = data;
+                if(data.extnsn ||  data.error)
+                {
+                    if(data.extnsn)
+                        alert("Please upload images only!");
+                    else
+                        alert(data.error);
+                    return false;
+                }
+                else
+                {
+						
+                    //showing files uploaded
+                    if(data.success == '1')
+                    {
+                        $('#fileDisplayArea').append('<div style="display:block;margin-bottom:10px;"><img style="float:left;" src="<?php echo IMAGES_URL . "location/" . $this->location_name; ?>/'+data.name+'" width="200" height="200"><a href="<?php echo APPLICATION_URL_ADMIN ?>location/deleteimage/location/<?php echo $this->location_name; ?>/img/'+data.name+'/locationId/<?php echo $this->record['loc_id']; ?>?url=<?php echo urlencode(curPageURL()); ?>"><img src="<?php echo IMAGES_URL ?>cancel1.png" width="20" height="20"></a><br><br><div class="mws-form-item large" style="margin-left:0;"><input type="text" class="mws-textinput" name="caption[]" ></div></div>');
+                    }
+                    // Place the image inside the dropzone
+                    
+						
+                }
+            },
+            error: function (data, status, e)
+            {
+                alert(e);
+            }
+        })
+
+    });
+
+    function setup_reader(file){
+        
+        var fileDisplayArea = document.getElementById('fileDisplayArea');
+        var imageType = /image.*/;
+        if (file.type.match(imageType)) {
+
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                //fileDisplayArea.innerHTML = "";
+                var img = new Image();
+                img.src = reader.result;
+                img.width = 200;
+                img.height = 200;
+
+                //add to li
+                //var input = $('<input type="hidden" name="event_image_file[]" value="'+reader.result+'">');
+                //var li = $(img).after('').wrap('<a href="#">').wrap('<li>');
+                //$('.upload-button').after(input.get(0));
+                ///fileDisplayArea.appendChild(li.get(0));
+                $('#fileDisplayArea').append('<div style="display:block;margin-bottom:10px;"><img src="'+reader.result+'" width="200" height="200"><br><br><div class="mws-form-item large" style="margin-left:0;"><input type="text" class="mws-textinput" name="caption[]" ></div></div>');
+                //fileDisplayArea.appendChild('<div style="display:block;"><img src="'+reader.result+'" width="200" height="200"></div>');
+            }
+
+            reader.readAsDataURL(file);
+        } else {
+            fileDisplayArea.innerHTML = "File not supported!"
+        }
+    }
+
+    
+</script>

@@ -1,0 +1,296 @@
+<? global $mySession; ?>
+<script type="text/javascript" src="<?=APPLICATION_URL?>videofancybox/js/mootools.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL?>videofancybox/js/swfobject.js"></script>
+<script type="text/javascript" src="<?=APPLICATION_URL?>videofancybox/js/videobox.js"></script>
+<link rel="stylesheet" href="<?=APPLICATION_URL?>videofancybox/css/videobox.css" type="text/css" media="screen" />
+
+
+<script type="text/javascript" src="<?=APPLICATION_URL?>videofancybox/js/video.js"></script>
+<link rel="stylesheet" href="<?=APPLICATION_URL?>videofancybox/css/video.css" type="text/css" media="screen" />
+<!--------------------------videolightbox------------------------------->
+
+<script>
+	_V_.options.flash.swf = "<?=APPLICATION_URL?>/video-js.swf";
+</script>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top" width="21"><img src="<?=IMAGES_URL?>box_top1.png" border="0" /></td>
+<td align="left" valign="middle" style="background-image:url(<?=IMAGES_URL?>box_top2.png);background-repeat:repeat-x;" class="pageHeading"><?=$this->pageTitle?></td>
+<td align="left" valign="top" width="21"><img src="<?=IMAGES_URL?>box_top3.png" border="0" /></td>
+</tr>
+<tr>
+<td align="center" valign="top" colspan="3" class="main_content_area">
+<table width="100%" cellpadding="0" cellspacing="0" align="center" border="0">
+	<tr>
+    	<td width="80%" valign="top">
+        	<table width="100%" cellpadding="0" cellspacing="0" align="center" border="0">
+   				<tr>
+                    <td colspan="2" style="text-align:center;vertical-align:top">
+                        <?
+                            $hw=300;
+                            $DataGallery=$this->Letest[0];
+                            $UrlVideo="";
+                            if($DataGallery['video_type']==1)
+                                {$UrlVideo=APPLICATION_URL_ADMIN.'video/'.$videos['video_path']; }
+                            else
+                            {
+                                $UrlVideo=$DataGallery['video_path'];
+                                $explode=explode('/',$UrlVideo);
+                                $countE=count($explode);
+                                $UrlVideo='http://www.youtube.com/v/'.$explode[$countE-1].'?autoPlay=no';
+                            }
+                             
+                                 if($DataGallery['video_path']=="")
+                                    {?>
+                                        <img src="<?=DESIGN_IMAGES_URL?>imgnotavailable.jpg" border="0"  height="<?=$hw;?>" width="<?=$hw;?>"/>
+                                    <? }
+                                else
+                                    {
+                                        if($DataGallery['video_type']==1)
+                                            {
+                                        ?>
+                                            <object width="<?=$hw;?>" height="<?=$hw;?>">
+                                                <PARAM name="CONTROLLER" VALUE="false">
+                                                <embed src="<?=$UrlVideo?>"  PLUGINSPAGE="http://www.apple.com/quicktime/download/" width="<?=$hw;?>" height="<?=$hw;?>" autostart="false" allowscriptaccess="always" allowfullscreen="true"  style="border: solid 1px #cccccc;padding:5px;"></embed>
+                                            </object>
+                                        <? } 
+                                        else 
+                                            {?>
+                                                <object width="<?=$hw;?>" height="<?=$hw;?>">
+                                                <PARAM name="CONTROLLER" VALUE="false">
+                                                <embed src="<?=$UrlVideo?>"  PLUGINSPAGE="http://www.apple.com/quicktime/download/" 
+                                                    width="<?=$hw;?>" height="<?=$hw;?>" autostart="false" allowscriptaccess="always"
+                                                     allowfullscreen="true"  style="border: solid 1px #cccccc;padding:5px;"></embed>
+                                                </object>
+                                            
+                                            <? }
+                                    } 
+                                ?>
+                    </td>
+                    <td colspan="2"  style="text-align:center;vertical-align:top">
+                        <?
+                             
+                            $DataGallery=$this->featured[0];
+                             
+                            $UrlVideo="";
+                            if($DataGallery['video_type']==1)
+                                {$UrlVideo=APPLICATION_URL_ADMIN.'video/'.$videos['video_path']; }
+                            else
+                            {
+                                $UrlVideo=$DataGallery['video_path'];
+                                $explode=explode('/',$UrlVideo);
+                                $countE=count($explode);
+                                $UrlVideo='http://www.youtube.com/v/'.$explode[$countE-1].'?autoPlay=no';
+                            }
+                             
+                                 if($DataGallery['video_path']=="")
+                                    {?>
+                                        <img src="<?=DESIGN_IMAGES_URL?>imgnotavailable.jpg" border="0"  height="<?=$hw;?>" width="<?=$hw;?>"/>
+                                    <? }
+                                else
+                                    {
+                                        if($DataGallery['video_type']==1)
+                                            {
+                                        ?>
+                                            <object width="<?=$hw;?>" height="<?=$hw;?>">
+                                                <PARAM name="CONTROLLER" VALUE="false">
+                                                <embed src="<?=$UrlVideo?>"  PLUGINSPAGE="http://www.apple.com/quicktime/download/" width="<?=$hw;?>" height="<?=$hw;?>" autostart="false" allowscriptaccess="always" allowfullscreen="true"  style="border: solid 1px #cccccc;padding:5px;"></embed>
+                                            </object>
+                                        <? } 
+                                        else 
+                                            {?>
+                                                <object width="<?=$hw;?>" height="<?=$hw;?>">
+                                                <PARAM name="CONTROLLER" VALUE="false">
+                                                <embed src="<?=$UrlVideo?>"  PLUGINSPAGE="http://www.apple.com/quicktime/download/" 
+                                                    width="<?=$hw;?>" height="<?=$hw;?>" autostart="false" allowscriptaccess="always"
+                                                     allowfullscreen="true"  style="border: solid 1px #cccccc;padding:5px;"></embed>
+                                                </object>
+                                            
+                                            <? }
+                                    } 
+                                ?>
+                    </td>
+                </tr>
+                
+                 <?
+                
+                if($this->pagingdata!="" and count($this->pagingdata)>0)
+                {
+                    $i=1;
+                    $hw=150;
+                    ?>
+                    <tr>
+                    <?
+                    foreach($this->pagingdata as $key=>$DataGallery)
+                    {
+                        $UrlVideo="";
+                        if($DataGallery['video_type']==1)
+                        {
+                            $UrlVideo=APPLICATION_URL_ADMIN.'video/'.$videos['video_path']; 
+                        }
+                        else
+                        {
+                            $UrlVideo=$DataGallery['video_path'];
+                            $explode=explode('/',$UrlVideo);
+                            $countE=count($explode);
+                            $UrlVideo='http://www.youtube.com/v/'.$explode[$countE-1].'?autoPlay=no';
+                        }
+                ?>
+                <td align="center" valign="top" width="25%">
+                	<table width="100%" cellpadding="0" cellspacing="0" align="center" border="0">
+                    	<tr><td colspan="2"><a href="<?=$UrlVideo?>" rel="vidbox" class="read"><?=$DataGallery['video_title']?></a></td></tr>
+                        <tr>
+                        	<td colspan="2" align="center" valign="top">
+                            	<? 
+									  	if($DataGallery['video_path']=="")
+                                        	{?>
+                                        		<img src="<?=DESIGN_IMAGES_URL?>imgnotavailable.jpg" border="0"  height="<?=$hw;?>" width="<?=$hw;?>"/>
+                                        	<? 
+										}
+                                        else
+                                        {
+											if($DataGallery['video_type']==1)
+												{
+													?>
+														<object width="<?=$hw;?>" height="<?=$hw;?>">
+															<PARAM name="CONTROLLER" VALUE="false">
+															<embed src="<?=$UrlVideo?>"  PLUGINSPAGE="http://www.apple.com/quicktime/download/" width="<?=$hw;?>" height="<?=$hw;?>" autostart="false" allowscriptaccess="always" allowfullscreen="true"  style="border: solid 1px #cccccc;padding:5px;"></embed>
+														</object>
+													<? 
+												} 
+											else 
+												{?>
+												
+												<object width="<?=$hw;?>" height="<?=$hw;?>">
+												 <PARAM name="CONTROLLER" VALUE="false">
+								 <embed src="<?=$UrlVideo?>"  PLUGINSPAGE="http://www.apple.com/quicktime/download/" width="<?=$hw;?>" height="<?=$hw;?>" autostart="false" allowscriptaccess="always" allowfullscreen="true"  style="border: solid 1px #cccccc;padding:5px;"></embed>
+								 </object>
+								 
+												<? }
+										}
+										?>
+                            </td>
+                        </tr>
+                        <tr>
+                        	<td width="50%" style="text-align:left;padding-left:20px;">
+                            	<a href="<?=APPLICATION_URL?>video/delete/videoId/<?=$DataGallery['video_id']?>" onclick="return validatedelete()"><img src="<?=IMAGES_URL?>delete_icon.png" border="0" alt="Delete" title="Delete" /></a>
+                            </td>
+                            <td width="50%" style="text-align:right;padding-right:20px;">
+                            	<img src="<?=IMAGES_URL?>delete_icon.png" border="0" alt="Delete" title="Delete" />
+                            </td>
+                        </tr>
+                    </table>
+                            </td>    
+                <?
+                        if($i%4==0)
+                        {
+                        echo "</tr><tr><td>&nbsp;</td></tr><tr>";
+                        }
+                    $i++;
+                    }
+                    if(count($this->pagingdata)<3)
+                    {
+                    for($j=1;$j<=(4-count($this->pagingdata));$j++)
+                    {
+                    ?>
+                    <td align="left" valign="top" width="25%">&nbsp;</td>
+                    <?
+                    }
+                    }
+                    ?>
+                    </tr>
+                    <tr>
+                    <td colspan="4" valign="top">
+                         <?php printpagelink($this->pageLinks); ?>
+                    
+                    </td>
+                    </tr>
+                    <?
+                }
+                else
+                {
+                ?>
+                <tr>
+                <td align="center" valign="top" colspan="4" >There are no videos available in your video gallery.</td>
+                </tr>
+                <?	
+                }
+                ?>
+                </table>
+        </td>
+        <td width="20%" valign="top" style="border-left:1px solid #B1B1B1">
+        	<table width="100%" cellpadding="0" cellspacing="0" align="center" border="0">
+            	<?
+if(@$mySession->LoggedUserId>0)
+{
+?>
+<tr>
+<td align="center"   height="30" width="100%"><a href="<?=APPLICATION_URL?>video/upload" style="font-weight:bold;">Upload Video</a></td>
+</tr>
+<?
+}
+ 				$hw=150;
+            	foreach($this->RandmVideo as $key=>$DataGallery)
+			 	{
+					?>
+					<tr><td valign="top" align="center" >
+                    <?
+                    $UrlVideo="";
+						if($DataGallery['video_type']==1)
+							{$UrlVideo=APPLICATION_URL_ADMIN.'video/'.$videos['video_path']; }
+						else
+						{
+							$UrlVideo=$DataGallery['video_path'];
+							$explode=explode('/',$UrlVideo);
+							$countE=count($explode);
+							$UrlVideo='http://www.youtube.com/v/'.$explode[$countE-1].'?autoPlay=no';
+						}
+						 
+					 if($DataGallery['video_path']=="")
+						{?>
+							<img src="<?=DESIGN_IMAGES_URL?>imgnotavailable.jpg" border="0"  height="<?=$hw;?>" width="<?=$hw;?>"/>
+						<? }
+					else
+						{
+							if($DataGallery['video_type']==1)
+								{
+							?>
+								<object width="<?=$hw;?>" height="<?=$hw;?>">
+									<PARAM name="CONTROLLER" VALUE="false">
+									<embed src="<?=$UrlVideo?>"  PLUGINSPAGE="http://www.apple.com/quicktime/download/" width="<?=$hw;?>" height="<?=$hw;?>" autostart="false" allowscriptaccess="always" allowfullscreen="true"  style="border: solid 1px #cccccc;padding:5px;"></embed>
+								</object>
+							<? } 
+							else 
+								{?>
+									<object width="<?=$hw;?>" height="<?=$hw;?>">
+									<PARAM name="CONTROLLER" VALUE="false">
+									<embed src="<?=$UrlVideo?>"  PLUGINSPAGE="http://www.apple.com/quicktime/download/" 
+										width="<?=$hw;?>" height="<?=$hw;?>" autostart="false" allowscriptaccess="always"
+										 allowfullscreen="true"  style="border: solid 1px #cccccc;padding:5px;"></embed>
+									</object>
+								
+								<? }
+						}
+					?>
+                    </td></tr>
+					<?
+				}
+			?>
+            </table>
+        </td>
+    </tr>
+</table>
+
+</td>
+</tr>
+</table>
+<script>
+	function validatedelete()
+	{
+		var confirmation = confirm("Are you sure want to delete ?");
+		if(confirmation!=true){
+			return false;
+		}	
+	}
+</script>
