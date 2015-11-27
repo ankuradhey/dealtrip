@@ -116,6 +116,34 @@ class Fairwaysflorida {
 
         return false;
     }
+    
+    //==================== get booked dates ==========================
+    function getBookedDates($propertyId){
+        $availabilityUrl = 'http://www.fairwaysflorida.com/Unit/Availability/'.$propertyId.'?startDate='.  urlencode(date('m/d/Y')).'&endDate='.  urlencode(date('m/d/Y',strtotime('+2 year ')));
+        $data = file_get_contents($availabilityUrl);
+        $data = json_decode($data, true);
+        $checkoutDate = false;
+        $checkinDate = false;
+        $nonAvailArr = array();
+        foreach($data as $key=>$value){
+            $currDate = date('Y-m-d',strtotime("+$key day"));
+            $status = $value['S'];
+            if( ($status == 'I' || $status == 'U') && $checkoutDate == false ){
+                $checkinDate = $currDate;
+                $checkoutDate = $currDate;
+            }
+            if(($status == 'O' || $status == 'A') && $checkoutDate != false && $checkinDate != false){
+                $checkoutDate = date('Y-m-d',strtotime("+".($key-1)." day"));
+                $nonAvailArr[] = array('checkin'=>$checkinDate,'checkout'=>$checkoutDate);
+                $checkinDate = $checkoutDate = false;
+                
+            }
+        }
+        return $nonAvailArr;
+//        http://www.fairwaysflorida.com/Unit/Availability/73069?startDate=11%2F25%2F2015&endDate=11%2F25%2F2017
+//        http://www.fairwaysflorida.com/Unit/Availability/73069?startDate=26%2F11%2F2015&endDate=26%2F11%2F2017
+        
+    }
 
     //==================== function for downloading images =====================
     function getImageList($propertyId) {
