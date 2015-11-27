@@ -528,7 +528,22 @@ class LibraryController extends AppController {
                         if (!$this->debug)
                             $db->save(GALLERY, $data_image);
                     }
+                    //===== availability dates
+                    $reservation = $res->getBookedDates($post['xml_property_id']);
+                    //delete the older entries
+                        if (!empty($reservation) && count($reservation))
+                            $db->delete(CAL_AVAIL, "property_id = " . $property_id);
 
+
+                        foreach ($reservation as $rKey => $rVal) {
+                            $data_cal = array();
+                            $data_cal['property_id'] = $property_id;
+                            $data_cal['date_from'] = $rVal['checkin'];
+                            $data_cal['date_to'] = $rVal['checkout'];
+                            $data_cal['cal_status'] = '0';
+                            if (!$this->debug)
+                                $db->save(CAL_AVAIL, $data_cal);
+                        }
                     break;
                 default:
                     echo "Please choose proper subscriber first!!";
