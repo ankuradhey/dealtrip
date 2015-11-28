@@ -1025,8 +1025,8 @@
 
             //get property urls
             $propertypagesUrl = array();
-            $pptyArr = $db->runQuery("select concat_ws('/', trim(trailing '/' from '" . APPLICATION_URL . "'),'holiday-rentals'," . COUNTRIES . ".country_name," . STATE . ".state_name," . CITIES . ".city_name, " . LOCAL_AREA . ".local_area_name ," . SUB_AREA . ".sub_area_name,concat(" . PROPERTY . ".bedrooms,'-Bed','-',trim(trailing '.' from trim(trailing 0 from " . PROPERTY . ".bathrooms)),'-Bath-'," . PROPERTY_TYPE . ".ptyle_url)," . PROPERTY . ".propertycode) as url, 
-                                        concat_ws('/',trim(trailing '/' from '" . APPLICATION_URL . "'),'search','property'," . COUNTRIES . ".country_name," . STATE . ".state_name," . CITIES . ".city_name, " . LOCAL_AREA . ".local_area_name ," . SUB_AREA . ".sub_area_name) as location_url,
+            $pptyArr = $db->runQuery("select concat_ws('/', trim(trailing '/' from '" . APPLICATION_URL . "'),'holiday-rentals'," . COUNTRIES . ".country_name," . STATE . ".state_name," . CITIES . ".city_name, "  . SUB_AREA . ".sub_area_name, ". LOCAL_AREA . ".local_area_name,concat(" . PROPERTY . ".bedrooms,'-Bed','-',trim(trailing '.' from trim(trailing 0 from " . PROPERTY . ".bathrooms)),'-Bath-'," . PROPERTY_TYPE . ".ptyle_url)," . PROPERTY . ".propertycode) as url, 
+                                        concat_ws('/',trim(trailing '/' from '" . APPLICATION_URL . "'),'search','property'," . COUNTRIES . ".country_name," . STATE . ".state_name," . CITIES . ".city_name, " . SUB_AREA . ".sub_area_name, " . LOCAL_AREA . ".local_area_name ) as location_url,
                                         " . PROPERTY . ".id, " . PROPERTY . ".propertycode,
                                         " . COUNTRIES . ".country_name, " . STATE . ".state_name, " . CITIES . ".city_name, " . LOCAL_AREA . ".local_area_name, " . SUB_AREA . ".sub_area_name ,
                                         " . PROPERTY . ".bedrooms, " . PROPERTY . ".bathrooms, " . PROPERTY_TYPE . ".ptyle_name    
