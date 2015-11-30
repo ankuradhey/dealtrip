@@ -128,11 +128,11 @@ class Fairwaysflorida {
         foreach($data as $key=>$value){
             $currDate = date('Y-m-d',strtotime("+$key day"));
             $status = $value['S'];
-            if( ($status == 'I' || $status == 'U') && $checkoutDate == false ){
+            if( ($status == 'I' || $status == 'U' || $status == 'O') && $checkoutDate == false ){
                 $checkinDate = $currDate;
                 $checkoutDate = $currDate;
             }
-            if(($status == 'O' || $status == 'A') && $checkoutDate != false && $checkinDate != false){
+            if(($status == 'A' || $status == 'I' ) && $checkoutDate != false && $checkinDate != false){
                 $checkoutDate = date('Y-m-d',strtotime("+".($key-1)." day"));
                 $nonAvailArr[] = array('checkin'=>$checkinDate,'checkout'=>$checkoutDate);
                 $checkinDate = $checkoutDate = false;
@@ -153,11 +153,19 @@ class Fairwaysflorida {
         }
         //$imagesArr = array();
 
-        $images = $this->scrape_between($results, "<ul id=\"largePhotos\">", "</ul>");
-        $imagesArr = $this->scrape_between_all($images, "<a class=\"photoGroup cboxElement\" ", "</a>");
+        $images = $this->scrape_between($results, "<div class=\"carousel-inner\" role=\"listbox\">", "</div>
+                
+</div>");
+        $imagesArr = $this->scrape_between_all($images, "<div class=\"item\">
+                      ", "<h4 id=\"title\"> </h4>");
+        $imagesArr[] = $this->scrape_between($images, "<div class=\"item active\">", "<h4 id=\"title\"></h4>
+                    </div>");
+        
         foreach ($imagesArr as $Key => $val) {
-            $imagesArr[$Key] = $this->scrape_between($val, "href=\"", "\"");
+            $imagesArr[$Key] = $this->scrape_between($val, "src=\"", "\"");
         }
+
+        
         return $imagesArr;
     }
 
