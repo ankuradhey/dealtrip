@@ -507,7 +507,7 @@ class LibraryController extends AppController {
                         $endfile = array_pop($endfile);
                         $file_name = urldecode(time() . "_" . $endfile);
                         $file_name = str_replace(' ', '_', $file_name);
-
+                        
                         if (!$this->debug) {
                             //$validImage = getimagesize($iVal);
                             $contentOrFalseOnFailure = file_get_contents("http:$iVal");
@@ -515,7 +515,6 @@ class LibraryController extends AppController {
 
                         if (!$this->debug)
                             $byteCountOrFalseOnFailure = file_put_contents(SITE_ROOT . "images/property/" . $file_name, $contentOrFalseOnFailure);
-
                         //saving data in database
                         $data_image = array();
                         $data_image['image_name'] = $file_name;
