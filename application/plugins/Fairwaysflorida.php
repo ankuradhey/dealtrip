@@ -52,10 +52,58 @@ class Fairwaysflorida {
         $featureArr = array();
 
 //        $pool = $this->scrape_between($results, " | POOL: <span class=\"subTitle\">", "</span>");
+        //============== Property type ===============
+        $propertyType = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
+            Property Type\r
+        </td>\r
+        <td>\r
+                ", "</td>");
+        $propertyType = trim($propertyType);
+        
+        //============= Unit code ===============
+        $unitCode = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
+            Unit Code\r
+        </td>\r
+        <td>\r
+                ", "</td>");
+        $unitCode = trim($unitCode);
+        
+        //=========== Beds ==============
+        $beds = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
+            Beds\r
+        </td>\r
+        <td>\r
+                ", "</td>");
+        $beds = trim($beds);
+        
+        //=========== Bathrooms ==========
+        $bathrooms = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
+            Beds\r
+        </td>\r
+        <td>\r
+                ", "</td>");
+        $bathrooms = trim($bathrooms);
+        
+        //======== Rooms ================
+        $rooms = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
+            Rooms\r
+        </td>\r
+        <td>\r
+                ", "</td>");
+        $rooms = trim($rooms);
+        
+        //======== Pets ================
+        $pets = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
+            Pets\r
+        </td>\r
+        <td>\r
+                ", "</td>");
+        $pets = trim($pets);
+        
         //============ Amenities ====================
         $amenities = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
             Standard Amenities\r
-        </td>
+        </td>\r
         <td>\r
                 ", "</td>");
         $amenities = explode(",",trim($amenities));
@@ -109,7 +157,7 @@ class Fairwaysflorida {
         $entertainment = explode(",",trim($entertainment));
         
         
-        $amenities = array_merge($amenities, $kitchen, $living, $convenience, $outdoor, $geographic, $entertainment);
+        $amenities = array_merge(array($propertyType), array($unitCode), array($beds), array($bathrooms), array($rooms), array($pets), $amenities, $kitchen, $living, $convenience, $outdoor, $geographic, $entertainment);
         
         if (is_array($amenities) && !empty($amenities))
             return implode(",", $amenities);
@@ -157,8 +205,9 @@ class Fairwaysflorida {
 </div>");
         $imagesArr = $this->scrape_between_all($images, "<div class=\"item\">\r
                       ", "<h4 id=\"title\"> </h4>");
-        $imagesArr[] = $this->scrape_between($images, "<div class=\"item active\">", "<h4 id=\"title\"></h4>\r
-                    </div>");
+        
+        array_unshift($imagesArr, $this->scrape_between($images, "<div class=\"item active\">", "<h4 id=\"title\"></h4>\r
+                    </div>"));
         
         foreach ($imagesArr as $Key => $val) {
             $imagesArr[$Key] = $this->scrape_between($val, "src=\"", "\"");
