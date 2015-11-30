@@ -53,58 +53,58 @@ class Fairwaysflorida {
 
 //        $pool = $this->scrape_between($results, " | POOL: <span class=\"subTitle\">", "</span>");
         //============ Amenities ====================
-        $amenities = $this->scrape_between($results, "<td class=\"amenity-grouping\">
-            Standard Amenities
+        $amenities = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
+            Standard Amenities\r
         </td>
-        <td>
+        <td>\r
                 ", "</td>");
         $amenities = explode(",",trim($amenities));
         
         //============ kitchen facility ===============
-        $kitchen = $this->scrape_between($results, "<td class=\"amenity-grouping\">
-            Kitchen
-        </td>
-        <td>
+        $kitchen = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
+            Kitchen\r
+        </td>\r
+        <td>\r
                 ", "</td>");
         $kitchen = explode(",",trim($kitchen));
         
         //============ living facility =================
-        $living = $this->scrape_between($results, "<td class=\"amenity-grouping\">
-            Living
-        </td>
-        <td>
+        $living = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
+            Living\r
+        </td>\r
+        <td>\r
                 ", "</td>");
         $living = explode(",",trim($living));
         
         //============ convenience facility ============
-        $convenience = $this->scrape_between($results, "<td class=\"amenity-grouping\">
-            Convenience
-        </td>
-        <td>
+        $convenience = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
+            Convenience\r
+        </td>\r
+        <td>\r
                 ", "</td>");
         $convenience = explode(",",trim($convenience));
         
         //============ outdoor amenitites ==============
-        $outdoor = $this->scrape_between($results, "<td class=\"amenity-grouping\">
-            Outdoor
-        </td>
-        <td>
+        $outdoor = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
+            Outdoor\r
+        </td>\r
+        <td>\r
                 ", "</td>");
         $outdoor = explode(",",trim($outdoor));
         
         //=========== Geographic =======================
-        $geographic = $this->scrape_between($results, "<td class=\"amenity-grouping\">
-            Geographic
-        </td>
-        <td>
+        $geographic = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
+            Geographic\r
+        </td>\r
+        <td>\r
                 ", "</td>");
         $geographic = explode(",",trim($geographic));
         
         //=========== Entertainment =====================
-        $entertainment = $this->scrape_between($results, "<td class=\"amenity-grouping\">
-            Entertainment
-        </td>
-        <td>
+        $entertainment = $this->scrape_between($results, "<td class=\"amenity-grouping\">\r
+            Entertainment\r
+        </td>\r
+        <td>\r
                 ", "</td>");
         $entertainment = explode(",",trim($entertainment));
         
@@ -152,20 +152,18 @@ class Fairwaysflorida {
             $results = $this->getWebsite($propertyId);
         }
         //$imagesArr = array();
-
-        $images = $this->scrape_between($results, "<div class=\"carousel-inner\" role=\"listbox\">", "</div>
-                
+        $images = $this->scrape_between($results, "<div class=\"carousel-inner\" role=\"listbox\">", "</div>\r
+                \r
 </div>");
-        $imagesArr = $this->scrape_between_all($images, "<div class=\"item\">
+        $imagesArr = $this->scrape_between_all($images, "<div class=\"item\">\r
                       ", "<h4 id=\"title\"> </h4>");
-        $imagesArr[] = $this->scrape_between($images, "<div class=\"item active\">", "<h4 id=\"title\"></h4>
+        $imagesArr[] = $this->scrape_between($images, "<div class=\"item active\">", "<h4 id=\"title\"></h4>\r
                     </div>");
         
         foreach ($imagesArr as $Key => $val) {
             $imagesArr[$Key] = $this->scrape_between($val, "src=\"", "\"");
         }
 
-        
         return $imagesArr;
     }
 
