@@ -824,7 +824,8 @@
             __autoloadPlugin('Ciirus');
             __autoloadPlugin('Globalresorthomes');
             __autoloadPlugin('Contempovacation');
-
+            __autoloadPlugin('Fairwaysflorida');
+            
             global $mySession;
             $db = new Db();
 
@@ -850,6 +851,7 @@
             $_counter['ciirus'] = 0;
             $_counter['globalresorthomes'] = 0;
             $_counter['contempovacation'] = 0;
+            $_counter['fairwaysflorida'] = 0;
             //$reservation = $res->getReservations(50644);
             //$arr['propertyId'] = 50644; //property which is not available
             //$arr['propertyId'] = 52196;
@@ -1002,6 +1004,34 @@
 
                         $_counter['contempovacation']++;
                         break;
+                    case 4:
+                        $res = new Fairwaysflorida($pVal['subscriber_url']);
+                        $res->getWebsite($xml_property_id);
+                        if (!empty($xml_property_id))
+                        {
+                            $reservation = $res->getBookedDates($pVal['xml_property_id']);
+                            
+                            if (!empty($reservation) && count($reservation)){
+                                $db->delete(CAL_AVAIL, "property_id = " . $property_id);
+                            
+                                foreach ($reservation as $rKey => $rVal) {
+                                    $data_cal = array();
+                                    $data_cal['property_id'] = $property_id;
+                                    $data_cal['date_from'] = $rVal['checkin'];
+                                    $data_cal['date_to'] = $rVal['checkout'];
+                                    $data_cal['cal_status'] = '0';
+                                    if (!$this->debug)
+                                        $db->save(CAL_AVAIL, $data_cal);
+                                }
+                                echo ($pKey + 1) . ". Successfully Updated property no - " . $pVal['xml_property_id'] . "<br>";
+                            }
+                        }
+                        if ($pVal['count'] == $_counter['fairwaysflorida'] + 1)
+                            echo "<strong>" . $pVal['subscriber_key'] . " cron job completed!! </strong><br>";
+
+                        $_counter['fairwaysflorida']++;
+                        break;
+                        
                 } //switch case ends
             }
 
