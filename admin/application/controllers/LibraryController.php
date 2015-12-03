@@ -530,18 +530,19 @@ class LibraryController extends AppController {
                     //===== availability dates
                     $reservation = $res->getBookedDates($post['xml_property_id']);
                     //delete the older entries
-                        if (!empty($reservation) && count($reservation))
+                        if (!empty($reservation) && count($reservation)){
                             $db->delete(CAL_AVAIL, "property_id = " . $property_id);
 
 
-                        foreach ($reservation as $rKey => $rVal) {
-                            $data_cal = array();
-                            $data_cal['property_id'] = $property_id;
-                            $data_cal['date_from'] = $rVal['checkin'];
-                            $data_cal['date_to'] = $rVal['checkout'];
-                            $data_cal['cal_status'] = '0';
-                            if (!$this->debug)
-                                $db->save(CAL_AVAIL, $data_cal);
+                            foreach ($reservation as $rKey => $rVal) {
+                                $data_cal = array();
+                                $data_cal['property_id'] = $property_id;
+                                $data_cal['date_from'] = $rVal['checkin'];
+                                $data_cal['date_to'] = $rVal['checkout'];
+                                $data_cal['cal_status'] = '0';
+                                if (!$this->debug)
+                                    $db->save(CAL_AVAIL, $data_cal);
+                            }
                         }
                     break;
                 default:
@@ -1044,6 +1045,90 @@ class LibraryController extends AppController {
                         }
 
                         break;
+                        case 4:
+                        $res = new Fairwaysflorida($_supplierData['fairwaysflorida']['subscriber_url']);
+                        $res->getWebsite($xml_property_id);
+    //                        
+                        $data = array();
+                        $data['xml_subscriber_id'] = $post['xml_subscriber_id'];
+                        $data['xml_property_id'] = $post['xml_property_id'];
+                        //get heading of the property
+                        $heading = $res->getHeading($xml_property_id);
+                        $data['xml_heading'] = $heading;
+
+                        //get description part of the website
+                        $description = $res->getDescription($xml_property_id);
+                        $data['xml_description'] = $description;
+
+                        //get features of the property
+                        $features = $res->getFeatures($xml_property_id);
+                        $data['xml_features'] = $features;
+
+                        $data['xml_extras'] = '';
+                        $data['xml_community'] = '';
+
+                        $data['xml_rating'] = '';
+
+                        $data['xml_property_id'] = $post['xml_property_id'];
+                        $condition = " id= " . $property_id;
+
+                        if (!$this->debug)
+                            $result = $db->modify(PROPERTY, $data, $condition);
+
+                        //=== images process ====
+                        $images = $res->getImageList($xml_property_id);
+                        if (count($images) > 0 && is_array($images) && !$this->debug) {
+                            //delete older images
+                            $galleryArr = $db->runQuery("select * from " . GALLERY . " where property_id='" . $property_id . "' ");
+
+                            foreach ($galleryArr as $galKey => $galVal) {
+                                @unlink(SITE_ROOT . "images/property/" . $galVal['image_name']);
+                                $db->delete(GALLERY, 'gallery_id = ' . $galVal['gallery_id']);
+                            }
+                        }
+                        foreach ($images as $iKey => $iVal) {
+                            //$file_name = explode("/", $iVal);
+                            $endfile = explode("/", $iVal);
+                            $endfile = array_pop($endfile);
+                            $file_name = urldecode(time() . "_" . $endfile);
+                            $file_name = str_replace(' ', '_', $file_name);
+
+                            if (!$this->debug) {
+                                //$validImage = getimagesize($iVal);
+                                $contentOrFalseOnFailure = file_get_contents("http:$iVal");
+                            }
+
+                            if (!$this->debug)
+                                $byteCountOrFalseOnFailure = file_put_contents(SITE_ROOT . "images/property/" . $file_name, $contentOrFalseOnFailure);
+                            //saving data in database
+                            $data_image = array();
+                            $data_image['image_name'] = $file_name;
+                            $data_image['property_id'] = $property_id;
+
+    //                        if ($iKey == 0)
+    //                            $data_image['image_title'] = $heading;
+                            $data_image['image_title'] = $caption;
+
+                            if (!$this->debug)
+                                $db->save(GALLERY, $data_image);
+                        }
+                        //===== availability dates
+                        $reservation = $res->getBookedDates($post['xml_property_id']);
+                        //delete the older entries
+                            if (!empty($reservation) && count($reservation))
+                                $db->delete(CAL_AVAIL, "property_id = " . $property_id);
+
+
+                            foreach ($reservation as $rKey => $rVal) {
+                                $data_cal = array();
+                                $data_cal['property_id'] = $property_id;
+                                $data_cal['date_from'] = $rVal['checkin'];
+                                $data_cal['date_to'] = $rVal['checkout'];
+                                $data_cal['cal_status'] = '0';
+                                if (!$this->debug)
+                                    $db->save(CAL_AVAIL, $data_cal);
+                            }
+                    break;
                     default:
                         echo "Please choose proper subscriber first!!";
                         die;
