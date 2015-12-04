@@ -317,6 +317,8 @@ class Form_OverviewUpdater extends Zend_Form {
         $supplierArr[2]['value'] = "Global Resort Homes";
         $supplierArr[3]['key'] = "3";
         $supplierArr[3]['value'] = "Contempo Vacation";
+        $supplierArr[4]['key'] = "4";
+        $supplierArr[4]['value'] = "Fairways Florida";
         
         $supplier = new Zend_Form_Element_Select('supplier');
         $supplier
