@@ -5,6 +5,11 @@ __autoloadPlugin('Ciirus');
 __autoloadPlugin('Globalresorthomes');
 __autoloadPlugin('Contempovacation');
 __autoloadPlugin('Fairwaysflorida');
+__autoloadPlugin('Casiola');
+__autoloadPlugin('Resorthomesofflorida');
+__autoloadPlugin('Ellisexclusivevillas');
+__autoloadPlugin('Oceanbeds');
+__autoloadPlugin('Floridatravelnetwork');
 
 class LibraryController extends AppController {
 
@@ -45,6 +50,8 @@ class LibraryController extends AppController {
         if ($this->getRequest()->isPost()) {
 
             $xml_property_id = $post['xml_property_id'];
+
+
 
             $caption = $post['ref_property_caption'];
             //get data of suppliers from database
@@ -265,7 +272,10 @@ class LibraryController extends AppController {
 
                     //grab images functionality
                     $images = $res->getImageList($xml_property_id);
+                    //echo "<pre>"; print_r($images); echo "</pre>";
                     $url = $_supplierData['globalresorthomes']['subscriber_secondary_url'];
+
+
 
                     $data = array();
                     $data['xml_subscriber_id'] = $post['xml_subscriber_id'];
@@ -507,7 +517,7 @@ class LibraryController extends AppController {
                         $endfile = array_pop($endfile);
                         $file_name = urldecode(time() . "_" . $endfile);
                         $file_name = str_replace(' ', '_', $file_name);
-                        
+
                         if (!$this->debug) {
                             //$validImage = getimagesize($iVal);
                             $contentOrFalseOnFailure = file_get_contents("http:$iVal");
@@ -530,21 +540,519 @@ class LibraryController extends AppController {
                     //===== availability dates
                     $reservation = $res->getBookedDates($post['xml_property_id']);
                     //delete the older entries
-                        if (!empty($reservation) && count($reservation)){
-                            $db->delete(CAL_AVAIL, "property_id = " . $property_id);
+                    if (!empty($reservation) && count($reservation))
+                        $db->delete(CAL_AVAIL, "property_id = " . $property_id);
 
 
-                            foreach ($reservation as $rKey => $rVal) {
-                                $data_cal = array();
-                                $data_cal['property_id'] = $property_id;
-                                $data_cal['date_from'] = $rVal['checkin'];
-                                $data_cal['date_to'] = $rVal['checkout'];
-                                $data_cal['cal_status'] = '0';
-                                if (!$this->debug)
-                                    $db->save(CAL_AVAIL, $data_cal);
+                    foreach ($reservation as $rKey => $rVal) {
+                        $data_cal = array();
+                        $data_cal['property_id'] = $property_id;
+                        $data_cal['date_from'] = $rVal['checkin'];
+                        $data_cal['date_to'] = $rVal['checkout'];
+                        $data_cal['cal_status'] = '0';
+                        if (!$this->debug)
+                            $db->save(CAL_AVAIL, $data_cal);
+                    }
+                    break;
+                case 5:
+                    $res = new Casiola($_supplierData['casiola']['subscriber_url']);
+
+                    $res->getWebsite($xml_property_id);
+
+                    //grab images functionality
+                    $images = $res->getImageList($xml_property_id);
+                    //echo "<pre>"; print_r($images); echo "</pre>";
+                    $url = $_supplierData['casiola']['subscriber_secondary_url'];
+
+
+
+                    $data = array();
+                    $data['xml_subscriber_id'] = $post['xml_subscriber_id'];
+                    $data['xml_property_id'] = $post['xml_property_id'];
+                    //get heading of the property
+                    $heading = $res->getHeading($xml_property_id);
+                    $data['xml_heading'] = $heading;
+
+                    //get description part of the website
+                    $description = $res->getDescription($xml_property_id);
+                    $data['xml_description'] = $description;
+
+                    //get features of the property
+                    $features = $res->getFeatures($xml_property_id);
+                    $data['xml_features'] = $features;
+
+                    $data['xml_extras'] = '';
+                    $data['xml_community'] = '';
+
+                    //get rates
+                    $rate = $res->getRates($xml_property_id, $url);
+                    $data['xml_rating'] = $rate;
+
+                    //get booked dates
+                    $reservation = $res->getReservations($xml_property_id, $url);
+
+
+                    $data['xml_property_id'] = $post['xml_property_id'];
+                    $condition = " id= " . $property_id;
+
+                    if (!$this->debug)
+                        $result = $db->modify(PROPERTY, $data, $condition);
+
+
+
+                    if (!empty($reservation) && count($reservation)) {
+                        $db->delete(CAL_AVAIL, "property_id = " . $property_id);
+
+                        foreach ($reservation as $rKey => $rVal) {
+                            $data_cal = array();
+                            $data_cal['property_id'] = $property_id;
+                            $date_from = explode('-', $rVal);
+
+
+                            $data_cal['date_from'] = date('Y-m-d', strtotime($date_from[0]));
+
+                            if (count($date_from) > 1)
+                                $data_cal['date_to'] = date('Y-m-d', strtotime($date_from[1]));
+                            else
+                                $data_cal['date_to'] = date('Y-m-d', strtotime($date_from[0]));
+
+
+                            $data_cal['cal_status'] = '0';
+
+                            if (!$this->debug)
+                                $db->save(CAL_AVAIL, $data_cal);
+                        }
+                    }
+
+                    if (count($images) > 0 && is_array($images)) {
+                        //delete older images
+                        $galleryArr = $db->runQuery("select * from " . GALLERY . " where property_id='" . $property_id . "' ");
+
+                        foreach ($galleryArr as $galKey => $galVal) {
+                            @unlink(SITE_ROOT . "images/property/" . $galVal['image_name']);
+                            $db->delete(GALLERY, 'gallery_id = ' . $galVal['gallery_id']);
+                        }
+                    }
+
+                    foreach ($images as $iKey => $iVal) {
+                        //pr($iVal);
+                        //$file_name = explode("/", $iVal);
+                        $file_name = urldecode(time() . "_" . $iVal);
+
+                        $file_name = str_replace(' ', '_', $file_name);
+
+
+                        if (!$this->debug) {
+                            $validImage = getimagesize($_supplierData['casiola']['subscriber_image_url'] . '/' . $iVal);
+
+                            if (count($validImage) && is_array($validImage) && !empty($validImage))
+                                $contentOrFalseOnFailure = file_get_contents($_supplierData['casiola']['subscriber_image_url'] . '/' . $iVal);
+                            else {
+                                $VAR = explode("_", $iVal);
+                                $VAR = $VAR[0];
+                                $secondary_img_url = str_replace('[VAR]', $VAR, $_supplierData['casiola']['subscriber_image_secondary_url']);
+                                $contentOrFalseOnFailure = file_get_contents($secondary_img_url . '/' . $iVal);
                             }
                         }
+
+                        if (!$this->debug)
+                            $byteCountOrFalseOnFailure = file_put_contents(SITE_ROOT . "images/property/" . $file_name, $contentOrFalseOnFailure);
+
+                        //saving data in database
+                        $data_image = array();
+                        $data_image['image_name'] = $file_name;
+                        $data_image['property_id'] = $property_id;
+                        //                        if ($iKey == 0)
+                        //                            $data_image['image_title'] = $heading;
+                        $data_image['image_title'] = $caption;
+                        if (!$this->debug)
+                            $db->save(GALLERY, $data_image);
+                    }
+
                     break;
+                case 6:
+                    $res = new Resorthomesofflorida($_supplierData['resorthomesofflorida']['subscriber_url']);
+
+                    $res->getWebsite($xml_property_id);
+
+                    //grab images functionality
+                    $images = $res->getImageList($xml_property_id);
+                    $url = $_supplierData['resorthomesofflorida']['subscriber_secondary_url'];
+
+
+
+                    $data = array();
+                    $data['xml_subscriber_id'] = $post['xml_subscriber_id'];
+                    $data['xml_property_id'] = $post['xml_property_id'];
+                    //get heading of the property
+                    $heading = $res->getHeading($xml_property_id);
+                    $data['xml_heading'] = $heading;
+
+                    //get description part of the website
+                    $description = $res->getDescription($xml_property_id);
+                    $data['xml_description'] = $description;
+
+                    //get features of the property
+                    $features = $res->getFeatures($xml_property_id);
+                    $data['xml_features'] = $features;
+
+                    $data['xml_extras'] = '';
+                    $data['xml_community'] = '';
+
+                    //get rates
+                    $rate = $res->getRates($xml_property_id, $url);
+                    $data['xml_rating'] = $rate;
+
+                    //get booked dates
+                    $reservation = $res->getReservations($xml_property_id, $url);
+
+
+                    $data['xml_property_id'] = $post['xml_property_id'];
+                    $condition = " id= " . $property_id;
+
+                    if (!$this->debug)
+                        $result = $db->modify(PROPERTY, $data, $condition);
+
+
+
+                    if (!empty($reservation) && count($reservation)) {
+                        $db->delete(CAL_AVAIL, "property_id = " . $property_id);
+
+                        foreach ($reservation as $rKey => $rVal) {
+                            $data_cal = array();
+                            $data_cal['property_id'] = $property_id;
+                            $date_from = explode('-', $rVal);
+
+
+                            $data_cal['date_from'] = date('Y-m-d', strtotime($date_from[0]));
+
+                            if (count($date_from) > 1)
+                                $data_cal['date_to'] = date('Y-m-d', strtotime($date_from[1]));
+                            else
+                                $data_cal['date_to'] = date('Y-m-d', strtotime($date_from[0]));
+
+
+                            $data_cal['cal_status'] = '0';
+
+                            if (!$this->debug)
+                                $db->save(CAL_AVAIL, $data_cal);
+                        }
+                    }
+
+                    if (count($images) > 0 && is_array($images)) {
+                        //delete older images
+                        $galleryArr = $db->runQuery("select * from " . GALLERY . " where property_id='" . $property_id . "' ");
+
+                        foreach ($galleryArr as $galKey => $galVal) {
+                            @unlink(SITE_ROOT . "images/property/" . $galVal['image_name']);
+                            $db->delete(GALLERY, 'gallery_id = ' . $galVal['gallery_id']);
+                        }
+                    }
+
+                    foreach ($images as $iKey => $iVals) {
+
+                        $file_names = explode("/", $iVals);
+                        $iVal = end($file_names);
+                        $path = '/' . $file_names[0] . '/' . $file_names[1] . '/';
+                        $file_name = urldecode(time() . "_" . $iVal);
+
+
+                        $file_name = str_replace(' ', '_', $file_name);
+
+
+                        if (!$this->debug) {
+                            $validImage = getimagesize($_supplierData['resorthomesofflorida']['subscriber_image_url'] . $path . $iVal);
+
+                            if (count($validImage) && is_array($validImage) && !empty($validImage)) {
+
+                                $contentOrFalseOnFailure = file_get_contents($_supplierData['resorthomesofflorida']['subscriber_image_url'] . $path . $iVal);
+                            } else {
+                                $VAR = explode("_", $iVal);
+                                $VAR = $VAR[0];
+                                $secondary_img_url = str_replace('[VAR]', $VAR, $_supplierData['resorthomesofflorida']['subscriber_image_secondary_url']);
+                                $contentOrFalseOnFailure = file_get_contents($secondary_img_url . $path . $iVal);
+                            }
+                        }
+
+
+                        if (!$this->debug)
+                            $byteCountOrFalseOnFailure = file_put_contents(SITE_ROOT . "images/property/" . $file_name, $contentOrFalseOnFailure);
+
+                        //saving data in database
+                        $data_image = array();
+                        $data_image['image_name'] = $file_name;
+                        $data_image['property_id'] = $property_id;
+                        $data_image['image_title'] = $caption;
+                        if (!$this->debug)
+                            $db->save(GALLERY, $data_image);
+                    }
+
+                    break;
+                case 7:
+                    $res = new Ellisexclusivevillas($_supplierData['ellisexclusivevillas']['subscriber_url']);
+
+                    $res->getWebsite($xml_property_id);
+
+                    //grab images functionality
+                    $images = $res->getImageList($xml_property_id);
+                    //echo "<pre>"; print_r($images); echo "</pre>";
+                    $url = $_supplierData['ellisexclusivevillas']['subscriber_secondary_url'];
+
+
+
+                    $data = array();
+                    $data['xml_subscriber_id'] = $post['xml_subscriber_id'];
+                    $data['xml_property_id'] = $post['xml_property_id'];
+                    //get heading of the property
+                    $heading = $res->getHeading($xml_property_id);
+                    $data['xml_heading'] = $heading;
+
+                    //get description part of the website
+                    $description = $res->getDescription($xml_property_id);
+                    $data['xml_description'] = $description;
+
+                    //get features of the property
+                    $features = $res->getFeatures($xml_property_id);
+                    $data['xml_features'] = $features;
+
+                    $data['xml_extras'] = '';
+                    $data['xml_community'] = '';
+
+                    //get rates
+                    $rate = $res->getRates($xml_property_id, $url);
+                    $data['xml_rating'] = $rate;
+
+                    //get booked dates
+                    $reservation = $res->getReservations($xml_property_id, $url);
+
+
+                    $data['xml_property_id'] = $post['xml_property_id'];
+                    $condition = " id= " . $property_id;
+
+                    if (!$this->debug)
+                        $result = $db->modify(PROPERTY, $data, $condition);
+
+
+
+                    if (!empty($reservation) && count($reservation)) {
+                        $db->delete(CAL_AVAIL, "property_id = " . $property_id);
+
+                        foreach ($reservation as $rKey => $rVal) {
+                            $data_cal = array();
+                            $data_cal['property_id'] = $property_id;
+                            $date_from = explode('-', $rVal);
+
+
+                            $data_cal['date_from'] = date('Y-m-d', strtotime($date_from[0]));
+
+                            if (count($date_from) > 1)
+                                $data_cal['date_to'] = date('Y-m-d', strtotime($date_from[1]));
+                            else
+                                $data_cal['date_to'] = date('Y-m-d', strtotime($date_from[0]));
+
+
+                            $data_cal['cal_status'] = '0';
+
+                            if (!$this->debug)
+                                $db->save(CAL_AVAIL, $data_cal);
+                        }
+                    }
+
+                    if (count($images) > 0 && is_array($images)) {
+                        //delete older images
+                        $galleryArr = $db->runQuery("select * from " . GALLERY . " where property_id='" . $property_id . "' ");
+
+                        foreach ($galleryArr as $galKey => $galVal) {
+                            @unlink(SITE_ROOT . "images/property/" . $galVal['image_name']);
+                            $db->delete(GALLERY, 'gallery_id = ' . $galVal['gallery_id']);
+                        }
+                    }
+
+                    foreach ($images as $iKey => $iVals) {
+                        //pr($iVal);
+                        //$file_name = explode("/", $iVal);
+
+                        $file_names = explode("/", $iVals);
+                        $iVal = end($file_names);
+                        $path = '/' . $file_names[0] . '/' . $file_names[1] . '/' . $file_names[2] . '/';
+
+                        $file_name = urldecode(time() . "_" . $iVal);
+
+                        $file_name = str_replace(' ', '_', $file_name);
+
+
+                        if (!$this->debug) {
+                            $validImage = getimagesize($_supplierData['ellisexclusivevillas']['subscriber_image_url'] . $path . $iVal);
+
+                            if (count($validImage) && is_array($validImage) && !empty($validImage))
+                                $contentOrFalseOnFailure = file_get_contents($_supplierData['ellisexclusivevillas']['subscriber_image_url'] . $path . $iVal);
+                            else {
+                                $VAR = explode("_", $iVal);
+                                $VAR = $VAR[0];
+                                $secondary_img_url = str_replace('[VAR]', $VAR, $_supplierData['ellisexclusivevillas']['subscriber_image_secondary_url']);
+                                $contentOrFalseOnFailure = file_get_contents($secondary_img_url . $path . $iVal);
+                            }
+                        }
+
+                        if (!$this->debug)
+                            $byteCountOrFalseOnFailure = file_put_contents(SITE_ROOT . "images/property/" . $file_name, $contentOrFalseOnFailure);
+
+                        //saving data in database
+                        $data_image = array();
+                        $data_image['image_name'] = $file_name;
+                        $data_image['property_id'] = $property_id;
+                        //                        if ($iKey == 0)
+                        //                            $data_image['image_title'] = $heading;
+                        $data_image['image_title'] = $caption;
+                        if (!$this->debug)
+                            $db->save(GALLERY, $data_image);
+                    }
+
+                    break;
+
+                case 8 :
+                    $res = new Oceanbeds($_supplierData['oceanbeds']['subscriber_api_username'], $_supplierData['oceanbeds']['subscriber_api_password']);
+
+
+                    $data = array();
+                    $data['xml_subscriber_id'] = $post['xml_subscriber_id'];
+
+                    //get heading of the property
+                    $heading = $res->getHeading($xml_property_id);
+                    $data['xml_heading'] = $heading;
+
+                    //get description part of the website
+                    $description = $res->getDescription($xml_property_id);
+                    $data['xml_description'] = $description;
+
+                    //get features of the property
+                    $features = $res->getFeatures($xml_property_id);
+                    $data['xml_features'] = $features;
+
+                    $data['xml_property_id'] = $post['xml_property_id'];
+                    $condition = " id= " . $property_id;
+
+                    if (!$this->debug)
+                        $result = $db->modify(PROPERTY, $data, $condition);
+
+                    $reservation = $res->getReservations($xml_property_id);
+
+
+
+                    $images = $res->getImageList($xml_property_id);
+
+                    //prd($images);
+
+                    if (count($images) > 0 && is_array($images)) {
+                        //delete older images
+                        $galleryArr = $db->runQuery("select * from " . GALLERY . " where property_id='" . $property_id . "' ");
+
+                        foreach ($galleryArr as $galKey => $galVal) {
+                            @unlink(SITE_ROOT . "images/property/" . $galVal['image_name']);
+                            $db->delete(GALLERY, 'gallery_id = ' . $galVal['gallery_id']);
+                        }
+                    }
+
+                    foreach ($images as $iKey => $iVal) {
+                        //pr($iVal);
+                        $file_name = explode("/", $iVal);
+                        $file_name = urldecode(time() . "_" . end($file_name));
+
+                        $file_name = str_replace(' ', '_', $file_name);
+
+                        if (!$this->debug)
+                            $contentOrFalseOnFailure = file_get_contents($iVal);
+
+                        if (!$this->debug)
+                            $byteCountOrFalseOnFailure = file_put_contents(SITE_ROOT . "images/property/" . $file_name, $contentOrFalseOnFailure);
+
+                        //saving data in database
+                        $data_image = array();
+                        $data_image['image_name'] = $file_name;
+                        $data_image['property_id'] = $property_id;
+
+                        //by default image caption - [Location][No. of Beds][Property Type]
+//                        if ($iKey == 0)
+//                            $data_image['image_title'] = $heading;
+                        $data_image['image_title'] = $caption;
+
+                        if (!$this->debug)
+                            $db->save(GALLERY, $data_image);
+                    }
+
+                    break;
+                case 9 :
+                    $res = new Floridatravelnetwork($_supplierData['floridatravelnetwork']['subscriber_api_username'], $_supplierData['floridatravelnetwork']['subscriber_api_password']);
+
+
+                    $data = array();
+                    $data['xml_subscriber_id'] = $post['xml_subscriber_id'];
+
+                    //get heading of the property
+                    $heading = $res->getHeading($xml_property_id);
+                    $data['xml_heading'] = $heading;
+
+                    //get description part of the website
+                    $description = $res->getDescription($xml_property_id);
+                    $data['xml_description'] = $description;
+
+                    //get features of the property
+                    $features = $res->getFeatures($xml_property_id);
+                    $data['xml_features'] = $features;
+
+                    $data['xml_property_id'] = $post['xml_property_id'];
+                    $condition = " id= " . $property_id;
+
+                    if (!$this->debug)
+                        $result = $db->modify(PROPERTY, $data, $condition);
+
+                    $reservation = $res->getReservations($xml_property_id);
+
+
+
+                    $images = $res->getImageList($xml_property_id);
+
+                    //prd($images);
+
+                    if (count($images) > 0 && is_array($images)) {
+                        //delete older images
+                        $galleryArr = $db->runQuery("select * from " . GALLERY . " where property_id='" . $property_id . "' ");
+
+                        foreach ($galleryArr as $galKey => $galVal) {
+                            @unlink(SITE_ROOT . "images/property/" . $galVal['image_name']);
+                            $db->delete(GALLERY, 'gallery_id = ' . $galVal['gallery_id']);
+                        }
+                    }
+
+                    foreach ($images as $iKey => $iVal) {
+                        //pr($iVal);
+                        $file_name = explode("/", $iVal);
+                        $file_name = urldecode(time() . "_" . end($file_name));
+
+                        $file_name = str_replace(' ', '_', $file_name);
+
+                        if (!$this->debug)
+                            $contentOrFalseOnFailure = file_get_contents($iVal);
+
+                        if (!$this->debug)
+                            $byteCountOrFalseOnFailure = file_put_contents(SITE_ROOT . "images/property/" . $file_name, $contentOrFalseOnFailure);
+
+                        //saving data in database
+                        $data_image = array();
+                        $data_image['image_name'] = $file_name;
+                        $data_image['property_id'] = $property_id;
+
+                        //by default image caption - [Location][No. of Beds][Property Type]
+//                        if ($iKey == 0)
+//                            $data_image['image_title'] = $heading;
+                        $data_image['image_title'] = $caption;
+
+                        if (!$this->debug)
+                            $db->save(GALLERY, $data_image);
+                    }
+
+                    break;
+
                 default:
                     echo "Please choose proper subscriber first!!";
                     die;
@@ -1045,10 +1553,10 @@ class LibraryController extends AppController {
                         }
 
                         break;
-                        case 4:
+                    case 4:
                         $res = new Fairwaysflorida($_supplierData['fairwaysflorida']['subscriber_url']);
                         $res->getWebsite($xml_property_id);
-    //                        
+                        //                        
                         $data = array();
                         $data['xml_subscriber_id'] = $post['xml_subscriber_id'];
                         $data['xml_property_id'] = $post['xml_property_id'];
@@ -1105,8 +1613,8 @@ class LibraryController extends AppController {
                             $data_image['image_name'] = $file_name;
                             $data_image['property_id'] = $property_id;
 
-    //                        if ($iKey == 0)
-    //                            $data_image['image_title'] = $heading;
+                            //                        if ($iKey == 0)
+                            //                            $data_image['image_title'] = $heading;
                             $data_image['image_title'] = $caption;
 
                             if (!$this->debug)
@@ -1115,20 +1623,371 @@ class LibraryController extends AppController {
                         //===== availability dates
                         $reservation = $res->getBookedDates($post['xml_property_id']);
                         //delete the older entries
-                            if (!empty($reservation) && count($reservation))
-                                $db->delete(CAL_AVAIL, "property_id = " . $property_id);
+                        if (!empty($reservation) && count($reservation))
+                            $db->delete(CAL_AVAIL, "property_id = " . $property_id);
 
+
+                        foreach ($reservation as $rKey => $rVal) {
+                            $data_cal = array();
+                            $data_cal['property_id'] = $property_id;
+                            $data_cal['date_from'] = $rVal['checkin'];
+                            $data_cal['date_to'] = $rVal['checkout'];
+                            $data_cal['cal_status'] = '0';
+                            if (!$this->debug)
+                                $db->save(CAL_AVAIL, $data_cal);
+                        }
+                        break;
+
+                    case 5:
+                        $res = new Casiola($_supplierData['casiola']['subscriber_url']);
+
+                        $res->getWebsite($xml_property_id);
+
+                        //grab images functionality
+                        $images = $res->getImageList($xml_property_id);
+                        //echo "<pre>"; print_r($images); echo "</pre>";
+                        $url = $_supplierData['casiola']['subscriber_secondary_url'];
+
+
+
+                        $data = array();
+                        $data['xml_subscriber_id'] = $post['xml_subscriber_id'];
+                        $data['xml_property_id'] = $post['xml_property_id'];
+                        //get heading of the property
+                        $heading = $res->getHeading($xml_property_id);
+                        $data['xml_heading'] = $heading;
+
+                        //get description part of the website
+                        $description = $res->getDescription($xml_property_id);
+                        $data['xml_description'] = $description;
+
+                        //get features of the property
+                        $features = $res->getFeatures($xml_property_id);
+                        $data['xml_features'] = $features;
+
+                        $data['xml_extras'] = '';
+                        $data['xml_community'] = '';
+
+                        //get rates
+                        $rate = $res->getRates($xml_property_id, $url);
+                        $data['xml_rating'] = $rate;
+
+                        //get booked dates
+                        $reservation = $res->getReservations($xml_property_id, $url);
+
+
+                        $data['xml_property_id'] = $post['xml_property_id'];
+                        $condition = " id= " . $property_id;
+
+                        if (!$this->debug)
+                            $result = $db->modify(PROPERTY, $data, $condition);
+
+
+
+                        if (!empty($reservation) && count($reservation)) {
+                            $db->delete(CAL_AVAIL, "property_id = " . $property_id);
 
                             foreach ($reservation as $rKey => $rVal) {
                                 $data_cal = array();
                                 $data_cal['property_id'] = $property_id;
-                                $data_cal['date_from'] = $rVal['checkin'];
-                                $data_cal['date_to'] = $rVal['checkout'];
+                                $date_from = explode('-', $rVal);
+
+
+                                $data_cal['date_from'] = date('Y-m-d', strtotime($date_from[0]));
+
+                                if (count($date_from) > 1)
+                                    $data_cal['date_to'] = date('Y-m-d', strtotime($date_from[1]));
+                                else
+                                    $data_cal['date_to'] = date('Y-m-d', strtotime($date_from[0]));
+
+
                                 $data_cal['cal_status'] = '0';
+
                                 if (!$this->debug)
                                     $db->save(CAL_AVAIL, $data_cal);
                             }
-                    break;
+                        }
+
+                        if (count($images) > 0 && is_array($images)) {
+                            //delete older images
+                            $galleryArr = $db->runQuery("select * from " . GALLERY . " where property_id='" . $property_id . "' ");
+
+                            foreach ($galleryArr as $galKey => $galVal) {
+                                @unlink(SITE_ROOT . "images/property/" . $galVal['image_name']);
+                                $db->delete(GALLERY, 'gallery_id = ' . $galVal['gallery_id']);
+                            }
+                        }
+
+                        foreach ($images as $iKey => $iVal) {
+                            //pr($iVal);
+                            //$file_name = explode("/", $iVal);
+                            $file_name = urldecode(time() . "_" . $iVal);
+
+                            $file_name = str_replace(' ', '_', $file_name);
+
+
+                            if (!$this->debug) {
+                                $validImage = getimagesize($_supplierData['casiola']['subscriber_image_url'] . '/' . $iVal);
+
+                                if (count($validImage) && is_array($validImage) && !empty($validImage))
+                                    $contentOrFalseOnFailure = file_get_contents($_supplierData['casiola']['subscriber_image_url'] . '/' . $iVal);
+                                else {
+                                    $VAR = explode("_", $iVal);
+                                    $VAR = $VAR[0];
+                                    $secondary_img_url = str_replace('[VAR]', $VAR, $_supplierData['casiola']['subscriber_image_secondary_url']);
+                                    $contentOrFalseOnFailure = file_get_contents($secondary_img_url . '/' . $iVal);
+                                }
+                            }
+
+                            if (!$this->debug)
+                                $byteCountOrFalseOnFailure = file_put_contents(SITE_ROOT . "images/property/" . $file_name, $contentOrFalseOnFailure);
+
+                            //saving data in database
+                            $data_image = array();
+                            $data_image['image_name'] = $file_name;
+                            $data_image['property_id'] = $property_id;
+                            //                        if ($iKey == 0)
+                            //                            $data_image['image_title'] = $heading;
+                            $data_image['image_title'] = $caption;
+                            if (!$this->debug)
+                                $db->save(GALLERY, $data_image);
+                        }
+
+                        break;
+                    case 6:
+                        $res = new Resorthomesofflorida($_supplierData['resorthomesofflorida']['subscriber_url']);
+
+                        $res->getWebsite($xml_property_id);
+
+                        //grab images functionality
+                        $images = $res->getImageList($xml_property_id);
+                        $url = $_supplierData['resorthomesofflorida']['subscriber_secondary_url'];
+
+
+
+                        $data = array();
+                        $data['xml_subscriber_id'] = $post['xml_subscriber_id'];
+                        $data['xml_property_id'] = $post['xml_property_id'];
+                        //get heading of the property
+                        $heading = $res->getHeading($xml_property_id);
+                        $data['xml_heading'] = $heading;
+
+                        //get description part of the website
+                        $description = $res->getDescription($xml_property_id);
+                        $data['xml_description'] = $description;
+
+                        //get features of the property
+                        $features = $res->getFeatures($xml_property_id);
+                        $data['xml_features'] = $features;
+
+                        $data['xml_extras'] = '';
+                        $data['xml_community'] = '';
+
+                        //get rates
+                        $rate = $res->getRates($xml_property_id, $url);
+                        $data['xml_rating'] = $rate;
+
+                        //get booked dates
+                        $reservation = $res->getReservations($xml_property_id, $url);
+
+
+                        $data['xml_property_id'] = $post['xml_property_id'];
+                        $condition = " id= " . $property_id;
+
+                        if (!$this->debug)
+                            $result = $db->modify(PROPERTY, $data, $condition);
+
+
+
+                        if (!empty($reservation) && count($reservation)) {
+                            $db->delete(CAL_AVAIL, "property_id = " . $property_id);
+
+                            foreach ($reservation as $rKey => $rVal) {
+                                $data_cal = array();
+                                $data_cal['property_id'] = $property_id;
+                                $date_from = explode('-', $rVal);
+
+
+                                $data_cal['date_from'] = date('Y-m-d', strtotime($date_from[0]));
+
+                                if (count($date_from) > 1)
+                                    $data_cal['date_to'] = date('Y-m-d', strtotime($date_from[1]));
+                                else
+                                    $data_cal['date_to'] = date('Y-m-d', strtotime($date_from[0]));
+
+
+                                $data_cal['cal_status'] = '0';
+
+                                if (!$this->debug)
+                                    $db->save(CAL_AVAIL, $data_cal);
+                            }
+                        }
+
+                        if (count($images) > 0 && is_array($images)) {
+                            //delete older images
+                            $galleryArr = $db->runQuery("select * from " . GALLERY . " where property_id='" . $property_id . "' ");
+
+                            foreach ($galleryArr as $galKey => $galVal) {
+                                @unlink(SITE_ROOT . "images/property/" . $galVal['image_name']);
+                                $db->delete(GALLERY, 'gallery_id = ' . $galVal['gallery_id']);
+                            }
+                        }
+
+                        foreach ($images as $iKey => $iVals) {
+
+                            $file_names = explode("/", $iVals);
+                            $iVal = end($file_names);
+                            $path = '/' . $file_names[0] . '/' . $file_names[1] . '/';
+                            $file_name = urldecode(time() . "_" . $iVal);
+
+
+                            $file_name = str_replace(' ', '_', $file_name);
+
+
+                            if (!$this->debug) {
+                                $validImage = getimagesize($_supplierData['resorthomesofflorida']['subscriber_image_url'] . $path . $iVal);
+
+                                if (count($validImage) && is_array($validImage) && !empty($validImage)) {
+
+                                    $contentOrFalseOnFailure = file_get_contents($_supplierData['resorthomesofflorida']['subscriber_image_url'] . $path . $iVal);
+                                } else {
+                                    $VAR = explode("_", $iVal);
+                                    $VAR = $VAR[0];
+                                    $secondary_img_url = str_replace('[VAR]', $VAR, $_supplierData['resorthomesofflorida']['subscriber_image_secondary_url']);
+                                    $contentOrFalseOnFailure = file_get_contents($secondary_img_url . $path . $iVal);
+                                }
+                            }
+
+
+                            if (!$this->debug)
+                                $byteCountOrFalseOnFailure = file_put_contents(SITE_ROOT . "images/property/" . $file_name, $contentOrFalseOnFailure);
+
+                            //saving data in database
+                            $data_image = array();
+                            $data_image['image_name'] = $file_name;
+                            $data_image['property_id'] = $property_id;
+                            $data_image['image_title'] = $caption;
+                            if (!$this->debug)
+                                $db->save(GALLERY, $data_image);
+                        }
+
+                        break;
+                    case 7:
+                        $res = new Ellisexclusivevillas($_supplierData['ellisexclusivevillas']['subscriber_url']);
+
+                        $res->getWebsite($xml_property_id);
+
+                        //grab images functionality
+                        $images = $res->getImageList($xml_property_id);
+                        //echo "<pre>"; print_r($images); echo "</pre>";
+                        $url = $_supplierData['ellisexclusivevillas']['subscriber_secondary_url'];
+
+
+
+                        $data = array();
+                        $data['xml_subscriber_id'] = $post['xml_subscriber_id'];
+                        $data['xml_property_id'] = $post['xml_property_id'];
+                        //get heading of the property
+                        $heading = $res->getHeading($xml_property_id);
+                        $data['xml_heading'] = $heading;
+
+                        //get description part of the website
+                        $description = $res->getDescription($xml_property_id);
+                        $data['xml_description'] = $description;
+
+                        //get features of the property
+                        $features = $res->getFeatures($xml_property_id);
+                        $data['xml_features'] = $features;
+
+                        $data['xml_extras'] = '';
+                        $data['xml_community'] = '';
+
+                        //get rates
+                        $rate = $res->getRates($xml_property_id, $url);
+                        $data['xml_rating'] = $rate;
+
+                        //get booked dates
+                        $reservation = $res->getReservations($xml_property_id, $url);
+
+
+                        $data['xml_property_id'] = $post['xml_property_id'];
+                        $condition = " id= " . $property_id;
+
+                        if (!$this->debug)
+                            $result = $db->modify(PROPERTY, $data, $condition);
+
+
+
+                        if (!empty($reservation) && count($reservation)) {
+                            $db->delete(CAL_AVAIL, "property_id = " . $property_id);
+
+                            foreach ($reservation as $rKey => $rVal) {
+                                $data_cal = array();
+                                $data_cal['property_id'] = $property_id;
+                                $date_from = explode('-', $rVal);
+
+
+                                $data_cal['date_from'] = date('Y-m-d', strtotime($date_from[0]));
+
+                                if (count($date_from) > 1)
+                                    $data_cal['date_to'] = date('Y-m-d', strtotime($date_from[1]));
+                                else
+                                    $data_cal['date_to'] = date('Y-m-d', strtotime($date_from[0]));
+
+
+                                $data_cal['cal_status'] = '0';
+
+                                if (!$this->debug)
+                                    $db->save(CAL_AVAIL, $data_cal);
+                            }
+                        }
+
+                        if (count($images) > 0 && is_array($images)) {
+                            //delete older images
+                            $galleryArr = $db->runQuery("select * from " . GALLERY . " where property_id='" . $property_id . "' ");
+
+                            foreach ($galleryArr as $galKey => $galVal) {
+                                @unlink(SITE_ROOT . "images/property/" . $galVal['image_name']);
+                                $db->delete(GALLERY, 'gallery_id = ' . $galVal['gallery_id']);
+                            }
+                        }
+
+                        foreach ($images as $iKey => $iVal) {
+                            //pr($iVal);
+                            //$file_name = explode("/", $iVal);
+                            $file_name = urldecode(time() . "_" . $iVal);
+
+                            $file_name = str_replace(' ', '_', $file_name);
+
+
+                            if (!$this->debug) {
+                                $validImage = getimagesize($_supplierData['ellisexclusivevillas']['subscriber_image_url'] . '/' . $iVal);
+
+                                if (count($validImage) && is_array($validImage) && !empty($validImage))
+                                    $contentOrFalseOnFailure = file_get_contents($_supplierData['ellisexclusivevillas']['subscriber_image_url'] . '/' . $iVal);
+                                else {
+                                    $VAR = explode("_", $iVal);
+                                    $VAR = $VAR[0];
+                                    $secondary_img_url = str_replace('[VAR]', $VAR, $_supplierData['ellisexclusivevillas']['subscriber_image_secondary_url']);
+                                    $contentOrFalseOnFailure = file_get_contents($secondary_img_url . '/' . $iVal);
+                                }
+                            }
+
+                            if (!$this->debug)
+                                $byteCountOrFalseOnFailure = file_put_contents(SITE_ROOT . "images/property/" . $file_name, $contentOrFalseOnFailure);
+
+                            //saving data in database
+                            $data_image = array();
+                            $data_image['image_name'] = $file_name;
+                            $data_image['property_id'] = $property_id;
+                            //                        if ($iKey == 0)
+                            //                            $data_image['image_title'] = $heading;
+                            $data_image['image_title'] = $caption;
+                            if (!$this->debug)
+                                $db->save(GALLERY, $data_image);
+                        }
+
+                        break;
                     default:
                         echo "Please choose proper subscriber first!!";
                         die;
