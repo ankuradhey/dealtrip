@@ -19,7 +19,8 @@
             $Title = $metaArr[0]['meta_title'];
             $Description = $metaArr[0]['meta_description'];
 
-           $mySession->country_id=$this->view->country_id = $country_id = $this->getRequest()->getParam("country_id");
+            $this->view->propertiesstatus = $propertiesstatus = $this->getRequest()->getParam("propertiesstatus");
+            $mySession->country_id=$this->view->country_id = $country_id = $this->getRequest()->getParam("country_id");
             $mySession->state_id=$this->view->state_id = $state_id = $this->getRequest()->getParam("state_id");
             $mySession->city_id=$this->view->city_id = $city_id = $this->getRequest()->getParam("city_id");
             $mySession->sub_area_id=$this->view->sub_area_id = $sub_area_id = $this->getRequest()->getParam("sub_area_id");
@@ -138,8 +139,12 @@
             }
 
             
+			/*======= property type list =========*/
+			$propertyTypeArr = $db->runQuery("select * from " . PROPERTYTYPE . " order by pstyle_order asc  ");
+			$this->view->propertyTypeArr = $propertyTypeArr;
+            
             //-----------------------------------------
-            $specArr = $db->runQuery("select * from " . SPEC_CHILD . "  ");
+            $specArr = $db->runQuery("select * from " . SPEC_CHILD . " order by spec_order asc ");
 
             $this->view->specArr = $specArr;
             $spclOffrArr = $db->runQuery("select * from " . SPCL_OFFER_TYPES . " where status = '1'  ");
@@ -172,6 +177,8 @@
             $facilities = $this->getRequest()->getParam("facilities");
             $themes = $this->getRequest()->getParam("themes");
             $propertyname = $this->getRequest()->getParam("propertyname");
+			$ptypeRow = $this->getRequest()->getParam("ptypeRow");
+			$pstarRow = $this->getRequest()->getParam("pstarRow");
 
             $this->view->bedroom = $bedroom;
             $this->view->bathroom = $bathroom;
@@ -180,6 +187,8 @@
             $this->view->facilities = $facilities;
             $this->view->themes = $themes;
             $this->view->propertyname = $propertyname;
+			$this->view->ptypeRow = $ptypeRow;
+			$this->view->pstarRow = $pstarRow;
 
             if ($datefrom != "")
                 $datefrom = date('Y-m-d', strtotime($datefrom));
@@ -188,6 +197,11 @@
             //$where .= " and ".CAL_RATE.".date_from >= '".$datefrom."' and ".CAL_RATE.".date_to <= '".$dateto."'  ";
             $where = "";
             $where1 = "";
+            if ($propertiesstatus == 1)
+            {
+                $where .= " and " . PROPERTY . ".cal_default != '" . $propertiesstatus . "' ";
+            }
+
             if ($country_id != "")
             {
                 $where .= " and " . PROPERTY . ".country_id = '" . $country_id . "' ";
@@ -262,6 +276,57 @@
                     $where1 = "";
             }
 
+            if (count($ptypeRow) > 0 && $ptypeRow[0] != "")
+            {
+                $where .= " and (";
+                for ($i = 0; $i < count($ptypeRow); $i++)
+                {
+					if($i==0){
+					$where .= " " . PROPERTY . ".property_type = " . $ptypeRow[$i] . "  ";
+					}else{
+                     $where .= " or " . PROPERTY . ".property_type = " . $ptypeRow[$i] . "  ";
+					}
+                }
+                $where .= ")";
+            }
+			
+			 if (count($pstarRow) > 0 && $pstarRow[0] != "")
+            {
+                $where .= " and (";
+				$i=0;
+				$starcon="";
+				foreach($pstarRow as $strow){
+					switch($strow){
+						case 3:
+						$starcon="(star_rating < 4 ) ";
+						break;
+						case 4:
+						$starcon=" (star_rating = 4 ) ";
+						break;
+						case 5:
+						$starcon=" (star_rating = 5 )";
+						
+						break;
+						case 6:
+						$starcon=" (star_rating = 6 ) ";
+						
+						break;
+					}
+					
+					if($i==0){
+					$where .= " " .$starcon;
+					}else{
+                     $where .= " or ".$starcon;
+					}
+					
+               $i++;
+				}
+                $where .= ")";
+            }
+			
+			
+			
+			
             if (count($bedroom) > 0 && $bedroom[0] != "")
             {
                 $where .= " and (";
@@ -269,14 +334,14 @@
                 {
                     if ($i == 0)
                     {
-                        if ($bedroom[$i] == '5')
+                        if ($bedroom[$i] == '7')
                             $where .= " " . PROPERTY . ".bedrooms >= '" . $bedroom[$i] . "'  ";
                         else
                             $where .= " " . PROPERTY . ".bedrooms = '" . $bedroom[$i] . "'  ";
                     }
                     else
                     {
-                        if ($bedroom[$i] == '5')
+                        if ($bedroom[$i] == '7')
                             $where .= " or " . PROPERTY . ".bedrooms >= '" . $bedroom[$i] . "'  ";
                         else
                             $where .= " or " . PROPERTY . ".bedrooms = '" . $bedroom[$i] . "'  ";
@@ -971,6 +1036,9 @@
             $facilities = $this->getRequest()->getParam("facilities");
             $themes = $this->getRequest()->getParam("themes");
             $propertyname = $this->getRequest()->getParam("propertyname");
+			$propertiesstatus = $this->getRequest()->getParam("propertiesstatus");
+         	$ptypeRow = $this->getRequest()->getParam("ptypeRow");
+			$pstarRow = $this->getRequest()->getParam("pstarRow");
 
             $this->view->bedroom = $bedroom;
             $this->view->bathroom = $bathroom;
@@ -979,6 +1047,8 @@
             $this->view->facilities = $facilities;
             $this->view->themes = $themes;
             $this->view->propertyname = $propertyname;
+			$this->view->ptypeRow = $ptypeRow;
+			$this->view->pstarRow = $pstarRow;
 
             if ($datefrom != "")
                 $datefrom = date('Y-m-d', strtotime($datefrom));
@@ -987,6 +1057,10 @@
             //$where .= " and ".CAL_RATE.".date_from >= '".$datefrom."' and ".CAL_RATE.".date_to <= '".$dateto."'  ";
             $where = "";
             $where1 = "";
+			 if ($propertiesstatus ==1)
+            {
+                $where .= " and " . PROPERTY . ".cal_default != '" . $propertiesstatus . "' ";
+            }
             if ($country_id != "")
             {
                 $where .= " and " . PROPERTY . ".country_id = '" . $country_id . "' ";
@@ -1061,6 +1135,57 @@
                     $where1 = "";
             }
 
+
+			/*= property type =*/
+			if (count($ptypeRow) > 0 && $ptypeRow[0] != "")
+            {
+                $where .= " and (";
+                for ($i = 0; $i < count($ptypeRow); $i++)
+                {
+					if($i==0){
+					$where .= " " . PROPERTY . ".property_type = " . $ptypeRow[$i] . "  ";
+					}else{
+                     $where .= " or " . PROPERTY . ".property_type = " . $ptypeRow[$i] . "  ";
+					}
+                }
+                $where .= ")";
+            }
+			
+			 if (count($pstarRow) > 0 && $pstarRow[0] != "")
+            {
+                $where .= " and (";
+				$i=0;
+				$starcon="";
+				foreach($pstarRow as $strow){
+					switch($strow){
+						case 3:
+						$starcon="(star_rating < 4 ) ";
+						break;
+						case 4:
+						$starcon=" (star_rating = 4 ) ";
+						break;
+						case 5:
+						$starcon=" (star_rating = 5 )";
+						
+						break;
+						case 6:
+						$starcon=" (star_rating = 6 ) ";
+						
+						break;
+					}
+					
+					if($i==0){
+					$where .= " " .$starcon;
+					}else{
+                     $where .= " or ".$starcon;
+					}
+					
+               $i++;
+				}
+                $where .= ")";
+            }
+			
+			
             if (count($bedroom) > 0 && $bedroom[0] != "")
             {
                 $where .= " and (";
@@ -1068,14 +1193,14 @@
                 {
                     if ($i == 0)
                     {
-                        if ($bedroom[$i] == '5')
+                        if ($bedroom[$i] == '7')
                             $where .= " " . PROPERTY . ".bedrooms >= '" . $bedroom[$i] . "'  ";
                         else
                             $where .= " " . PROPERTY . ".bedrooms = '" . $bedroom[$i] . "'  ";
                     }
                     else
                     {
-                        if ($bedroom[$i] == '5')
+                        if ($bedroom[$i] == '7')
                             $where .= " or " . PROPERTY . ".bedrooms >= '" . $bedroom[$i] . "'  ";
                         else
                             $where .= " or " . PROPERTY . ".bedrooms = '" . $bedroom[$i] . "'  ";
@@ -1610,152 +1735,38 @@
             $this->view->propertyData = $propertyArr;
         }
 
-        public function searchdetailAction()
-        {
-            global $mySession;
+        protected function getPropertyDetails($propertyId){
             $db = new Db();
-
-            
-            $varsuccess = '0';
-            $tab = $this->getRequest()->getParam("tab");
-            $country_name = $this->getRequest()->getParam("country");
-            $state_name = $this->getRequest()->getParam("state");
-            $city_name = $this->getRequest()->getParam("city");
-            $sub_area_name = $this->getRequest()->getParam("sub_area");
-            $local_area_name = $this->getRequest()->getParam("local_area");
-            $property_code = $this->getRequest()->getParam("property_code");
-            $property_type = $this->getRequest()->getParam("property_type");
-
-            
-
-            $this->view->Datefrom = $datefrom = $this->getRequest()->getParam("datefrom");
-            $this->view->dateto = $dateto = $this->getRequest()->getParam("dateto");
-
-
-            if ($local_area_name != '')
-            {
-                $location_condition = " and " . SUB_AREA . ".sub_area_name = '" . strtolower($sub_area_name) . "' and " . LOCAL_AREA . ".local_area_name = '" . strtolower($local_area_name) . "'  ";
-            }
-            elseif ($sub_area_name != '')
-            {
-                $location_condition = " and " . SUB_AREA . ".sub_area_name = '" . strtolower($sub_area_name) . "' ";
-            }
-
-
+            //property details
             $propertyArr = $db->runQuery("select *, trim(trailing '.' from trim(trailing 0 from ".PROPERTY.".bathrooms)) as bathrooms," . PROPERTY . ".id as pid from " . PROPERTY . " 
-									  inner join " . COUNTRIES . " on " . COUNTRIES . ".country_id = " . PROPERTY . ".country_id
-									  inner join " . PROPERTY_TYPE . " on " . PROPERTY . ".property_type = " . PROPERTY_TYPE . ".ptyle_id
-									  left join " . STATE . "  on " . STATE . ".state_id = " . PROPERTY . ".state_id
-                                                                          left join " . CITIES . " on " . CITIES . ".city_id = " . PROPERTY . ".city_id
-									  left join " . SUB_AREA . " on " . SUB_AREA . ".sub_area_id = " . PROPERTY . ".sub_area_id
-									  left join " . LOCAL_AREA . " on " . LOCAL_AREA . ".local_area_id = " . PROPERTY . ".local_area_id
-									  left join " . GALLERY . " on " . GALLERY . ".property_id = " . PROPERTY . ".id 
-									  where lower(" . COUNTRIES . ".country_name) = '" . strtolower($country_name) . "'
-									  and lower(" . STATE . ".state_name) = '" . strtolower($state_name) . "'
-									  and lower(" . CITIES . ".city_name) = '" . strtolower($city_name) . "'
-									  $location_condition
-									  and " . PROPERTY . ".propertycode = '" . $property_code . "'
-									  ");
-
+                                        inner join " . COUNTRIES . " on " . COUNTRIES . ".country_id = " . PROPERTY . ".country_id
+                                        inner join " . PROPERTY_TYPE . " on " . PROPERTY . ".property_type = " . PROPERTY_TYPE . ".ptyle_id
+                                        left join " . STATE . "  on " . STATE . ".state_id = " . PROPERTY . ".state_id
+                                        left join " . CITIES . " on " . CITIES . ".city_id = " . PROPERTY . ".city_id
+                                        left join " . SUB_AREA . " on " . SUB_AREA . ".sub_area_id = " . PROPERTY . ".sub_area_id
+                                        left join " . LOCAL_AREA . " on " . LOCAL_AREA . ".local_area_id = " . PROPERTY . ".local_area_id
+                                        left join " . GALLERY . " on " . GALLERY . ".property_id = " . PROPERTY . ".id 
+                                        where " . PROPERTY . ".id = '" . $propertyId . "'
+                                        ");
+            return $propertyArr;
+        }
+        
+        public function getspecificationsAction(){
+            $db = new Db();
+            $propertyId = $this->getRequest()->getParam("property_id");
+            $propertyArr = $this->getPropertyDetails($propertyId);
+            $this->view->propertyData = $propertyArr;
+            $this->_helper->layout->disableLayout();
+            //specifications
             
-            //prd($propertyArr);
+            $this->view->tab = '2';
+            $this->view->property = "specification";
+            $this->view->ppty_tab2 = 'class="active"';
 
-            $Breadcrumb .= (!empty($propertyArr[0]['country_name'])) ? $propertyArr[0]['country_name'] : '';
-            $Breadcrumb .= (!empty($propertyArr[0]['state_name'])) ? '>' . $propertyArr[0]['state_name'] : '';
-            $Breadcrumb .= (!empty($propertyArr[0]['city_name'])) ? '>' . $propertyArr[0]['city_name'] : '';
-            $Breadcrumb .= (!empty($propertyArr[0]['sub_area_name'])) ? '>' . $propertyArr[0]['sub_area_name'] : '';
-            $Breadcrumb .= (!empty($propertyArr[0]['local_area_name'])) ? '>' . $propertyArr[0]['local_area_name'] : '';
-
-
-            $breadcrumb_array = array(
-                "country_name" => $propertyArr[0]['country_name'],
-                "state_name" => $propertyArr[0]['state_name'],
-                "city_name" => $propertyArr[0]['city_name'],
-                "sub_area_name" => $propertyArr[0]['sub_area_name'],
-                "local_area_name" => $propertyArr[0]['local_area_name'],
-            );
-
-            $this->view->breadCrumbArray = $breadcrumb_array;
-
-            $this->view->headMeta($propertyArr[0]['meta_description'], 'description');
-            $this->view->headMeta($propertyArr[0]['meta_keywords'], 'keywords');
-
-            $Arr = explode('>', $Breadcrumb);
-
-            krsort($Arr);
-
-            $newHeadTtitleTest = implode(' - ', ($Arr));
-//            $newHeadTtitleTest=str_replace(" ", "", $newHeadTtitleTest);
-//            $newHeadTtitleTest=str_replace("-", " - ", $newHeadTtitleTest);
-
-            //prd($newHeadTtitleTest);
-            
-            $Breadcrumb = implode('>', $Arr);
-
-
-            //========== Fetching Meta Information ===========================//
-            $metaArr = $db->runQuery("select meta_title, meta_keyword, meta_description from  " . META_INFO . " where meta_id = 4");
-            $Title = $metaArr[0]['meta_title'];
-            
-            $Title = str_replace('[BREADCRUMB]', $newHeadTtitleTest, $Title);
-            $Title = str_replace('[BED]', $propertyArr[0]['bedrooms'] > 1 ? $propertyArr[0]['bedrooms'] . ' beds' : $propertyArr[0]['bedrooms'] . ' bed', $Title);
-            $Title = str_replace('[PROPERTY_TYPE]', $propertyArr[0]['ptyle_name'], $Title);
-            $Title = str_replace('[PROPERTY_NO]', $propertyArr[0]['propertycode'], $Title);
-            
-
-            $Description = $metaArr[0]['meta_description'];
-            $Description = str_replace('[PROPERTY_TITLE]', $propertyArr[0]['property_title'], $Description);
-            $Description = str_replace('[PROPERTY_DESCRIPTION]', $propertyArr[0]['brief_desc'], $Description);
-
-            $this->view->headTitle($Title)->offsetUnset(0);
-//            $this->view->headMeta('description', $Description);
-
-            $this->view->ppty_id = $ppty_id = $propertyArr[0]['pid'];
-
-            //prd($propertyArr);
-            //prd("tangled");
-            
-            //custom attributes 
-            $customAttributes = $db->runQuery("select * from ".ATTRIBUTE_ANS." attr_ans left join ".ATTRIBUTE." attr on attr.attribute_id = attr_ans.ans_attribute_id where attr_ans.ans_property_id = $ppty_id ");
-            $this->view->customAttrib = $customAttributes;
-            if (count($propertyArr) == 0)
-            {
-                $this->_redirect("error/error");
-            }
-
-
-            $this->view->ppty_id = $ppty_id;
-
-            switch ($tab)
-            {
-                case '':
-
-                case 'overview': $this->view->tab = '1';
-                    $this->view->property = "overview";
-                    $this->view->ppty_tab1 = 'class="active"';
-
-                    //AMENITIES	
-                    $amenityData = $db->runQuery("select * from " . AMENITY . " as a inner join " . AMENITY_ANS . " as aa on a.amenity_id = aa.amenity_id where aa.property_id = '" . $ppty_id . "' and aa.amenity_value ='1' and a.amenity_status = '1' ");
-                    $this->view->amenityData = $amenityData;
-
-                    break;
-
-                case 'specification': $this->view->tab = '2';
-                    $this->view->property = "specification";
-                    $this->view->ppty_tab2 = 'class="active"';
-
-
-                    $specArr = $db->runQuery("select * from " . SPECIFICATION . " 
-                                              inner join " . SPEC_CHILD . " on " . SPEC_CHILD . ".spec_id = " . SPECIFICATION . ".spec_id
-                                                inner join " . SPEC_ANS . " on " . SPEC_ANS . ".answer = " . SPEC_CHILD . ".cid	
-						where " . SPEC_ANS . ".property_id = " . $ppty_id . "
-                    				");
-
-
-                    $specArr = $db->runQuery("select * from " . SPECIFICATION . " as s inner join " . PROPERTY_SPEC_CAT . " as psc on s.cat_id = psc.cat_id 
-									  where psc.cat_status = '1' 
-									  and s.status = '1' order by psc.cat_id, s.spec_order asc
-									  ");
+            $specArr = $db->runQuery("select * from " . SPECIFICATION . " as s inner join " . PROPERTY_SPEC_CAT . " as psc on s.cat_id = psc.cat_id 
+                                                                  where psc.cat_status = '1' 
+                                                                  and s.status = '1' order by psc.cat_id, s.spec_order asc
+                                                                  ");
 
                     $category_temp = "";
 
@@ -1779,14 +1790,9 @@
 
                             $t = 0;
                         }
-
-
-
-
-                        $selectOptionArr = $db->runQuery("select * from " . SPEC_CHILD . "
-																		 inner join " . SPEC_ANS . " on " . SPEC_ANS . ".answer = " . SPEC_CHILD . ".cid	
-																		 where " . SPEC_ANS . ".spec_id = '" . $value['spec_id'] . "' and " . SPEC_ANS . ".property_id = '" . $ppty_id . "' ");
-
+                        $selectOptionArr = $db->runQuery("select * from " . SPEC_CHILD . " inner join " . SPEC_ANS . " on " 
+                                . SPEC_ANS . ".answer = " . SPEC_CHILD . ".cid
+                                 where " . SPEC_ANS . ".spec_id = '" . $value['spec_id'] . "' and " . SPEC_ANS . ".property_id = '" . $propertyId . "' ");
 
                         if ($value['spec_id'] == '22' || $value['spec_id'] == '23' || $value['spec_id'] == '24')
                         {
@@ -1859,8 +1865,7 @@
                             if ($value['spec_type'] == '2' || $value['spec_type'] == '3')
                             {
 
-                                $selectOptionArr = $db->runQuery("select * from " . SPEC_ANS . "  where " . SPEC_ANS . ".spec_id = '" . $value['spec_id'] . "' and " . SPEC_ANS . ".property_id = '" . $ppty_id . "' ");
-                                /* 			prd($selectOptionArr); */
+                                $selectOptionArr = $db->runQuery("select * from " . SPEC_ANS . "  where " . SPEC_ANS . ".spec_id = '" . $value['spec_id'] . "' and " . SPEC_ANS . ".property_id = '" . $propertyId . "' ");
 
                                 if ($selectOptionArr[0]['answer'] != "")
                                 {
@@ -1905,155 +1910,213 @@
 
                         $i++;
                     }
-
-
-                    /* prd($finalArr); */
-
-                    /* $specArr = $db->runQuery("select * from ".SPECIFICATION." 
-                      inner join ".SPEC_CHILD." on ".SPEC_CHILD.".spec_id = ".SPECIFICATION.".spec_id
-                      inner join ".SPEC_ANS." on ".SPEC_ANS.".answer = ".SPEC_CHILD.".cid
-                      where ".SPEC_ANS.".property_id = ".$ppty_id."
-                      "); */
                     $this->view->specArr = $finalArr;
 
-
-
-
-
-                    break;
-                case 'location': $this->view->tab = '3';
-                    $this->view->property = "location";
-                    $this->view->ppty_tab3 = 'class="active"';
-                    break;
-                case 'availability': $this->view->tab = '4';
-
-                    //prd("sdf");
-                    $this->view->property = "availability";
-                    $this->view->cal_default = $propertyArr[0]['cal_default'];
-                    $this->view->ppty_tab4 = 'class="active"';
-
-                    $calArr = $db->runQuery("select * from " . CAL_AVAIL . " where property_id = '" . $ppty_id . "' ");
-
-                    $this->view->calArr = $calArr;
-
-                    $next = $this->getRequest()->getParam("cal");
-                    if ($next != "")
-                        $this->view->nexts = $next;
-                    else
-                        $this->view->nexts = 0;
-
-                    break;
-                case 'rental': $this->view->tab = '5';
-                    $this->view->property = "rental";
-                    $this->view->ppty_tab5 = 'class="active"';
-                    $option_extra = $db->runQuery("select ename, (select exchange_rate from " . CURRENCY . " where " . CURRENCY . ".currency_code = (select currency_code from " . PROPERTY . " where id = '" . $ppty_id . "' ))*eprice as eprice,etype,stay_type  from " . EXTRAS . " where property_id = '" . $ppty_id . "' ");
-                    $this->view->option_extra = $option_extra;
-
-                    $calArr = $db->runQuery("select ceil((select exchange_rate from " . CURRENCY . " where " . CURRENCY . ".currency_code = (select currency_code from " . PROPERTY . " where id = '" . $ppty_id . "') )*prate) as prate,
-														     nights,date_to,date_from from " . CAL_RATE . "  
-															 where property_id = " . $ppty_id . "  order by date_from asc ");
-                    $newCalArr = array();
-                    foreach ($calArr as $c_key => $c_value)
-                    {
-                        $date_from = $c_value["date_from"];
-                        $date_to = $c_value["date_to"];
-                        if (strtotime($date_to) >= time())
-                            $newCalArr[] = $c_value;
-                    }
-
+            
+        }
+        
+        public function getrentalratesAction(){
+            $db = new Db();
+            $this->_helper->layout->disableLayout();
+            $ppty_id = $this->getRequest()->getParam('property_id');
+            $this->view->property = "rental";
+            $this->view->ppty_tab5 = 'class="active"';
+            $option_extra = $db->runQuery("select ename, (select exchange_rate from " . CURRENCY . " where " . CURRENCY . ".currency_code = (select currency_code from " . PROPERTY . " where id = '" . $ppty_id . "' ))*eprice as eprice,etype,stay_type  from " . EXTRAS . " where property_id = '" . $ppty_id . "' ");
+            $this->view->option_extra = $option_extra;
+            $calArr = $db->runQuery("select ceil((select exchange_rate from " . CURRENCY . " where " . CURRENCY . ".currency_code = (select currency_code from " . PROPERTY . " where id = '" . $ppty_id . "') )*prate) as prate,
+                                    nights,date_to,date_from from " . CAL_RATE . "  
+                                    where property_id = " . $ppty_id . "  order by date_from asc ");
+            $newCalArr = array();
+            foreach ($calArr as $c_key => $c_value)
+            {
+                $date_from = $c_value["date_from"];
+                $date_to = $c_value["date_to"];
+                if (strtotime($date_to) >= time())
+                    $newCalArr[] = $c_value;
+            }
 //                    $this->view->calData = $calArr;
-                    $this->view->calData = $newCalArr;
+            $this->view->calData = $newCalArr;
+            $spclArr = $db->runQuery("select *, " . SPCL_OFFER_TYPES . ".min_nights as MIN_NIGHTS from " . SPCL_OFFERS . " 
+                                    inner join " . SPCL_OFFER_TYPES . " on " . SPCL_OFFERS . ".offer_id = " . SPCL_OFFER_TYPES . ".id
+                                    where " . SPCL_OFFERS . ".property_id = '" . $ppty_id . "' 
+                                    and " . SPCL_OFFERS . ".activate = '1'  and " . SPCL_OFFERS . ".book_by >= curdate() ");
+            $this->view->spclData = $spclArr;
+
+        }
+        
+        public function getreviewAction(){
+        $db = new Db();
+        $this->_helper->layout->disableLayout();
+        $ppty_id = $this->getRequest()->getParam('property_id');
+        $this->view->property = "review";
+        $this->view->ppty_tab7 = 'class="active"';
+        $propertyArr = $this->getPropertyDetails($ppty_id);
+        /*         * * review form display code * */
 
 
-                    $spclArr = $db->runQuery("select *, " . SPCL_OFFER_TYPES . ".min_nights as MIN_NIGHTS from " . SPCL_OFFERS . " 
-															  inner join " . SPCL_OFFER_TYPES . " on " . SPCL_OFFERS . ".offer_id = " . SPCL_OFFER_TYPES . ".id
-															  where " . SPCL_OFFERS . ".property_id = '" . $ppty_id . "' 
-															  and " . SPCL_OFFERS . ".activate = '1'  and " . SPCL_OFFERS . ".book_by >= curdate() ");
-
-                    $this->view->spclData = $spclArr;
-
-                    //prd($spclArr);
-
-                    break;
-                case 'photo-gallery': $this->view->tab = '6';
-                    $this->view->property = "gallery";
-                    $this->view->ppty_tab6 = 'class="active"';
-                    $galleryArr = $db->runQuery("select * from " . GALLERY . "  where property_id = " . $ppty_id);
-                    $this->view->galleryArr = $galleryArr;
-                    break;
-                case 'reviews': $this->view->tab = '7';
-                    $this->view->property = "review";
-                    $this->view->ppty_tab7 = 'class="active"';
-
-                    /*                     * * review form display code * */
-
-
-
-                    //if(!isset($mySession->reviewImage))
-                    //$mySession->reviewImage = "no_owner_pic.jpg";
-                    $reviewArr = $db->runQuery("select * from " . OWNER_REVIEW . " as r
+        $this->view->propertyData = $propertyArr;
+        //if(!isset($mySession->reviewImage))
+        //$mySession->reviewImage = "no_owner_pic.jpg";
+        $reviewArr = $db->runQuery("select * from " . OWNER_REVIEW . " as r
                                                 inner join " . PROPERTY . " as p on p.id = r.property_id
                                                 inner join " . USERS . " as u on u.user_id = p.user_id
                                                 where r.property_id = '" . $ppty_id . "' and r.review_status = '1' order by r.review_id desc ");
 
-                    //prd($reviewArr);	
+        //prd($reviewArr);	
 
-                    $i = 0;
-                    foreach ($reviewArr as $val)
-                    {
+        $i = 0;
+        foreach ($reviewArr as $val) {
 
-                        if ($val['parent_id'] == 0)
-                        {
+            if ($val['parent_id'] == 0) {
 
-                            $childArr = $db->runQuery("select * from " . OWNER_REVIEW . " where parent_id = '" . $val['review_id'] . "' ");
+                $childArr = $db->runQuery("select * from " . OWNER_REVIEW . " where parent_id = '" . $val['review_id'] . "' ");
 
-                            $reviewData[$i]['review_id'] = $val['review_id'];
-                            $reviewData[$i]['uType'] = $val['uType'];
-                            $reviewData[$i]['guest_name'] = $val['guest_name'];
-                            $reviewData[$i]['owner_image'] = $val['guest_image'];
-                            $reviewData[$i]['headline'] = $val['headline'];
-                            $reviewData[$i]['review'] = $val['review'];
-                            $reviewData[$i]['comment'] = $val['comment'];
-                            $reviewData[$i]['location'] = $val['location'];
-                            $reviewData[$i]['image'] = $val['image'];
-                            $reviewData[$i]['review_date'] = $val['review_date'];
-                            $reviewData[$i]['check_in'] = $val['check_in'];
-                            $reviewData[$i]['rating'] = $val['rating'];
+                $reviewData[$i]['review_id'] = $val['review_id'];
+                $reviewData[$i]['uType'] = $val['uType'];
+                $reviewData[$i]['guest_name'] = $val['guest_name'];
+                $reviewData[$i]['owner_image'] = $val['guest_image'];
+                $reviewData[$i]['headline'] = $val['headline'];
+                $reviewData[$i]['review'] = $val['review'];
+                $reviewData[$i]['comment'] = $val['comment'];
+                $reviewData[$i]['location'] = $val['location'];
+                $reviewData[$i]['image'] = $val['image'];
+                $reviewData[$i]['review_date'] = $val['review_date'];
+                $reviewData[$i]['check_in'] = $val['check_in'];
+                $reviewData[$i]['rating'] = $val['rating'];
 
-                            $k = 0;
-                            foreach ($childArr as $val1)
-                            {
+                $k = 0;
+                foreach ($childArr as $val1) {
 
-                                $reviewData[$i]['child'][$k]['guest_name'] = $val1['guest_name'];
-                                $reviewData[$i]['child'][$k]['owner_image'] = $val1['guest_image'];
-                                $reviewData[$i]['child'][$k]['comment'] = $val1['comment'];
-                                $reviewData[$i]['child'][$k]['review_date'] = $val1['review_date'];
-                                $k++;
-                            }
-                        }
-                        $i++;
-                    }
+                    $reviewData[$i]['child'][$k]['guest_name'] = $val1['guest_name'];
+                    $reviewData[$i]['child'][$k]['owner_image'] = $val1['guest_image'];
+                    $reviewData[$i]['child'][$k]['comment'] = $val1['comment'];
+                    $reviewData[$i]['child'][$k]['review_date'] = $val1['review_date'];
+                    $k++;
+                }
+            }
+            $i++;
+        }
 
-                    //prd($reviewData);
-                    //code for finding that the owner has the same property
+        //prd($reviewData);
+        //code for finding that the owner has the same property
 
-                    $this->view->reviewArr = $reviewData;
+        $this->view->reviewArr = $reviewData;
+    }
+        
+        public function searchdetailAction()
+        {
+            global $mySession;
+            $db = new Db();
+            $varsuccess = '0';
+            $tab = $this->getRequest()->getParam("tab");
+            $country_name = $this->getRequest()->getParam("country");
+            $state_name = $this->getRequest()->getParam("state");
+            $city_name = $this->getRequest()->getParam("city");
+            $sub_area_name = $this->getRequest()->getParam("sub_area");
+            $local_area_name = $this->getRequest()->getParam("local_area");
+            $property_code = $this->getRequest()->getParam("property_code");
+            $property_type = $this->getRequest()->getParam("property_type");
 
+            $this->view->Datefrom = $datefrom = $this->getRequest()->getParam("datefrom");
+            $this->view->dateto = $dateto = $this->getRequest()->getParam("dateto");
+            $Breadcrumb = $location_condition = '';
 
-                    /** review form dissplay code ends * */
-                    break;
-                case 'question': $this->view->tab = '8';
-                    $this->view->property = "question";
-                    $this->view->ppty_tab8 = 'class="active"';
-                    //contact us
-                    $myform = new Form_Ocontact($ppty_id);
-                    $this->view->myform = $myform;
-
-                    break;
+            if ($local_area_name != '')
+            {
+                $location_condition = " and " . SUB_AREA . ".sub_area_name = '" . strtolower($sub_area_name) . "' and " . LOCAL_AREA . ".local_area_name = '" . strtolower($local_area_name) . "'  ";
+            }
+            elseif ($sub_area_name != '')
+            {
+                $location_condition = " and " . SUB_AREA . ".sub_area_name = '" . strtolower($sub_area_name) . "' ";
             }
 
 
+            $propertyArr = $db->runQuery("select *, trim(trailing '.' from trim(trailing 0 from ".PROPERTY.".bathrooms)) as bathrooms," . PROPERTY . ".id as pid from " . PROPERTY . " 
+									  inner join " . COUNTRIES . " on " . COUNTRIES . ".country_id = " . PROPERTY . ".country_id
+									  inner join " . PROPERTY_TYPE . " on " . PROPERTY . ".property_type = " . PROPERTY_TYPE . ".ptyle_id
+									  left join " . STATE . "  on " . STATE . ".state_id = " . PROPERTY . ".state_id
+                                                                          left join " . CITIES . " on " . CITIES . ".city_id = " . PROPERTY . ".city_id
+									  left join " . SUB_AREA . " on " . SUB_AREA . ".sub_area_id = " . PROPERTY . ".sub_area_id
+									  left join " . LOCAL_AREA . " on " . LOCAL_AREA . ".local_area_id = " . PROPERTY . ".local_area_id
+									  left join " . GALLERY . " on " . GALLERY . ".property_id = " . PROPERTY . ".id 
+									  where lower(" . COUNTRIES . ".country_name) = '" . strtolower($country_name) . "'
+									  and lower(" . STATE . ".state_name) = '" . strtolower($state_name) . "'
+									  and lower(" . CITIES . ".city_name) = '" . strtolower($city_name) . "'
+									  $location_condition
+									  and " . PROPERTY . ".propertycode = '" . $property_code . "'
+									  ");
 
+            
+            //prd($propertyArr);
+
+            $Breadcrumb .= (!empty($propertyArr[0]['country_name'])) ? $propertyArr[0]['country_name'] : '';
+            $Breadcrumb .= (!empty($propertyArr[0]['state_name'])) ? '>' . $propertyArr[0]['state_name'] : '';
+            $Breadcrumb .= (!empty($propertyArr[0]['city_name'])) ? '>' . $propertyArr[0]['city_name'] : '';
+            $Breadcrumb .= (!empty($propertyArr[0]['sub_area_name'])) ? '>' . $propertyArr[0]['sub_area_name'] : '';
+            $Breadcrumb .= (!empty($propertyArr[0]['local_area_name'])) ? '>' . $propertyArr[0]['local_area_name'] : '';
+
+
+            $breadcrumb_array = array(
+                "country_name" => $propertyArr[0]['country_name'],
+                "state_name" => $propertyArr[0]['state_name'],
+                "city_name" => $propertyArr[0]['city_name'],
+                "sub_area_name" => $propertyArr[0]['sub_area_name'],
+                "local_area_name" => $propertyArr[0]['local_area_name'],
+            );
+
+            $this->view->breadCrumbArray = $breadcrumb_array;
+
+            $this->view->headMeta($propertyArr[0]['meta_description'], 'description');
+            $this->view->headMeta($propertyArr[0]['meta_keywords'], 'keywords');
+
+            $Arr = explode('>', $Breadcrumb);
+
+            krsort($Arr);
+
+            $newHeadTtitleTest = implode(' - ', ($Arr));
+            $Breadcrumb = implode('>', $Arr);
+            //========== Fetching Meta Information ===========================//
+            $metaArr = $db->runQuery("select meta_title, meta_keyword, meta_description from  " . META_INFO . " where meta_id = 4");
+            $Title = $metaArr[0]['meta_title'];
+            $Title = str_replace('[BREADCRUMB]', $newHeadTtitleTest, $Title);
+            $Title = str_replace('[BED]', $propertyArr[0]['bedrooms'] > 1 ? $propertyArr[0]['bedrooms'] . ' beds' : $propertyArr[0]['bedrooms'] . ' bed', $Title);
+            $Title = str_replace('[PROPERTY_TYPE]', $propertyArr[0]['ptyle_name'], $Title);
+            $Title = str_replace('[PROPERTY_NO]', $propertyArr[0]['propertycode'], $Title);
+            
+
+            $Description = $metaArr[0]['meta_description'];
+            $Description = str_replace('[PROPERTY_TITLE]', $propertyArr[0]['property_title'], $Description);
+            $Description = str_replace('[PROPERTY_DESCRIPTION]', $propertyArr[0]['brief_desc'], $Description);
+
+            $this->view->headTitle($Title)->offsetUnset(0);
+            $this->view->ppty_id = $ppty_id = $propertyArr[0]['pid'];
+            //custom attributes 
+            $customAttributes = $db->runQuery("select * from ".ATTRIBUTE_ANS." attr_ans left join ".ATTRIBUTE." attr on attr.attribute_id = attr_ans.ans_attribute_id where attr_ans.ans_property_id = $ppty_id ");
+            $this->view->customAttrib = $customAttributes;
+            //AMENITIES	
+            $amenityData = $db->runQuery("select * from " . AMENITY . " as a inner join " . AMENITY_ANS . " as aa on a.amenity_id = aa.amenity_id where aa.property_id = '" . $ppty_id . "' and aa.amenity_value ='1' and a.amenity_status = '1' ");
+            $this->view->amenityData = $amenityData;
+            if (count($propertyArr) == 0)
+            {
+                $this->_redirect("error/error");
+            }
+            $this->view->ppty_id = $ppty_id;
+            
+            //calendar
+            $this->view->property = "availability";
+            $this->view->cal_default = $propertyArr[0]['cal_default'];
+            $calArr = $db->runQuery("select * from " . CAL_AVAIL . " where property_id = '" . $ppty_id . "' ");
+            $this->view->calArr = $calArr;
+            $next = $this->getRequest()->getParam("cal");
+            if ($next != "")
+                $this->view->nexts = $next;
+            else
+                $this->view->nexts = 0;
+
+            //gallery
+            $galleryArr = $db->runQuery("select * from " . GALLERY . "  where property_id = " . $ppty_id);
+            $this->view->galleryArr = $galleryArr;
+            
             if ($datefrom != ""):
                 $datefrom = date('Y-m-d', strtotime($datefrom));
                 $dateto = date('Y-m-d', strtotime($dateto));
@@ -2097,37 +2160,18 @@
                 $this->view->nights = $rateArr[0]['nights'] != "" ? $rateArr[0]['nights'] : "";
             endif;
 
-
-
-
-            //$tmp = explode(".",$rateArr[0]['RATE']);
-
-
-
-            /* $actcurrArr = $db->runQuery("select exchange_rate*".($tmp[0] != "" ? $tmp[0]:0)." as mul from ".CURRENCY." inner join ".PROPERTY." on ".CURRENCY.".currency_code = ".PROPERTY.".currency_code where ".PROPERTY.".id = '".$ppty_id."'  ");
-
-              $tmp[0] = $actcurrArr[0]['mul']; */
-
-
-
             $this->view->prate = $rateArr[0]['RATE'] != "" ? $rateArr[0]['RATE'] : "Unknown";
-
-
-
             //cal Query
-            /* gadd $calAvailArr = $db->runQuery("select * from ".CAL_AVAIL." 
-              inner join ".PROPERTY." on ".CAL_AVAIL.".property_id = ".PROPERTY.".id
-              where ".CAL_AVAIL.".property_id = '".$ppty_id."' "); */
-
-
             $this->view->propertyData = $propertyArr;
-
-
-
 
             // property images
             $galleryData = $db->runQuery("select * from " . GALLERY . " where property_id = '" . $ppty_id . "' ");
             $this->view->galleryData = $galleryData;
+            
+            //contact us
+            $myform = new Form_Ocontact($ppty_id);
+            $this->view->myform = $myform;
+
 
             # the response from reCAPTCHA
             $resp = null;
