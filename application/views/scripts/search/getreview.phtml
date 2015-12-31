@@ -1,0 +1,83 @@
+<div class = "ppty_review" >
+    <p style="padding: 10px 18px;"><?= substr($this->propertyData[0]['property_title'], 0, 500) ?>...</p>
+    <div class = 'review_wraps' ><!-- wrapper for reviews -->
+        <?
+        if (count($this->reviewArr) == 0) {
+            ?>	
+            <div class="no_review_blck" align="center">
+                No Review Found
+            </div>	
+
+            <?
+        }
+
+        foreach ($this->reviewArr as $values) {
+            if (!$values['owner_image']) {
+                $images = "no_owner_pic.jpg";
+            } else {
+
+                $images = $values['owner_image'];
+            }
+            ?>
+            <div class = "reviewList" >
+                <div class="revImg">
+                    <img src="<?= APPLICATION_URL ?>image.php?image=<?= IMAGES_URL ?>profile/<?= $images ?>&height=100&width=100" />
+                    <h4 align="center"><?= $values['guest_name'] ?></h4>
+                    <p align="center">(<?= $values['location'] ?>)</p>
+                </div>
+
+                <div class = "review_bx">
+                    <h5><?= $values['headline'] ?><span class = 'posted_on'>Reviewed on <?= date('d-m-Y', strtotime($values['review_date'])) ?></span></h5>
+                    <p>
+                        <?= $values['review'] ?>
+                    </p>
+                    <p>
+                        Comment(Top Tip):- <?= $values['comment'] ?>
+                    </p>
+                    <p class = "posted_on_left">
+                        Check-in Date: <?= date('d-m-Y', strtotime($values['check_in'])) ?>
+                    </p>
+                    <p class = "posted_on_left">
+                        Rating: <? rating_view10($values['rating']) ?>
+                    </p>
+                </div>
+
+                <?
+                if (is_array($values['child'])) {
+                    if ($values['owner_image'])
+                        $child_img = $values['owner_image'];
+                    else
+                        $child_img = "no_owner_pic.jpg";
+                    ?>
+                    <div class = "response_blck">
+                        <div class = 'response_blck_img' style = ''>
+                            <img src="<?= APPLICATION_URL ?>image.php?image=<?= IMAGES_URL ?><?= $values['image'] ?>&height=90&width=90" />
+                        </div>
+                        <div class = "aftr_reponse_blck_img" >
+
+                            <div class="reply_blck">
+                                <div class="one_line">
+                                    <h5>Owner Response</h5>
+                                    <span class= 'posted_on'>Replied on <?= date('d-m-Y', strtotime($values['review_date'])) ?></span>                    
+                                </div>
+                                <p>
+                                    <?= $values['child'][0]['comment'] ?>
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                    <?
+                }
+                ?>
+            </div>
+            <?
+        }
+        ?>
+
+        <div class = "clear"></div>
+    </div>
+</div>

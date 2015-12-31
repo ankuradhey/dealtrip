@@ -1,0 +1,135 @@
+<div id="ratescontentHdr" align="center">
+    <p style="padding: 10px 18px;"><?= substr($this->propertyData[0]['property_title'], 0, 500) ?>...</p>
+    <div id="ratescol1Hdr" style="width:100%;">Property Date Rate Bands and Daily Rental Rates including Tax</div>
+    <p class='addNotes'>Total Holiday Rental Cost is calculated by adding together the Daily Rate x No. of Nights within each date price period.</p>
+
+
+    <div id="ratescontent">
+
+
+        <div class="fullBlock hgroupheader">
+            <div class="ratesfrom" align="center">DateFrom</div>
+            <div class="ratesfrom" align="center">DateTo</div>
+            <div class="ratesfrom" align="center">Minimum Night Stay</div>
+            <div class="ratesfrom" align="center">Daily Rate</div>
+        </div>
+        <?
+        for ($i = 0; $i < count($this->calData); $i++) {
+            ?>
+            <div class="fullBlock whiteBg">
+                <div class="ratesfrom " align="center"><?= date('d-m-Y', strtotime($this->calData[$i]['date_from'])) ?></div>
+                <div class="ratesfrom " align="center"><?= date('d-m-Y', strtotime($this->calData[$i]['date_to'])) ?></div>
+                <div class="ratesfrom " align="center"><?= $this->calData[$i]['nights'] ?></div>        
+                <div class="ratesfrom " align="center"><?= "&pound;" . round($this->calData[$i]['prate']) ?></div>
+            </div>   
+            <?
+        }
+        ?>
+
+
+    </div>
+    <!-- End loop 1 -->
+
+    <!-- Second heading -->
+
+    <div class="spacer"></div>
+
+
+    <div id="ratescol1Hdr" style="width:100%;">Extras</div>
+
+    <p class='addNotes'>Total Cost of Extras = Price x No. of Nights.  Please note that Optional Extras are required to be ordered for the full period of your stay.</p>
+
+    <div id="ratescontent">
+
+        <div class="fullBlock hgroupheader">
+            <div class="ratesfrom" align="center">Name of extras</div>
+            <div class="ratesfrom" align="center">Price</div>
+            <div class="ratesfrom" align="center">Type</div>
+            <div class="ratesfrom" align="center">Per</div>
+        </div>
+        <?
+        for ($i = 0; $i < count($this->option_extra); $i++) {
+            ?>
+            <div class="fullBlock whiteBg">
+                <div class="ratesfrom " align="center"><?= $this->option_extra[$i]['ename'] ?></div>
+                <div class="ratesfrom" align="center"><?= "&pound;" . round($this->option_extra[$i]['eprice']) ?></div>
+                <div class="ratesfrom" align="center"><? echo $this->option_extra[$i]['etype'] == '0' ? "Optional" : "Compulsory"; ?></div>        
+                <div class="ratesfrom" align="center"><? echo $this->option_extra[$i]['stay_type'] == '0' ? "Per Night" : "Per Stay"; ?></div>
+            </div>   
+            <?
+        }
+        ?>
+    </div>
+
+    <!-- second heading ends(extras)-->
+
+    <!--third heading starts (special offers)-->
+
+    <div class="spacer"></div>
+
+
+    <div id="ratescol1Hdr" style="width:100%;">Special Offers</div>
+
+    <p class='addNotes' style="width:90%;">For a Special Offer to be valid the full duration of your stay must be within the &acute;Valid From&acute; to &acute;Valid Until&acute; dates shown, and comply with the Minimum Night stay requirement and Book by Date.</p>
+
+    <div id="ratescontent">
+
+        <div class="fullBlock hgroupheader" >
+            <div class="spcloffer" align="center">Special Offer Type</div>
+            <div class="spcloffer" align="center">Promo Code</div>
+            <div class="spcloffer" align="center">Valid From</div>
+            <div class="spcloffer" align="center">Valid Until</div>
+            <div class="spcloffer" align="center">Minimum Night Stay</div>                  
+            <div class="spcloffer" align="center">Discount Offers or Freebies</div>                  
+            <div class="spcloffer" align="center">Book by Date</div>                  
+        </div>
+        <?
+        for ($i = 0; $i < count($this->spclData); $i++) {
+            ?>
+            <div class="fullBlock whiteBg">
+                <div class="spcloffer" align="center"><?= $this->spclData[$i]['discount_type'] == '1' && $this->spclData[$i]['free_nights_type'] == 'variable' ? 'Every ' . ($this->spclData[$i]['discount_offer'] + 1) . 'th night free' : $this->spclData[$i]['type_name'] ?></div>
+                <div class="spcloffer" align="center"><?= $this->spclData[$i]['promo_code'] ?></div>
+                <div class="spcloffer" align="center"><?= date('d-m-Y', strtotime($this->spclData[$i]['valid_from'])) ?></div>
+                <div class="spcloffer" align="center"><? echo date('d-m-Y', strtotime($this->spclData[$i]['valid_to'])) ?></div>        
+                <div class="spcloffer" align="center"><? echo $this->spclData[$i]['min_night'] != NULL ? $this->spclData[$i]['min_night'] : $this->spclData[$i]['MIN_NIGHTS'] ?></div>
+                <div class="spcloffer" align="center"><?
+                    switch ($this->spclData[$i]['discount_type']) {
+                        case '0': echo $this->spclData[$i]['discount_offer'] . "%";
+                            break;
+                        case '1': if ($this->spclData[$i]['free_nights_type'] == 'variable')
+                                echo "Max Free Nights: " . ($this->spclData[$i]['max_night']) . "";
+                            else
+                                echo "Free Nights:" . $this->spclData[$i]['discount_offer'];
+                            break;
+                        case '2': echo "Free Pool Heating";
+                            break;
+                        case '3': echo "7 nights Free";
+                            break; //echo $this->spclData[$i]['min_nights_type']=='0'?$this->spclData[$i]['min_night']." nights":$this->spclData[$i]['MIN_NIGHTS']." nights"; break;
+                    }
+                    ?></div>                    
+                <div class="spcloffer" align="center"><? echo date('d-m-Y', strtotime($this->spclData[$i]['book_by'])) ?></div>                    
+            </div>   
+            <?
+        }
+        ?>
+
+    </div>
+
+
+
+    <!-- third heading ends (special offers)-->     
+    <div class="spacer"></div>
+    <p class="opening">
+        <br/><span class="hdg">Additional Notes for this Property</span><br/>
+        <?php
+        if ($this->propertyData[0]['is_insured'] == '1') {
+            ?>
+        <p style="font-size: 12px;margin-bottom: 10px;">Accidental Property Protection Insurance is included in the rates quoted for the period of your stay</p>
+        <?php
+    }
+    ?>
+
+    <span class="addNotes" ><?= nl2br($this->propertyData[0]['rental_ques']) ?>        </span>
+</p> 
+
+</div>

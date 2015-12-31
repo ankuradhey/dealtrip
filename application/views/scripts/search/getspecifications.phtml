@@ -1,0 +1,94 @@
+<p style="padding: 10px 18px;"><?= substr($this->propertyData[0]['property_title'], 0, 500) ?>...</p>
+<?php
+if (count($this->specArr) == 0) {
+    echo '<div class="propertyOverviewTab">';
+    echo "<center>No Property Specification Found</center>";
+    echo '</div>';
+}
+
+foreach ($this->specArr as $keys => $values) {
+
+    if ($keys != 0 && count($values['answer'][0]) > 0) {
+        echo '</div><div id = "ppty_tabs" style="float:left;width:100%;margin-top:10px;">';
+        echo "<label class = 'cat_head' >" . $values['category'] . "</label>";
+    }
+    ?>		
+
+    <div class="propertyOverviewTab">
+        <div class = "typeProperty"><!-- row 1 starts(short description)-->
+    <?
+    for ($k = 0, $n = 0; $k < count($values['ques']); $k++):
+        if (isset($values['answer'][$k])) {
+            ++$n;
+            if ($n < count($values['ques']))
+                $border_class = "class='property-overview-row-frame'";
+            else
+                $border_class = "class='property-overview-row-frame-no'";
+
+            $new_count = count($values['answer']);
+            if ($k == ($new_count - 1))
+                $border_class = "class='property-overview-row-frame-no'";
+
+            if ($values['ticklist'][$k] == '0')
+                $ul_style = "";
+            else
+                $ul_style = "class='amenities'";
+            ?>
+
+                    <div <?= $border_class ?>>
+
+                        <div class="property-overview-row-title">
+                            <span class="spec_ques"><?= $values['ques'][$k] ?></span>
+                        </div>
+
+                        <div class="property-overview-row-info">
+
+
+
+                            <ul <?= $ul_style ?>>
+            <?
+            for ($t = 0; $t < count($values['answer'][$k]); $t++) {
+                ?>
+                                    <li>
+                                        <span id="PropertyTypeLabel"><?= $values['answer'][$k][$t] ?></span>
+                                    </li>
+                                    <?
+                                }
+                                ?>
+
+                            </ul>
+                        </div>
+
+                    </div>
+            <?
+        }
+    endfor;
+    ?>         
+        </div>           
+
+
+    </div>
+
+    <?
+    /* 		if($counter == 0)
+      echo "</ul></div></div></div>";
+
+      }
+      else
+      {
+
+      ?>
+      <li>
+      <span id="PropertyTypeLabel"><?=$values['option']?></span>
+      </li>
+
+      <?
+
+      if($counter == 0)
+      echo "</ul></div></div></div>";
+
+
+      } // end else condition
+
+      $heading = $values['question']; */
+}

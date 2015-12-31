@@ -1,0 +1,174 @@
+<p style="padding: 10px 18px;"><?= substr($this->propertyData[0]['property_title'], 0, 500) ?>...</p>
+
+<div class="propertyOverviewTab">
+
+    <div class = "typeProperty"><!-- row 1 starts(Destination Levels)-->
+        <div class = "property-overview-row-frame">
+
+            <div class="property-overview-row-title">
+                Location of Property
+            </div>
+
+            <div class="property-overview-row-info">
+                <h3 class="seo-header-tag" style="font-size:16px;"><ul>
+                        <li>
+                            <span id="PropertyTypeLabel">
+                                <?
+                                if ($this->propertyData[0]['local_area_name'])
+                                    echo $this->propertyData[0]['local_area_name'] . "&nbsp;&raquo;&nbsp;";
+                                if ($this->propertyData[0]['sub_area_name'])
+                                    echo $this->propertyData[0]['sub_area_name'] . "&nbsp;&raquo;&nbsp;";
+                                if ($this->propertyData[0]['city_name'])
+                                    echo $this->propertyData[0]['city_name'] . "&nbsp;&raquo;&nbsp;";
+                                if ($this->propertyData[0]['state_name'])
+                                    echo $this->propertyData[0]['state_name'] . "&nbsp;&raquo;&nbsp;";
+                                echo $this->propertyData[0]['country_name'];
+                                ?>
+                            </span>
+                        </li>
+                    </ul>
+                </h3>
+            </div>
+
+        </div>
+
+    </div><!-- row 1 ends -->
+
+    <div class = "typeProperty"><!-- row 2 starts(type of property)-->
+        <div class = "property-overview-row-frame">
+
+            <div class="property-overview-row-title">
+                Size of Property
+            </div>
+
+            <div class="property-overview-row-info">
+                <ul  class="amenities" style="list-style-type:disc;">
+                    <li class="first">
+                        <span id="PropertyTypeLabel"><?= $this->propertyData[0]['bedrooms'] . " " . "Bedrooms" ?></span>
+                    </li>
+                    <li>
+                        <span id="PropertyTypeLabel"><?= $this->propertyData[0]['bathrooms'] . " " . "Bathrooms" ?></span>
+                    </li>
+                    <li >
+                        <span id="PropertyTypeLabel"><?= $this->propertyData[0]['en_bedrooms'] . " " . "En-Suite Bathrooms " ?></span>
+                    </li>                        
+                    <li>
+                        <span id="PropertyTypeLabel"><?= "Sleeps up to " . $this->propertyData[0]['maximum_occupancy'] ?></span>
+                    </li>                                                  
+                </ul>
+            </div>
+
+        </div>
+
+    </div><!-- row 2 ends -->
+
+
+
+
+
+    <div class = "typeProperty"><!-- row 3 starts(type of property)-->
+        <div class = "property-overview-row-frame">
+
+            <div class="property-overview-row-title">
+                Type of Property
+            </div>
+
+            <div class="property-overview-row-info">
+                <ul>
+                    <li>
+                        <span id="PropertyTypeLabel"><?= $this->propertyData[0]['ptyle_name'] ?></span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div><!-- row 3 ends -->
+
+
+    <div class = "typeProperty"><!-- row 4 starts(type of property)-->
+        <div class = "property-overview-row-frame">
+
+            <div class="property-overview-row-title">
+                The Property
+            </div>
+
+            <div class="property-overview-row-info">
+                <ul>
+                    <li>
+                        <span id="PropertyTypeLabel"><?= $this->propertyData[0]['property_title'] ?></span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div><!-- row 4 ends -->
+
+    <div class = "typeProperty"><!-- row 5 starts(property summary)-->
+        <div class = "property-overview-row-frame">
+
+            <div class="property-overview-row-title">
+                Property Description
+            </div>
+
+            <div class="property-overview-row-info">
+                <ul>
+                    <li>
+                        <span id="PropertyTypeLabel"><?= $this->propertyData[0]['brief_desc'] ?></span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div><!-- row 5 ends -->
+
+
+    <div class = "typeProperty"><!-- row 6 starts(short description)-->
+        <div class = "property-overview-row-frame">
+
+            <div class="property-overview-row-title">
+                The Location
+            </div>
+
+            <div class="property-overview-row-info">
+                <ul>
+                    <li>
+                        <span id="PropertyTypeLabel"><?= nl2br($this->propertyData[0]['big_desc']) ?></span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div><!-- row 6 ends -->
+
+
+
+
+
+
+    <div class = "typeProperty"><!-- row 4 starts(Amenities starts)-->
+        <div class = "property-overview-row-frame">
+
+            <div class="property-overview-row-title">
+                On-Site Features & Leisure Amenities
+            </div>
+
+            <div class="property-overview-row-info">
+                <ul class = "amenities">
+
+                    <?
+                    foreach ($this->amenityData as $values) {
+                        echo "<li>" . $values['title'] . "</li>";
+                    }
+                    ?>
+                </ul>
+            </div>
+
+        </div>
+
+    </div><!-- row 4 ends -->
+
+</div>
