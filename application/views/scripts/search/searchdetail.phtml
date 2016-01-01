@@ -413,8 +413,15 @@
                 currentTab = 'location';
                 targetElement = '#location-html';
                 $currentHtmlElement.hide();
-                $(targetElement).show();
-                currentHtmlElement = '#location-html';
+                
+                $(targetElement).show("fast",function(){setTimeout(function(){
+					
+					google.maps.event.trigger(map,'resize');
+					var latLng = marker.getPosition(); // returns LatLng object
+					map.setCenter(latLng); // setCenter takes a LatLng object
+
+				},500)});
+                            currentHtmlElement = '#location-html';
                 return;
             case 'calendar':
                 currentTab = 'calendar';
@@ -491,7 +498,7 @@
             <li id = "ppty_tab_1" class="active"><a href = "javascript:;" data-target-tab-html="#overview-html" onclick="showTab('overview', this);">Overview(Home)</a></li>
             <li id = "ppty_tab_2"><a href = "javascript:;" data-target-tab-html="#specification-html" onclick="showTab('specification', this);" >Property Specfication</a></li>            
             <!--show_location();-->
-            <li id = "ppty_tab_3" ><a href = "javascript:;"  data-target-tab-html="#location-html" onclick="showTab('location',this);google.maps.event.trigger(map, 'resize');">Location</a></li>
+            <li id = "ppty_tab_3" ><a href = "javascript:;"  data-target-tab-html="#location-html" onclick="showTab('location',this);">Location</a></li>
             <li id = "ppty_tab_4"><a href = "javascript:;" data-target-tab-html="#calendar-html" onclick="showTab('calendar',this);">Availability Calendar</a></li>            
             <li id = "ppty_tab_5" ><a href = "javascript:;" data-target-tab-html="#rentalrates-html" onclick="showTab('rentalrates',this);" >Rental Rates</a></li>            
             <li id = "ppty_tab_6"><a href = "javascript:;" data-target-tab-html="#gallery-html" onclick="showTab('gallery',this);">Photo Gallery</a></li>            
