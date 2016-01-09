@@ -488,10 +488,20 @@ div.cell { display: table-cell;padding:2px; color:#666;font-size:13px; border-bo
 .property-overview-row-info {float: left;padding:10px;width:67%;}
 .location-faq-row-title{ float: left;font-weight:bold; padding:10px;/*width:305px;*/color:#0066FF;}
 .location-faq-row-info{float: left;padding:10px;/*width:35%;*/}
-.iContent{width:46%;height:476px;float:left;margin:5px;border:solid 1px #ccc;background-color: #F7F7F7;}
+.iContent{width:66%;height:476px;float:left;margin:5px;border:solid 1px #ccc;background-color: #F7F7F7;}
 .previousSearch{float:left;width:6%;height:65px;padding-top:35px;}
 .nextSearch{float:left;width:6%;height:65px;padding-top:35px;}
-.rContent{width:52%;height:490px;float:left;background-color: #F7F7F7;}
+.rContent{width:100%;float:left;background-color: #F7F7F7;}
+.search_panel_searchpage {
+    width: 30%;
+    background: #fcf9fd;
+    border: 1px solid #c6c5c9;
+    padding: 0.6%;
+    min-height: 360px;
+    float: left;
+    margin-top: 5px;
+}
+
 .one_line{width:97%;float:left;padding:10px;}
 
 .map_ppty_no{width:97%;float:left;padding:10px;color:#fff;padding-left:0px;}
@@ -2568,3 +2578,4 @@ button{cursor:pointer;}
 
 .pp_hoverContainer{display:block !important;}
 	div.pp_default .pp_nav{display:block !important;}
+ .roboto{font-family:'robotolight';}
