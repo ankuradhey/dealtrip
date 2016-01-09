@@ -4,6 +4,8 @@
     $myActionName = Zend_Controller_Front::getInstance()->getRequest()->getActionName();
     
 ?><!DOCTYPE html>
+<html lang="en">
+
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -52,9 +54,10 @@
             
         ?>
         <link href="<?= IMAGES_URL; ?>favicon.ico" type="image/x-icon" rel="icon" />
-        <link type="text/css" rel="stylesheet" href="<?= CSS_URL ?>style.css?v=1.1" />
-        <link type="text/css" rel="stylesheet" href="<?= CSS_URL ?>custom.css?v=1.12" />
-        <link rel="stylesheet" href="<?= CSS_URL ?>jquery.rating.css" type="text/css" media="screen" />
+        <link href="https://plus.google.com/b/108781194712655791084/+DealatripCoUkholidayrentalhomesandapartments" rel="publisher" />
+        <link type="text/css"  rel="stylesheet" href="<?= CSS_URL ?>style.css?v=<?php echo filemtime(CSS_URL."style.css");?>" />
+        <link type="text/css"   rel="stylesheet" href="<?= CSS_URL ?>custom.css?v=<?php echo filemtime(CSS_URL."custom.css");?>" />
+        <link rel="stylesheet"   href="<?= CSS_URL ?>jquery.rating.css" type="text/css"  />
         <script type="text/javascript" src="<?= JS_URL ?>html5.js"></script>
         <script type="text/javascript" src="<?= APPLICATION_URL_ADMIN; ?>js/jquery-1.7.1.min.js"></script>
         <script type="text/javascript" src="<?= JS_URL ?>general.js"></script>
