@@ -181,10 +181,10 @@
                         <?
                     }
                     ?>
-                    <img id = 'mImg' src = '<?= APPLICATION_URL ?>image.php?image=<?= IMAGES_URL ?>property/<?= $this->galleryData[0]['image_name'] ?>&height=350&width=440' >
-                    <div class="bx-caption">
+                    <img id = 'mImg' src = '<?= APPLICATION_URL ?>image.php?image=<?= IMAGES_URL ?>property/<?= $this->galleryData[0]['image_name'] ?>&height=350&width=630' >
+<!--                    <div class="bx-caption">
                         <span><?= $this->galleryData[0]['image_title'] ? $this->galleryData[0]['image_title'] : "No Caption Set" ?></span>
-                    </div>
+                    </div>-->
                     <?
                 }
                 else
@@ -220,7 +220,7 @@
                             <?
                             foreach ($this->galleryData as $values)
                             {
-                                echo "<li><img src = '" . APPLICATION_URL . "image.php?image=" . IMAGES_URL . "property/" . $values['image_name'] . "&height=90&width=90' onmouseover = '$(&quot;#mImg&quot;).attr(&quot;src&quot;,this.src.replace(&quot;&height=90&width=90&quot;,&quot;&height=350&width=440&quot;)); $(&quot;.bx-caption&quot;).text(this.title)' title = '" . ($values['image_title'] ? $values['image_title'] : "No Caption set") . "'></li>";
+                                echo "<li><img src = '" . APPLICATION_URL . "image.php?image=" . IMAGES_URL . "property/" . $values['image_name'] . "&height=90&width=90' onmouseover = '$(&quot;#mImg&quot;).attr(&quot;src&quot;,this.src.replace(&quot;&height=90&width=90&quot;,&quot;&height=350&width=630&quot;)); $(&quot;.bx-caption&quot;).text(this.title)' title = '" . ($values['image_title'] ? $values['image_title'] : "No Caption set") . "'></li>";
                             }
                             ?>
                         </ul>
@@ -234,8 +234,158 @@
             endif;
         ?>
     </div>
+    
+    <div class="search_panel_searchpage">
+        <!--<div class="sp_heding">SEARCH HOLIDAY RENTALS</div>-->
+        <!--<div class="search_category">
+       <div class="search_cat_icon"><a href="#" class="active"><img src="<?= IMAGES_URL; ?>hotel_icon.png"><span>Hotel</span></a></div>
+          <div class="search_cat_icon"><a href="#"><img src="<?= IMAGES_URL; ?>floght_icon.png" width="44" height="42"><span style="vertical-align:bottom;">Hotel</span></a></div>
+          <div class="search_cat_icon"><a href="#"><img src="<?= IMAGES_URL; ?>holiday_icon.png" width="44" height="42"><span style="vertical-align:bottom;">Hotel</span></a></div>
+          <div class="search_cat_icon"><a href="#"><img src="<?= IMAGES_URL; ?>trains_icon.png" width="44" height="42"><span style="vertical-align:bottom;">Hotel</span></a></div>
+        </div>-->
+	
+        <?php
+    $db = new Db();
+    
+ 
+     $countryData = $db->runQuery("select *, count(id) as _counter from " . COUNTRIES . " 
+							inner join  " . PROPERTY . " on " . PROPERTY . ".country_id = " . COUNTRIES . ".country_id  
+							where " . PROPERTY . ".status = '3'
+							group by " . COUNTRIES . ".country_id");
+?>
+        
+        
+        <form  action = '<?php echo $this->url(array('controller' => 'search', 'action' => 'property'), 'default', true) ?>' method="get" name="hotelsearch" >
+            <div class="form_area_row search_box_padding">
+                <div class="form_area_row_inner1">
+                    <div class="form_area_row_text">Country</div>
+                    <div class="form_area_row_box">
+                        <select name="country_id" id="country_id" onchange="getCountryState(this.value);">
+                            <!--<option value="">---All Countries----</option>-->
+                            <option value="">---All Countries----</option>
+                            <? foreach ($countryData as $key => $countryRow)
+                                {
+                                    echo "<option value=" . $countryRow["country_id"] . ">" . $countryRow['country_name'] . " (" . $countryRow['_counter'] . ")" . "</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form_area_row" id="state_id_div" style="display:none;">
+                <div class="form_area_row_inner1">
+                    <div class="form_area_row_text">State-Area-Region</div>
+                    <div class="form_area_row_box">
+                        <select name="state_id" id="state_id" onchange="getcitiesbystatecount(this.value);">
+                            <option value="">---All States----</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form_area_row" id="city_id_div" style="display:none;">
+                <div class="form_area_row_inner1">
+                    <div class="form_area_row_text">City Location</div>
+                    <div class="form_area_row_box">
+                        <select name="city_id" id="city_id" onchange="getCitySubarea(this.value);">
+                            <option value="">---All Cities----</option>
+                        </select>
+                    </div>
+                </div>
+            </div>   
+            <div class="form_area_row" id="sub_area_id_div" style="display:none;">
+                <div class="form_area_row_inner1">
+                    <div class="form_area_row_text">Sub Area</div>
+                    <div class="form_area_row_box">
+                        <select name="sub_area_id" id="sub_area_id" onchange="getSubareaLocalarea(this.value);" >
+                            <option value="">---All Sub Areas----</option>
+                        </select>
+                    </div>
+                </div>
+            </div>   
 
+            <div class="form_area_row" id="local_area_id_div" style="display:none;">
+                <div class="form_area_row_inner1">
+                    <div class="form_area_row_text">Local Area</div>
+                    <div class="form_area_row_box">
+                        <select name="local_area_id" id="local_area_id">
+                            <option value="">---All Local Areas----</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form_area_row" id="local_area_id_div" >
+                <div class="form_area_row_inner1">
+                    <div class="form_area_row_text">Check-in-date</div>
+                    <div class="form_area_row_box">
+                        <input type="text" name = "Datefrom" id = "Datefrom" />
+                    </div>
+                   
+                </div>
+            </div>   
+
+            <div class="form_area_row" id="local_area_id_div" >
+                <div class="form_area_row_inner1">
+                    <div class="form_area_row_text">Nights</div>
+                    <div class="form_area_row_box">
+                        <select name="DateTo" id="DateTo">
+                            <?
+                                for ($i = 7; $i <= 60; $i++)
+                                {
+                                    ?>
+                                    <option value="<?= $i ?>"><?= $i ?></option>
+                                    <?
+                                }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+            </div>   
+            
+            <div class = 'rytPrview' >
+
+            <div class="one_line">
+                <span class="floatL"><?= rating_views($this->propertyData[0]['star_rating'], 'star_ranks'); ?></span>
+                <div class="search_price floatR bold" ><strong>From &pound;<?
+        $rate = explode('.', $this->prate);
+        echo $rate[0]
+        ?> for <?= ceil($this->nights) ?> nights</strong></div>
+            </div>	            
+
+            
+
+            <div class="one_line review-text-color">   
+                Reviews (<span class = 'green'><?= review_count($this->propertyData[0]['id']) ?></span>) 
+                <?php
+                    $avg_customer_rating = avg_customer_rating($this->propertyData[0]['id']);
+                    if ($avg_customer_rating != '0/10')
+                    {
+                        ?>
+                        <span class = "crating" style="width:auto;padding:0">Customer Rating: <span class = 'yellow'><?= $avg_customer_rating; ?></span> </span>	  
+                        <?php
+                    }
+                ?>
+            </div>			
+
+            
+        </div>
+
+            <div class="form_area_row" id="local_area_id_div" >
+                <div class="form_area_row_inner1">
+                    <div class="form_area_row_text">I will decide dates later</div>
+                    <div class="form_area_row_box" style="width: auto;">
+                        <input type="checkbox" name="laterDate" id="laterDate" style="width:auto;" />
+                    </div>
+                </div>
+            </div>   
+
+            <div class="check_bttn">
+                <input class="btns" type="image" src="<?= IMAGES_URL; ?>check_avil.png" alt="Check Availability" />
+            </div>
+        </form>
+    </div>
     <div class = "rContent">
+        
         <h4 class="floatL mgT10 green"><?= $this->propertyData[0]['ptyle_name'] ?></h4>
         <!--<p style='float:right;margin-top:10px;border-bottom:#CCCCCC dotted 1px'>&nbsp;&nbsp;Property no:&nbsp;&nbsp;<span class = 'ppty_no'><?= $this->propertyData[0]['propertycode'] ?></span></p>-->
         <span class="bedroomDetail" style="width: auto;float: right;" >  <?= $this->propertyData[0]['bedrooms']; ?> Bed <?= $this->propertyData[0]['bathrooms']; ?> Bath - Sleeps <?= $this->propertyData[0]['maximum_occupancy']; ?></span>	
@@ -251,70 +401,7 @@
             }
         ?>
 
-        <div class = 'rytPrview' >
-
-            <div class="one_line">
-                <span class="floatL"><?= rating_views($this->propertyData[0]['star_rating'], 'star_ranks'); ?></span>
-                <div class="search_price floatR bold" ><strong>From &pound;<?
-        $rate = explode('.', $this->prate);
-        echo $rate[0]
-        ?> for <?= ceil($this->nights) ?> nights</strong></div>
-            </div>	            
-
-            <div class="one_line">
-                <span class="floatL">Calendar Accuracy: </span>
-                <div class="floatR">
-                    <?php
-                        if ($this->propertyData[0]['cal_default'] == '1')
-                        {
-                            ?>
-                            Availability is '<a href="#" class="mws-tooltip-n" title="Contact us to check availability">On Request</a>'
-                            <?php
-                        }
-                        elseif ($this->propertyData[0]['xml_subscriber_id'] > 0 || $this->propertyData[0]['user_id'] == '11')
-                        {
-                            ?>
-                            100% - Updated '<a href="#" class="mws-tooltip-n" title="Instant Online Booking with Payment Protection">Live</a>'
-                            <?php
-                        }
-                        else
-                        {
-                            ?>
-                            Date of last update (
-                            <?php
-                            if (!empty($this->propertyData[0]['date_calendar_modified']))
-                                echo date('d F Y', strtotime($this->propertyData[0]['date_calendar_modified']));
-                            else
-                                echo date('d F Y', strtotime($this->propertyData[0]['date_added']));
-                            ?>
-                            )
-                            <?php
-                        }
-                    ?>
-                </div>
-            </div>
-
-            <div class="one_line review-text-color">   
-                Reviews (<span class = 'green'><?= review_count($this->propertyData[0]['id']) ?></span>) 
-                <?php
-                    $avg_customer_rating = avg_customer_rating($this->propertyData[0]['id']);
-                    if ($avg_customer_rating != '0/10')
-                    {
-                        ?>
-                        <span class = "crating" style="width:auto;padding:0">Customer Rating: <span class = 'yellow'><?= $avg_customer_rating; ?></span> </span>	  
-                        <?php
-                    }
-                ?>
-            </div>			
-
-            <!--            <div class="one_line">   
-                            <span class="floatL review-text-color">Online Booking Status:</span> 
-                            <div  class="floatR" style="background-color:#0274D3;color:#fff;"><span class="floatL mws-tooltip-e" style="padding: 5px;" title="<?= cal_availability($this->propertyData[0]['id'], 1) ?>">Book Now</span>
-            <?= cal_availability($this->propertyData[0]['id'], 0) == '2' ? '<img style="padding-top: 5px;" class = "floatL" src="' . IMAGES_URL . 'check_available.png" width="25" height="22">' : '<img style="padding-top: 5px;" class = "floatL" src="' . IMAGES_URL . 'question-balloon_yellow.png" width="25" height="22">' ?>
-                            </div>	  
-                        </div>				-->
-
-        </div>
+        
 
         <div class="propertButtons">
             <div class="detailBtn">
@@ -495,15 +582,15 @@
 <div class = "mContent_blw_result">
     <div id = "property-nav_result">
         <ul>
-            <li id = "ppty_tab_1" class="active"><a href = "javascript:;" data-target-tab-html="#overview-html" onclick="showTab('overview', this);">Overview(Home)</a></li>
-            <li id = "ppty_tab_2"><a href = "javascript:;" data-target-tab-html="#specification-html" onclick="showTab('specification', this);" >Property Specfication</a></li>            
+            <li id = "ppty_tab_1" class="active"><a href = "javascript:;" class="roboto" data-target-tab-html="#overview-html" onclick="showTab('overview', this);">Overview(Home)</a></li>
+            <li id = "ppty_tab_2"><a href = "javascript:;" class="roboto" data-target-tab-html="#specification-html" onclick="showTab('specification', this);" >Property Specification</a></li>            
             <!--show_location();-->
-            <li id = "ppty_tab_3" ><a href = "javascript:;"  data-target-tab-html="#location-html" onclick="showTab('location',this);">Location</a></li>
-            <li id = "ppty_tab_4"><a href = "javascript:;" data-target-tab-html="#calendar-html" onclick="showTab('calendar',this);">Availability Calendar</a></li>            
-            <li id = "ppty_tab_5" ><a href = "javascript:;" data-target-tab-html="#rentalrates-html" onclick="showTab('rentalrates',this);" >Rental Rates</a></li>            
-            <li id = "ppty_tab_6"><a href = "javascript:;" data-target-tab-html="#gallery-html" onclick="showTab('gallery',this);">Photo Gallery</a></li>            
-            <li id = "ppty_tab_7" ><a href = "javascript:;" data-target-tab-html="#review-html" onclick="showTab('review',this);">Reviews(<?php echo review_count($this->propertyData[0]['id']) ?>)</a></li>
-            <li id = "ppty_tab_8"><a href = "javascript:;" data-target-tab-html="#question-html" onclick="showTab('question',this);">Ask a Question</a></li>
+            <li id = "ppty_tab_3" ><a href = "javascript:;"  class="roboto" data-target-tab-html="#location-html" onclick="showTab('location',this);">Location</a></li>
+            <li id = "ppty_tab_4"><a href = "javascript:;" class="roboto" data-target-tab-html="#calendar-html" onclick="showTab('calendar',this);">Availability Calendar</a></li>            
+            <li id = "ppty_tab_5" ><a href = "javascript:;" class="roboto" data-target-tab-html="#rentalrates-html" onclick="showTab('rentalrates',this);" >Rental Rates</a></li>            
+            <li id = "ppty_tab_6"><a href = "javascript:;" class="roboto" data-target-tab-html="#gallery-html" onclick="showTab('gallery',this);">Photo Gallery</a></li>            
+            <li id = "ppty_tab_7" ><a href = "javascript:;" class="roboto" data-target-tab-html="#review-html" onclick="showTab('review',this);">Reviews(<?php echo review_count($this->propertyData[0]['id']) ?>)</a></li>
+            <li id = "ppty_tab_8"><a href = "javascript:;" class="roboto" data-target-tab-html="#question-html" onclick="showTab('question',this);">Ask a Question</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -894,3 +981,254 @@
 
 
 </div>
+
+<script>
+
+    function getCountryState(countryId)
+    {
+        countryId = $.trim(countryId);
+        if (countryId == "")
+        {
+            $("#state_id_div").hide();
+            $("#city_id_div").hide();
+            $("#sub_area_id_div").hide();
+            $("#local_area_id_div").hide();
+        }
+        else
+        {
+            $("#state_id_div").show();
+        }
+        $.ajax({url: "<?= APPLICATION_URL . "index/getstatebycountrycount" ?>",
+            type: "POST",
+            data: ({countryId: countryId}),
+            success: function(data)
+            {
+
+
+                EmptyListbox('state_id');
+                EmptyListbox('city_id');
+                EmptyListbox('sub_area_id');
+                EmptyListbox('local_area_id');
+
+                AddOptiontoListBox('state_id', '', '- - All States - -');
+                AddOptiontoListBox('city_id', '', '- - All Cities - -');
+                AddOptiontoListBox('sub_area_id', '', '- - All Sub Areas - -');
+                AddOptiontoListBox('local_area_id', '', '- - All Local Areas - -');
+
+                data = $.trim(data);
+                if (data != '')
+                {
+
+                    var ArrData = data.split("***");
+
+                    if (ArrData.length > 0)
+                    {
+                        for (var i = 0; i < ArrData.length; i++)
+                        {
+                            var mySplit = ArrData[i].split("|||");
+                            var OptionValue = mySplit[0];
+                            var OptionText = mySplit[1] + ' (' + mySplit[2] + ')';
+
+                            AddOptiontoListBox('state_id', OptionValue, OptionText);
+                        }
+                    }
+
+                }
+                else
+                {
+                    $("#city_id_div").hide();
+                    $("#sub_area_id_div").hide();
+                    $("#local_area_id_div").hide();
+                }
+
+            }
+
+        });
+    }
+    function getcitiesbystatecount(stateId)
+    {
+        if (stateId == "")
+        {
+            $("#city_id_div").hide();
+            $("#sub_area_id_div").hide();
+            $("#local_area_id_div").hide();
+        }
+        else
+        {
+            $("#city_id_div").show();
+        }
+
+        $.ajax({url: "<?= APPLICATION_URL . "index/getcitiesbystatecount" ?>",
+            type: "POST",
+            data: ({stateId: stateId}),
+            success: function(data)
+            {
+
+
+
+                EmptyListbox('city_id');
+                EmptyListbox('sub_area_id');
+                EmptyListbox('local_area_id');
+
+
+                AddOptiontoListBox('city_id', '', '- - All Cities - -');
+                AddOptiontoListBox('sub_area_id', '', '- - All Sub Areas - -');
+                AddOptiontoListBox('local_area_id', '', '- - All Local Areas - -');
+
+
+
+                data = $.trim(data);
+                if (data != "")
+                {
+                    var ArrData = data.split("***");
+                    if (ArrData.length > 0)
+                    {
+                        for (var i = 0; i < ArrData.length; i++)
+                        {
+                            var mySplit = ArrData[i].split("|||");
+                            var OptionValue = mySplit[0];
+                            var OptionText = mySplit[1] + ' (' + mySplit[2] + ')';
+                            AddOptiontoListBox('city_id', OptionValue, OptionText);
+                        }
+
+                    }
+
+                }
+                else
+                {
+                    $("#sub_area_id_div").hide();
+                    $("#local_area_id_div").hide();
+                }
+            }
+        });
+
+    }
+
+    function getCitySubarea(cityId)
+    {
+        if (cityId == "")
+        {
+            $("#sub_area_id_div").hide();
+            $("#local_area_id_div").hide();
+        }
+        else
+        {
+            $("#sub_area_id_div").show();
+        }
+
+        $.ajax({url: "<?= APPLICATION_URL . "index/getsubareabycitycount" ?>",
+            type: "POST",
+            data: ({cityId: cityId}),
+            success: function(data)
+            {
+
+
+                EmptyListbox('sub_area_id');
+                EmptyListbox('local_area_id');
+                AddOptiontoListBox('sub_area_id', '', '- - All Sub Areas - -');
+                AddOptiontoListBox('local_area_id', '', '- - All Local Areas - -');
+
+
+                data = $.trim(data);
+                if (data != "")
+                {
+                    var ArrData = data.split("***");
+                    if (ArrData.length > 0)
+                    {
+                        for (var i = 0; i < ArrData.length; i++)
+                        {
+                            var mySplit = ArrData[i].split("|||");
+                            var OptionValue = mySplit[0];
+                            var OptionText = mySplit[1] + ' (' + mySplit[2] + ')';
+                            AddOptiontoListBox('sub_area_id', OptionValue, OptionText);
+                        }
+
+                    }
+
+                }
+                else
+                {
+                    $("#local_area_id_div").hide();
+                }
+
+            }
+        });
+
+    }
+
+    function getSubareaLocalarea(subId)
+    {
+        if (subId == "")
+        {
+            $("#local_area_id_div").hide();
+        }
+        else
+        {
+            $("#local_area_id_div").show();
+        }
+
+        $.ajax({url: "<?= APPLICATION_URL . "index/getlocalareabysubcount" ?>",
+            type: "POST",
+            data: ({subId: subId}),
+            success: function(data)
+            {
+
+                EmptyListbox('local_area_id');
+                AddOptiontoListBox('local_area_id', '', '- - All Local Areas - -');
+                data = $.trim(data);
+                if (data != "")
+                {
+                    var ArrData = data.split("***");
+                    if (ArrData.length > 0)
+                    {
+                        for (var i = 0; i < ArrData.length; i++)
+                        {
+                            var mySplit = ArrData[i].split("|||");
+                            var OptionValue = mySplit[0];
+                            var OptionText = mySplit[1] + ' (' + mySplit[2] + ')';
+                            AddOptiontoListBox('local_area_id', OptionValue, OptionText);
+                        }
+
+                    }
+                }
+
+            }
+        });
+
+    }
+    
+    
+    var selectedDate = new Date();
+        var msecsInADay = 604800000;
+		$("#Datefrom").datepicker({minDate: new Date(), dateFormat: "dd-mm-yy",showButtonPanel:true,closeText:'Clear',
+	beforeShow: function( input ) {
+		setTimeout(function() {
+		var clearButton = $(input )
+			.datepicker( "widget" )
+			.find( ".ui-datepicker-close" );
+		clearButton.unbind("click").bind("click",function(){$.datepicker._clearDate( input );});
+		}, 1 );
+	}
+	});
+	
+        $("#Dateto").datepicker({minDate: new Date(selectedDate.getTime() + msecsInADay),showButtonPanel: true,
+            closeText: 'Clear', // Text to show for "close" button
+            onClose: function (dateText, inst) {
+        if ($(window.event.srcElement).hasClass('ui-datepicker-close')) {
+             document.getElementById(this.id).value = '';
+         }
+    }});
+
+
+$("#laterDate").click(function() {
+            if ($("#laterDate").attr('checked'))
+            {
+                $("input[type='text']").val("");
+                $("input[type='text']").filter(":not('#keySearch')").attr("disabled", "disabled");
+
+            }
+            else
+                $("input[type='text']").removeAttr("disabled", "disabled");
+        });
+//    getCountryState(218);
+</script>
