@@ -13,7 +13,7 @@ p, a, ul, li, h1, h2, h3, h4, h5, from {padding:0px;margin:0px;}
     font-family: 'gothic';
     src: url('../fonts/gothic.eot');
     src: url('../fonts/roboto-light-webfont.woff') format('woff'),
-         url('../fonts/roboto-light-webfont.ttf') format('truetype');
+        url('../fonts/roboto-light-webfont.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -21,10 +21,10 @@ p, a, ul, li, h1, h2, h3, h4, h5, from {padding:0px;margin:0px;}
     font-family: 'robotomedium';
     src: url('../fonts/roboto-medium-webfont.eot');
     src: url('../fonts/roboto-medium-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/roboto-medium-webfont.woff2') format('woff2'),
-         url('../fonts/roboto-medium-webfont.woff') format('woff'),
-         url('../fonts/roboto-medium-webfont.ttf') format('truetype'),
-         url('../fonts/roboto-medium-webfont.svg#robotomedium') format('svg');
+        url('../fonts/roboto-medium-webfont.woff2') format('woff2'),
+        url('../fonts/roboto-medium-webfont.woff') format('woff'),
+        url('../fonts/roboto-medium-webfont.ttf') format('truetype'),
+        url('../fonts/roboto-medium-webfont.svg#robotomedium') format('svg');
     font-weight: normal;
     font-style: normal;
 
@@ -34,10 +34,10 @@ p, a, ul, li, h1, h2, h3, h4, h5, from {padding:0px;margin:0px;}
     font-family: 'robotolight';
     src: url('../fonts/roboto-light.eot');
     src: url('../fonts/roboto-light.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/roboto-light.woff2') format('woff2'),
-         url('../fonts/roboto-light.woff') format('woff'),
-         url('../fonts/roboto-light.ttf') format('truetype'),
-         url('../fonts/roboto-light.svg#robotolight') format('svg');
+        url('../fonts/roboto-light.woff2') format('woff2'),
+        url('../fonts/roboto-light.woff') format('woff'),
+        url('../fonts/roboto-light.ttf') format('truetype'),
+        url('../fonts/roboto-light.svg#robotolight') format('svg');
     font-weight: normal;
     font-style: normal;
 
@@ -48,20 +48,20 @@ p, a, ul, li, h1, h2, h3, h4, h5, from {padding:0px;margin:0px;}
 .header_top{width:96%; float:left; padding:0px 2% 9px 2%;}
 .logo{width:28%; float:left;}
 .logo-text{ margin-left:-55px; color:#00008B; font-size:9px; text-align:center;}
-  .logo-color-text{color:#e60000; display:inline-block;}
+.logo-color-text{color:#e60000; display:inline-block;}
 .header_text{width:37.5%; float:left; padding:0px 0 0 2%; color:#3d3d3d; font-size:15px; border-left:1px solid #0099da; font-family:'museo_300regular';}
 .header_right{width:32%; float:left;}
 .header_login_main{width:100%; float:left; padding-bottom:11px; padding-top:3px;}
 .header_social_icon{width:100%; float:left; padding-top:5px;}
 .header_login{
-                /*width:59%;*/ 
-              width:65%;
-              float:right; 
-              background-color:rgb(37,70,138);
-              border-radius:9px;
-              height:15px;
-             /*background:url(../images/login_bg.png) no-repeat;*/ 
-             color:#fff; font-size:12px; padding:3px 0 5px 3%;}
+    /*width:59%;*/ 
+    width:65%;
+    float:right; 
+    background-color:rgb(37,70,138);
+    border-radius:9px;
+    height:15px;
+    /*background:url(../images/login_bg.png) no-repeat;*/ 
+    color:#fff; font-size:12px; padding:3px 0 5px 3%;}
 .header_login > a{
     width:45%;
     display:inline;
@@ -488,10 +488,10 @@ div.cell { display: table-cell;padding:2px; color:#666;font-size:13px; border-bo
 .property-overview-row-info {float: left;padding:10px;width:67%;}
 .location-faq-row-title{ float: left;font-weight:bold; padding:10px;/*width:305px;*/color:#0066FF;}
 .location-faq-row-info{float: left;padding:10px;/*width:35%;*/}
-.iContent{width:66%;height:476px;float:left;margin:5px;border:solid 1px #ccc;background-color: #F7F7F7;}
+.iContent{width:66%;height:370px;float:left;margin:5px;border:solid 1px #ccc;background-color: #F7F7F7;}
 .previousSearch{float:left;width:6%;height:65px;padding-top:35px;}
 .nextSearch{float:left;width:6%;height:65px;padding-top:35px;}
-.rContent{width:100%;float:left;background-color: #F7F7F7;}
+.rContent{width:100%;float:left;background-color: #F7F7F7; padding:10px;}
 .search_panel_searchpage {
     width: 30%;
     background: #fcf9fd;
@@ -517,8 +517,8 @@ div.cell { display: table-cell;padding:2px; color:#666;font-size:13px; border-bo
 .opening {color: #4B5586;width:90%;}
 .spcloffer{width:14%;color: #183964;   float: left;    margin: 2px 0 0; font-size: 12px;padding:7px 0;}
 ul.gallery li img{
-	width: 100%;
-	max-width: 100%;
+    width: 100%;
+    max-width: 100%;
     height: 100%;
     margin: auto;
     display: block;
@@ -553,10 +553,10 @@ location page css
     .wrapper{width:94%; margin:0 auto; font-family:Arial, Helvetica, sans-serif; background:url(../images/body-bg.jpg) repeat-x #fff;}
     .header_social_icon{width:100%; float:left; padding-top:5px;}
     .header_login{width:97%; float:left; 
-                 /*background:url(../images/login_bg.png) no-repeat;*/ 
-                 color:#fff; font-size:12px; 
-                 /*padding:5px 0 8px 3%;*/
-                 padding:3px 0 5px 3%;
+                  /*background:url(../images/login_bg.png) no-repeat;*/ 
+                  color:#fff; font-size:12px; 
+                  /*padding:5px 0 8px 3%;*/
+                  padding:3px 0 5px 3%;
     }
     .add_property{width:100%; float:left; text-align:left;}
     .nav{width:96%; float:left; background:url(../images/nav_bg.png) repeat-x #0095d7; color:#fff;font-family:'museo_300regular'; font-size:16px; padding:10px 2% 10px 2%;}
@@ -613,10 +613,10 @@ location page css
     .logo img {width:100%;}
     .header_social_icon{width:100%; float:left; padding-top:5px;}
     .header_login{width:97%; float:left; 
-                 /*background:url(../images/login_bg.png) no-repeat;*/ 
-                 color:#fff; font-size:12px; 
-                 /*padding:5px 0 8px 3%;*/
-                 padding:3px 0 5px 3%;
+                  /*background:url(../images/login_bg.png) no-repeat;*/ 
+                  color:#fff; font-size:12px; 
+                  /*padding:5px 0 8px 3%;*/
+                  padding:3px 0 5px 3%;
     }
     .header_right{width:35%; float:left;}
     .search_panel{width:98.5%; float:left; background:#fcf9fd; border:1px solid #c6c5c9; padding:0.6%; margin-bottom:10px;}
@@ -646,10 +646,10 @@ location page css
     /*g.add*/
     ul.gallery li{float:left;padding:0 4px 0 5px;width:47%;height:24%;}
     .ppty_review{width:93%;height:auto;background: none repeat scroll 0 0 #F1F1F1;padding:17px;}
-	
-	
-	
-	
+
+
+
+
     /****************************************/
     /******* for search-index page***********/
     /****************************************/
@@ -688,16 +688,16 @@ location page css
                   /*float:left;*/ 
                   float:none;
                   margin:auto;
-                 /*background:url(../images/login_bg.png) no-repeat;*/ 
-                 color:#fff; font-size:12px; 
-                 /*padding:3px 0 8px 2%;*/
-                 padding:3px 0 5px 3%;
+                  /*background:url(../images/login_bg.png) no-repeat;*/ 
+                  color:#fff; font-size:12px; 
+                  /*padding:3px 0 8px 2%;*/
+                  padding:3px 0 5px 3%;
     }
     .add_property{width:100%; 
-                 /*float:left;*/ 
-                 float:none !important;
-                 margin:auto;
-                 text-align:center;}
+                  /*float:left;*/ 
+                  float:none !important;
+                  margin:auto;
+                  text-align:center;}
     .nav{width:96%; float:left;  color:#fff;font-family:'museo_300regular'; font-size:16px; padding:10px 2% 10px 2%; background:#fff; font-weight:bold;}
     .nav ul {margin:0px; padding:0px; list-style:none;}
     .nav ul li{width:100%;margin:0px; padding: 0;   margin-bottom:5px; list-style:none; display:block; float:left; text-align:center; background:url(../images/nav_bg.png) repeat-x; }
@@ -751,7 +751,7 @@ location page css
 
     .header_text{width:100%; float:left; padding:0px 0 0 2%; color:#3d3d3d; font-size:15px; margin-top:8px; border:0px;  float:none; text-align:center;}
     .logo{width:80%; float:left; padding-right:3%; padding-bottom:8px;  float:none;}
-  
+
     .header_social_icon{width:100%; margin:0 auto; padding-top:3px;  text-align:center; padding:0px 0 6px 0;  float:none;}
     .header_login{/*width:100%; */margin:0 auto; 
         /*background:url(../images/login_bg.png) no-repeat center;*/ 
@@ -1049,7 +1049,7 @@ h3
 }
 
 .staticPage a:link{
-   font-family:'robotolight';
+    font-family:'robotolight';
     color:#C80100;
     text-decoration:none;
 }
@@ -2250,7 +2250,7 @@ h1.newsheading{/*margin-top:40px;*/color:#C80100}
     padding-bottom: 8px;
     padding-left: 9px;
     width: 74%;
-        font-family: 'robotolight';
+    font-family: 'robotolight';
 }
 .left_facebook_clmn img{max-width: 40px;}
 .right_dis_wrap{width:29%;float:left; padding: 30px 0 0 1%;}
@@ -2513,10 +2513,10 @@ button{cursor:pointer;}
 .crating{width:100%;float:right;padding:10px 0; text-align:right;color:#000;}
 .book_request{background:url(../images/tab_selected.png) repeat-x;float:right;color:#fff;font-weight:bold;padding:5px;}
 .aContent{  
-			
-			background: url(../images/nav_bg.png) repeat-x;                         			
-            color:#fff;font-weight:bold;padding:5px 0;width:100%;
-		}
+
+    background: url(../images/nav_bg.png) repeat-x;                         			
+    color:#fff;font-weight:bold;padding:5px 0;width:100%;
+}
 .no_result{width:100%;display:inline-block;padding: 10px 0 12px 20px;font-family:'museo_300regular';color:#0270D2;font-size:21px;}
 
 .book_available{background-image:url(../images/check_available.png);}
@@ -2560,8 +2560,8 @@ button{cursor:pointer;}
     background-color:#c5d52b;
 }
 .ppty-list-blck-wrap{
- white-space:nowrap;
- overflow:scroll;
+    white-space:nowrap;
+    overflow:scroll;
 }
 .bold{font-weight:bold;}
 .customAttribs{
@@ -2573,9 +2573,46 @@ button{cursor:pointer;}
     padding:5px;
     background:#B0D0EC;
     border-radius:4px;
-	margin-bottom:5px;
+    margin-bottom:5px;
 }
 
 .pp_hoverContainer{display:block !important;}
-	div.pp_default .pp_nav{display:block !important;}
- .roboto{font-family:'robotolight';}
+div.pp_default .pp_nav{display:block !important;}
+.roboto{font-family:'robotolight';}
+.pptydetailTab{
+    width: 100%;
+    float: left;
+    /*background: url(../images/nav_bg.png) repeat-x;*/
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#026dd2+0,0095d7+100 */
+    background: #026dd2; /* Old browsers */
+    background: -moz-linear-gradient(top,  #026dd2 0%, #0095d7 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  #026dd2 0%,#0095d7 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  #026dd2 0%,#0095d7 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#026dd2', endColorstr='#0095d7',GradientType=0 ); /* IE6-9 */
+
+}
+.pptydetailTab ul li {
+    width: 12.5%;
+    margin: 0px;
+    padding: 0px 0 0 0%;
+    list-style: none;
+    float: left;
+    /*display: inline;*/
+    display: table-cell;
+    float: left;
+}
+.pptydetailTab ul li:hover a, .pptydetailTab ul li.active a{
+    text-decoration: underline;
+}
+.pptydetailTab ul li a {
+    width: 100%;
+    font-size: 16px;
+    color: #fff;
+    text-decoration: none;
+    background: none;
+    float: left;
+    text-align: center;
+    padding: 5px 0 5px 0;
+    font-family: "robotolight";
+    /*white-space:nowrap;*/
+}
