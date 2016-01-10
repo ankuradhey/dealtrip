@@ -867,6 +867,7 @@ div.spcl5{width:10%}
 {
 	width:100%;
 	height:107px;	
+        float:left;
 }
 
 .previous
@@ -1037,43 +1038,4 @@ div.spcl5{width:10%}
 {
 color:#000;	
 }
-#map_canvas
-    {
-        width:100%;height:300px;border: solid 1px #cccccc;	
-        margin-left:15px;
-    }
-    .check_bx .checkbox_block
-    {
-        width:50%;
-        float:left;
-    }
-    .check_bx .checkbox_block > input
-    {
-        float:left;
-    }
 
-    .check_bx .checkbox_block > label
-    {
-        float:left;
-    }
-
-    .rental_rate_blck label {
-        color: #FFFFFF;
-        font-size: 13px;
-        font-weight: bold;
-        padding-left: 131px;
-        padding-top: 30px;
-    }
-
-
-    .extras_blck label[title="from"] {
-        color: #FFFFFF;
-        padding-left: 103px;
-    }
-    .extras_blck label {
-        color: #FFFFFF;
-        font-size: 13px;
-        font-weight: bold;
-        padding-left: 135px;
-        padding-top: 30px;
-    }
