@@ -45,7 +45,7 @@
 //            left join " . SUB_AREA . " on " . SUB_AREA . ".sub_area_id = " . PROPERTY . ".sub_area_id
 //            left join " . LOCAL_AREA . " on " . LOCAL_AREA . ".local_area_id = " . PROPERTY . ".local_area_id
 
-
+             
             if ($location_type == 'country')
             {
                 $breadcrumb_array['country_name'] = $location['country'];
@@ -55,6 +55,12 @@
                 $reviewArr = $reviewArr
                         //->join(array('c'=>COUNTRIES),'c.country_id = p.country_id ')
                         ->where(" c.country_name = '" . $location[$location_type] . "'  ");
+                
+                $this->view->cloc = $db->runQuery("select country_name as url, country_name as title from " . PROPERTY . " 
+                                         inner join " . COUNTRIES . " on " . COUNTRIES . ".country_id = " . PROPERTY . ".country_id
+                                         where status = '3'
+                                         group by country_name
+                                         ");
             }
             elseif ($location_type == 'state')
             {
@@ -67,6 +73,14 @@
                 $reviewArr = $reviewArr
                         ///->join(array('c'=>STATE),'c.state_id = p.state_id  ')
                         ->where(" s.state_name = '" . $location[$location_type] . "'  ");
+                
+                 $this->view->cloc = $db->runQuery("select CONCAT_WS('/', country_name, state_name) as url, state_name as title from " . PROPERTY . "
+                                         inner join " . COUNTRIES . " on " . COUNTRIES . ".country_id = " . PROPERTY . ".country_id
+                                         inner join " . STATE . " on " . STATE . ".state_id = " . PROPERTY . ".state_id
+                                         where status = '3' and " . COUNTRIES . ".country_name='".$location['country_name']."'
+                                         group by state_name
+                                         ");
+
             }
             elseif ($location_type == 'city')
             {
@@ -80,6 +94,14 @@
                 $reviewArr = $reviewArr
                         //->join(array('c'=>CITIES),'c.city_id = p.city_id ')
                         ->where(" city.city_name = '" . $location[$location_type] . "'  ");
+                
+                 $this->view->cloc = $db->runQuery("select  CONCAT_WS('/', country_name, state_name, city_name) as url, city_name as title  from " . PROPERTY . " 
+                                         inner join " . COUNTRIES . " on " . COUNTRIES . ".country_id = " . PROPERTY . ".country_id
+                                         inner join " . STATE . " on " . STATE . ".state_id = " . PROPERTY . ".state_id
+                                         inner join " . CITIES . " on " . CITIES . ".city_id = " . PROPERTY . ".city_id
+                                         where status = '3' and " . STATE . ".state_name='".$location['state_name']."'
+                                         group by city_name
+                                         ");
             }
             elseif ($location_type == 'sub_area')
             {
@@ -96,6 +118,16 @@
                 $reviewArr = $reviewArr
                         //->join(array('c'=>SUB_AREA),'c.sub_area_id = p.sub_area_id ')
                         ->where(" sa.sub_area_name = '" . $location[$location_type] . "'  ");
+                
+                $this->view->cloc = $db->runQuery("select CONCAT_WS('/', country_name, state_name, city_name,sub_area_name) as url, sub_area_name as title from " . PROPERTY . " 
+                                         inner join " . COUNTRIES . " on " . COUNTRIES . ".country_id = " . PROPERTY . ".country_id
+                                         inner join " . STATE . " on " . STATE . ".state_id = " . PROPERTY . ".state_id
+                                         inner join " . CITIES . " on " . CITIES . ".city_id = " . PROPERTY . ".city_id
+                                         inner join " . SUB_AREA . " on " . SUB_AREA . ".sub_area_id = " . PROPERTY . ".sub_area_id
+                                         where status = '3' and " . CITIES . ".city_name='".$location['city_name']."'
+                                         group by sub_area_name
+                                         ");
+                
             }
             elseif ($location_type == 'local_area')
             {
@@ -112,6 +144,17 @@
                 $reviewArr = $reviewArr
                         //->join(array('c'=>LOCAL_AREA),'c.local_area_id = p.local_area_id and status="3" ')
                         ->where(" la.local_area_name = '" . $location[$location_type] . "'  ");
+                
+                $this->view->cloc = $db->runQuery("select  CONCAT_WS('/', country_name, state_name, city_name,sub_area_name, local_area_name) as url, local_area_name as title  from " . PROPERTY . " 
+                                         inner join " . COUNTRIES . " on " . COUNTRIES . ".country_id = " . PROPERTY . ".country_id
+                                         inner join " . STATE . " on " . STATE . ".state_id = " . PROPERTY . ".state_id
+                                         inner join " . CITIES . " on " . CITIES . ".city_id = " . PROPERTY . ".city_id
+                                         inner join " . SUB_AREA . " on " . SUB_AREA . ".sub_area_id = " . PROPERTY . ".sub_area_id
+                                         inner join " . LOCAL_AREA . " on " . LOCAL_AREA . ".local_area_id = " . PROPERTY . ".local_area_id
+                                         where status = '3' and " . SUB_AREA . ".sub_area_name='".$location['sub_area']."'
+                                         group by local_area_name
+                                         ");
+                
             }
             $reviewArr = $reviewArr->where(" p.status = '3' ")->order("review_id desc");
             $reviewArr = $reviewArr->query()->fetchAll();
