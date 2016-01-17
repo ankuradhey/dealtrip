@@ -166,7 +166,7 @@ global $mySession;
         ?>
     </ul>
     <div class="iContent" align="center">
-        <div class = 'imgContent' align="center"  <?= count($this->galleryData) > 0 ? "" : "style='height:475px;'" ?>> 
+        <div class = 'imgContent' align="center"  <?= count($this->galleryData) > 0 ? "" : "style='height:350px;'" ?>> 
             <?
             if ($this->galleryData[0]['image_name']) {
                 if (is_special_offer($this->propertyData[0]['id'])) {
@@ -204,7 +204,7 @@ global $mySession;
         </div>
     </div>
 
-    <div class="search_panel_searchpage" style="height:360px;">
+    <div class="property_page_searchpanel">
         <form  action = '<?php echo $this->url(array('controller' => 'search', 'action' => 'property'), 'default', true) ?>' method="get" name="hotelsearch" >
             <div class = 'rytPrview' >
                 <div class="one_line">
@@ -248,9 +248,7 @@ global $mySession;
     if ($this->galleryData[0]['image_name']):
         ?>   
         <div class="previewImages" >
-            <div class="previousSearch">
-                <a href="#" id="prevs"><img src="<?= IMAGES_URL; ?>left_slide_arrwo.png" width="32" height="32"></a>
-            </div>
+            <a href="#" class="previousSearch" id="prevs"><img src="<?= IMAGES_URL; ?>left_slide_arrwo_blue.png" width="32" height="32"></a>
             <div class="slider_images_list">
                 <ul class="bxslider" >
                     <?
@@ -260,10 +258,7 @@ global $mySession;
                     ?>
                 </ul>
             </div>
-            <div class = "nextSearch">
-                <a href="#" id="nexts"><img src="<?= IMAGES_URL; ?>right_slide_arrwo.png" width="32" height="32"></a>
-            </div>
-
+            <a href="#" class="nextSearch" id="nexts"><img src="<?= IMAGES_URL; ?>right_slide_arrwo_blue.png" width="32" height="32"></a>
         </div>
         <?
     endif;
