@@ -148,8 +148,24 @@
 
             $this->view->specArr = $specArr;
             $spclOffrArr = $db->runQuery("select * from " . SPCL_OFFER_TYPES . " where status = '1'  ");
+            
             $this->view->spclOfferArr = $spclOffrArr;
             $_spclOffr = $this->getRequest()->getParam("spcloffr");
+            $sarry=array();
+            if(count($_spclOffr)>0){
+                $i=0;
+                foreach($spclOffrArr as $srow){
+                    if(in_array($srow['type_name'],$_spclOffr)){
+                        $sarry[$i]=$srow['id'];
+                      $i++;   
+                    }
+                   
+                   
+                }
+                
+            }
+            $_spclOffr=$sarry;
+            
             $this->view->spclOffr = $_spclOffr;
             //$this->view->pageTitle="Customer Sign In";
 
@@ -862,7 +878,7 @@
             $amenityArr = $db->runQuery("select * from " . AMENITY . " where amenity_status = '1' ");
             $this->view->amenityArr = $amenityArr;
 
-            //prd($propertyData);
+            
             
         }
 		public function searchajaxAction()
@@ -1009,6 +1025,20 @@
             $spclOffrArr = $db->runQuery("select * from " . SPCL_OFFER_TYPES . " where status = '1'  ");
             $this->view->spclOfferArr = $spclOffrArr;
             $_spclOffr = $this->getRequest()->getParam("spcloffr");
+            $sarry=array();
+            if(count($_spclOffr)>0){
+                $i=0;
+                foreach($spclOffrArr as $srow){
+                    if(in_array($srow['type_name'],$_spclOffr)){
+                        $sarry[$i]=$srow['id'];
+                      $i++;   
+                    }
+                   
+                   
+                }
+                
+            }
+            $_spclOffr=$sarry;
             $this->view->spclOffr = $_spclOffr;
             //$this->view->pageTitle="Customer Sign In";
 
@@ -1723,7 +1753,6 @@
 			$this->renderScript('search/searchajax.phtml');
             
         }
-
 
         public function favouriteAction()
         {
