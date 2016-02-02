@@ -2145,6 +2145,7 @@
             //gallery
             $galleryArr = $db->runQuery("select * from " . GALLERY . "  where property_id = " . $ppty_id);
             $this->view->galleryArr = $galleryArr;
+            $this->view->prate = '';
             
             if ($datefrom != ""):
                 $datefrom = date('Y-m-d', strtotime($datefrom));
@@ -2172,24 +2173,35 @@
 
 
                 $this->view->nights = dateDiff($datefrom, $dateto) + 1;
+                $this->view->prate = $rateArr[0]['RATE'] != "" ? $rateArr[0]['RATE'] : "Unknown";
 
 
 
+//            else:
+//
+//
+//                $rateArr = $db->runQuery("select nights*ceil(prate*" . CURRENCY . ".exchange_rate) as RATE,nights,prate," . PROPERTY . ".id from " . CAL_RATE . " 
+//								  inner join " . PROPERTY . " on " . PROPERTY . ".id = " . CAL_RATE . ".property_id
+//								  inner join " . CURRENCY . " on " . PROPERTY . ".currency_code = " . CURRENCY . ".currency_code
+//                                                                  where " . CAL_RATE . ".property_id = '" . $ppty_id . "' and prate = (select min(prate) from " . CAL_RATE . " where property_id = '" . $ppty_id . "' and " . CAL_RATE . ".date_to >= curdate()
+//								   ) order by prate asc
+//								  ");
+//            //echo "select prate*nights as RATE,nights,prate,id from ".CAL_RATE." where prate = (select min(prate) from ".CAL_RATE." where property_id = '".$ppty_id."'  ) ";
+//                $this->view->nights = $rateArr[0]['nights'] != "" ? $rateArr[0]['nights'] : "";
+            endif;
 
-            else:
-
-
-                $rateArr = $db->runQuery("select nights*ceil(prate*" . CURRENCY . ".exchange_rate) as RATE,nights,prate," . PROPERTY . ".id from " . CAL_RATE . " 
+            
+            
+            $rateArr = $db->runQuery("select nights*ceil(prate*" . CURRENCY . ".exchange_rate) as RATE,nights,prate," . PROPERTY . ".id from " . CAL_RATE . " 
 								  inner join " . PROPERTY . " on " . PROPERTY . ".id = " . CAL_RATE . ".property_id
 								  inner join " . CURRENCY . " on " . PROPERTY . ".currency_code = " . CURRENCY . ".currency_code
                                                                   where " . CAL_RATE . ".property_id = '" . $ppty_id . "' and prate = (select min(prate) from " . CAL_RATE . " where property_id = '" . $ppty_id . "' and " . CAL_RATE . ".date_to >= curdate()
 								   ) order by prate asc
 								  ");
-                //echo "select prate*nights as RATE,nights,prate,id from ".CAL_RATE." where prate = (select min(prate) from ".CAL_RATE." where property_id = '".$ppty_id."'  ) ";
-                $this->view->nights = $rateArr[0]['nights'] != "" ? $rateArr[0]['nights'] : "";
-            endif;
-
-            $this->view->prate = $rateArr[0]['RATE'] != "" ? $rateArr[0]['RATE'] : "Unknown";
+            //echo "select prate*nights as RATE,nights,prate,id from ".CAL_RATE." where prate = (select min(prate) from ".CAL_RATE." where property_id = '".$ppty_id."'  ) ";
+            $this->view->defaultRate = $rateArr[0]['RATE'] != "" ? $rateArr[0]['RATE'] : "Unknown";
+            $this->view->nights = $rateArr[0]['nights'] != "" ? $rateArr[0]['nights'] : "";
+            
             //cal Query
             $this->view->propertyData = $propertyArr;
 
@@ -2233,6 +2245,100 @@
 
             $this->view->error = $error;
             $this->view->varsuccess = $varsuccess;
+        }
+        
+        public function getratesAction(){
+            $db = new Db();
+            $datefrom = $this->getRequest()->getParam('datefrom');
+            $nights = $this->getRequest()->getParam('nights');
+            $ppty_id = $this->getRequest()->getParam('pptyId');
+            $dateto = date('Y-m-d', strtotime($datefrom . '+' . ($nights - 1) . ' days'));
+            
+            $availablePptyArr = $db->runQuery(" select ".CAL_AVAIL . ".property_id as ppty_list from " . CAL_AVAIL . " where
+						(
+							( date_from <= '" . date('Y-m-d', strtotime($datefrom)) . "' and date_to >= '" . date('Y-m-d', strtotime($datefrom)) . "')
+							or
+							( date_from <= '" . date('Y-m-d', strtotime($dateto)) . "' and date_to >= '" . date('Y-m-d', strtotime($dateto)) . "')											
+                                                            or
+        						( date_from >= '" . date('Y-m-d', strtotime($datefrom)) . "' and date_to <= '" . date('Y-m-d', strtotime($dateto)) . "')
+						)
+						and
+						cal_status = '0' and property_id = '$ppty_id'  ");
+            
+            if(count($availablePptyArr)){
+                echo 'Not Available for your dates'; exit;
+            }
+            
+            if ($datefrom != ""):
+                $datefrom = date('Y-m-d', strtotime($datefrom));
+                $dateto = date('Y-m-d', strtotime($dateto));
+
+
+                $rateArr = $db->runQuery(" select  *, 
+                                            coalesce (sum(
+                                                    case when " . CAL_RATE . ".date_from >= '" . $datefrom . "' and " . CAL_RATE . ".date_to <= '" . $dateto . "' 
+                                                    then (abs( datediff( " . CAL_RATE . ".date_from, " . CAL_RATE . ".date_to ))+1) * ceil(prate*exchange_rate)
+                                                    when " . CAL_RATE . ".date_from <= '" . $datefrom . "' and " . CAL_RATE . ".date_to >= '" . $dateto . "'
+                                                    then (abs( datediff( '" . $datefrom . "', '" . $dateto . "' ))+1) * ceil(prate*exchange_rate)
+                                                    when " . CAL_RATE . ".date_from <= '" . $datefrom . "' and " . CAL_RATE . ".date_to >= '" . $datefrom . "' and " . CAL_RATE . ".date_to <= '" . $dateto . "' 
+                                                    then (abs( datediff( '" . $datefrom . "', " . CAL_RATE . ".date_to ))+1) * ceil(prate*exchange_rate)
+                                                    when " . CAL_RATE . ".date_to >= '" . $dateto . "' and " . CAL_RATE . ".date_from >= '" . $datefrom . "' and " . CAL_RATE . ".date_from <= '" . $dateto . "'
+                                                    then (abs( datediff( " . CAL_RATE . ".date_from, '" . $dateto . "' ))+1) * ceil(prate*exchange_rate)
+                                                    end),(select ceil(min(prate)*exchange_rate)*" . (dateDiff($datefrom, $dateto) + 1) . " from " . CAL_RATE . " 
+                                                    where " . CAL_RATE . ".property_id = '" . $ppty_id . "'))
+                                                    AS RATE ,
+                                            (".(dateDiff($datefrom, $dateto) + 1)." - sum(
+                                                    case when " . CAL_RATE . ".date_from >= '" . $datefrom . "' and " . CAL_RATE . ".date_to <= '" . $dateto . "' 
+                                                    then (abs( datediff( " . CAL_RATE . ".date_from, " . CAL_RATE . ".date_to ))+1) 
+                                                    when " . CAL_RATE . ".date_from <= '" . $datefrom . "' and " . CAL_RATE . ".date_to >= '" . $dateto . "'
+                                                    then (abs( datediff( '" . $datefrom . "', '" . $dateto . "' ))+1)
+                                                    when " . CAL_RATE . ".date_from <= '" . $datefrom . "' and " . CAL_RATE . ".date_to >= '" . $datefrom . "' and " . CAL_RATE . ".date_to <= '" . $dateto . "' 
+                                                    then (abs( datediff( '" . $datefrom . "', " . CAL_RATE . ".date_to ))+1) 
+                                                    when " . CAL_RATE . ".date_to >= '" . $dateto . "' and " . CAL_RATE . ".date_from >= '" . $datefrom . "' and " . CAL_RATE . ".date_from <= '" . $dateto . "'
+                                                    then (abs( datediff( " . CAL_RATE . ".date_from, '" . $dateto . "' ))+1) 
+                                                    end
+                                                    )
+                                                    )
+                                                     * ceil(
+                                                        (select min(prate) from " . CAL_RATE . " where property_id = '" . $ppty_id . "' and " . CAL_RATE . ".date_to >= curdate())
+                                                            *" . CURRENCY . ".exchange_rate)   as remaining_price
+                                                    from " . CAL_RATE . " 
+                                                    inner join " . PROPERTY . " on " . PROPERTY . ".id = " . CAL_RATE . ".property_id
+                                                    inner join " . CURRENCY . " on " . PROPERTY . ".currency_code = " . CURRENCY . ".currency_code
+                                                    where property_id = '" . $ppty_id . "' group by " . CAL_RATE . ".property_id ");
+
+                $this->view->nights = dateDiff($datefrom, $dateto) + 1;
+                
+                if($rateArr[0]['RATE'] != ""){
+                    $rate = explode('.',$rateArr[0]['RATE']) - $rateArr[0]['remaining_price'];
+                    $rate = '<strong>Available - Cost of  Rental &pound;'.$rate[0].'</strong>';
+                }else{
+                    $rate = "Unknown";
+                }
+                echo  $rate;
+                exit;
+            
+            else:
+
+                $rateArr = $db->runQuery("select nights*ceil(prate*" . CURRENCY . ".exchange_rate) as RATE,nights,prate," . PROPERTY . ".id from " . CAL_RATE . " 
+                                        inner join " . PROPERTY . " on " . PROPERTY . ".id = " . CAL_RATE . ".property_id
+                                        inner join " . CURRENCY . " on " . PROPERTY . ".currency_code = " . CURRENCY . ".currency_code
+                                        where " . CAL_RATE . ".property_id = '" . $ppty_id . "' and 
+                                            prate = (select min(prate) from " . CAL_RATE . " where property_id = '" . $ppty_id . "' and " . CAL_RATE . ".date_to >= curdate()
+                                         ) order by prate asc
+								  ");
+            //echo "select prate*nights as RATE,nights,prate,id from ".CAL_RATE." where prate = (select min(prate) from ".CAL_RATE." where property_id = '".$ppty_id."'  ) ";
+                $this->view->nights = $rateArr[0]['nights'] != "" ? $rateArr[0]['nights'] : "";
+            endif;
+            
+            if($rateArr[0]['RATE'] != ""){
+                $rate = explode('.',$rateArr[0]['RATE']);
+                $rate = '<strong>Available - Cost of  Rental &pound;'.$rate[0].'</strong>';
+            }else{
+                $rate = "Unknown";
+            }
+            echo  $rate;
+            exit;
         }
 
         /*         * ********* save review Action ********** */
