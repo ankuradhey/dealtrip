@@ -1,0 +1,158 @@
+<div class="mws-panel grid_8">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-table-1"><?=$this->pageHeading?></span>
+    </div>
+
+    <div class="mws-panel-body">
+        <div class="mws-panel-toolbar top clearfix ">
+            <ul>
+               <li><a class="mws-ic-16 ic-cross" href="javascript:void(0)" title="Delete" onclick="deleteitem()">Delete</a></li>
+            </ul>
+        </div>
+        <!--<table class="mws-table">-->
+         <table class="mws-datatable-fn mws-table">
+            <thead>
+                <tr>
+                    <th width="3%">S.No</th>
+                    <th width="3%"><input type="checkbox" name="deletebcchk" id="deletebcchk" onclick="return checkall(this)" /></th>
+                    <th width="15%">Date of Booking</th>
+                    <th width="20%">Property No</th>
+                    <th width="15%">Customer</th>
+                    <th width="15%">Check-in Date</th>
+                    <th width="5%">Booking Type</th>
+                    <th width="5%">Property Status</th>
+                    <th width="3%">Booking Status</th>
+                    <th width="3%">View</th>
+                    <th width="3%">Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?
+                $i=0;
+                foreach($this->bookingData as $row)
+                {
+                    $start++;$i++;
+                    if($row['booking_status']==1){ $image ='tick.png';  }
+                    if($row['booking_status']==0){ $image ='cross.png';  } 
+					if($row['booking_type']==1){ $b_type ='On Request';  }
+    	   			if($row['booking_type']==0){ $b_type ='Available';  }
+						
+
+
+                    if($cClass=="gradeX odd")
+                        {$cClass="gradeX even";}
+                    else
+                        {$cClass="gradeX odd";}	
+                    ?>
+                        <tr class="gradeX">
+                            <td><?=$i;?></td>
+                            <td>
+                                <input name='check<?=$i;?>' id='check<?=$i;?>' value='<?=$row['booking_id'];?>' 
+                                    onchange='return check_check("bcdel","deletebcchk")' type='checkbox'>
+                                    
+                                <script> 
+                                    $(document).ready(function(){
+                                        $('#bcdel').html(''); 
+                                        document.getElementById('deletebcchk').checked = false;
+                                    });
+                                </script>
+                            </td>
+                            <td><?=date('d M Y',strtotime($row['booking_date']))?></td>
+                            <td><?=$row['propertycode'];?></td>
+                            <td><?=$row['last_name'];?></td>
+                            <td><?=date('d-m-Y', strtotime($row['date_from']))?></td>
+                            <!--<td><?=dateDiff($row['date_from'],$row['date_to'])?></td>-->
+                            <td><?php echo $row['telephonic']=='1'?'Telephone':'Online'; ?></td>
+                            <td><?=$b_type?></td>
+                            <td>
+                                 <select class="chzn-select" name = "booking_status" value="<?=$row['booking_status']?>" onchange = "bookproperty(<?=$row['booking_id']?>, this.value)">
+                                 	<option  <?=$row['booking_status']=='0'?"selected='selected'":''?> value="0">Pending</option>
+                                 	<option <?=$row['booking_status']=='1'?"selected='selected'":''?> value="1">Unavailable</option>
+                                    <option <?=$row['booking_status']=='2'?"selected='selected'":''?> value="2">Confirmed</option>
+                                 </select>
+                            </td>
+                            
+                            <td>
+                                <a href="<?=APPLICATION_URL_ADMIN;?>booking/viewbooking/bookingId/<?=$row['booking_id'];?>" style="text-decoration:none;">
+                                        <img src="<?=APPLICATION_URL_ADMIN;?>css/icons/32/application_view_gallery.png" height="16" width="16"   border='0' title='View' alt='View'>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?= APPLICATION_URL_ADMIN ?>booking/editbooking/Id/<?= $row['booking_id'] ?>"><img src="<?= APPLICATION_URL_ADMIN; ?>css/icons/32/application_form_edit.png" height="16" width="16"   border='0' title='Edit' alt='Edit'></a>
+                            </td>
+                        </tr>
+                    <?
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>    	
+</div>
+<script>
+function deleteitem()
+{
+	var r= "";
+	var s="";
+	var selected=false;
+	for(var i=1;document.getElementById('check'+i);i++){
+		if(document.getElementById('check'+i).checked==true){	
+			r += document.getElementById('check'+i).value+"|";
+			selected = true;
+		}
+	}	
+	
+	r += '0';
+	if(selected){
+		var confirmation = confirm("Are you sure want to delete ?");
+		if(confirmation!=true){
+			return false;
+		}	
+		$.ajax({ url: "<?=APPLICATION_URL_ADMIN."booking/deletebooking"?>",
+		type: "POST",
+		data: ({Id:r}),
+		success: function(data){	
+		alert('Selected records have been deleted successfully.');		
+			 window.location.href=window.location.href;
+		}});
+	} else {
+		alert('Please choose a record to delete.');
+	}
+}
+function changestatus(Id,Status)
+{
+    $.ajax({ 
+				type: "POST", 
+				url: "<?=APPLICATION_URL_ADMIN?>booking/changebookingstatus", 
+				data: ({Id:Id,Status:Status}),
+				cache: false, 
+				success: function(data){				 
+				  window.location.href=window.location.href;
+			    }
+		  });
+}
+ 
+function checkall(thisid)
+{
+  for(var i=1;document.getElementById('check'+i);i++)
+  	{
+  		if(document.getElementById(thisid.id).checked==true){document.getElementById('check'+i).checked = true;}
+  		if(document.getElementById(thisid.id).checked==false){document.getElementById('check'+i).checked = false;}
+	}	
+}
+
+function bookproperty(Id, Status)
+{
+	var confirmation = confirm("Are you sure you want to change the status?");
+	$.ajax({ 
+				type: "POST", 
+				url: "<?=APPLICATION_URL_ADMIN?>booking/changebookingstatus", 
+				data: ({Id:Id,Status:Status}),
+				cache: false, 
+				success: function(data){				 
+				  window.location.href=window.location.href;
+			    }
+		  });
+	
+}
+
+</script>
