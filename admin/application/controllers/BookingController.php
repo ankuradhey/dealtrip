@@ -25,6 +25,26 @@ class BookingController extends AppController {
 
         $this->view->bookingData = $bookingyArr;
     }
+    
+    public function adhocAction() {
+        global $mySession;
+        $db = new Db();
+        $this->view->pageHeading = "Manage Ad hoc Booking";
+
+
+        $bookingyArr = $db->runQuery("select *, " . BOOKING . ".booking_id as booking_id from " . BOOKING . "
+                                        left join " . PAYMENT . " on " . PAYMENT . ".booking_id = " . BOOKING . ".booking_id  
+                                        inner join " . PROPERTY . " on " . PROPERTY . ".Id=" . BOOKING . ".property_id  
+                                        inner join " . CURRENCY . " on " . CURRENCY . ".currency_code = " . PROPERTY . ".currency_code 
+                                        inner join " . USERS . " on " . USERS . ".user_id=" . BOOKING . ".user_id  
+                                        where ad_hoc = '1' 
+                                        order by " . BOOKING . ".booking_id desc");
+
+
+
+
+        $this->view->bookingData = $bookingyArr;
+    }
 
     #-----------------------------------------------------------#
     # Booking View Action Function
@@ -306,10 +326,12 @@ class BookingController extends AppController {
         $request = $this->getRequest();
         if ($this->getRequest()->isPost()) {
             $post = $request->getPost();
+          
             $dateFrom = explode("/", $post['date_from']);
             $dateFrom = $dateFrom[1] . "/" . $dateFrom[0] . "/" . $dateFrom[2];
             $dateTo = explode("/", $post['departureDates']);
             $dateTo = $dateTo[1] . "/" . $dateTo[0] . "/" . $dateTo[2];
+           
 
             $spclOffer = $post['spclOffrId'];
             $extras = implode(",", $post['extras']);
@@ -349,21 +371,50 @@ class BookingController extends AppController {
             $dataForm['booking_id'] = $bookingId;
             $dataForm['payment_date'] = date('Y-m-d');
             $dataForm['card_amount'] = $post['cardFees'];
-            $db->save(PAYMENT, $dataForm);
+           $db->save(PAYMENT, $dataForm);
+
+
+
+                $Url = '<a href="' . APPLICATION_URL . '">' . APPLICATION_URL . '</a>';
+                $templateData = $db->runQuery("select * from " . EMAIL_TEMPLATES . " where template_id='7'");
+               $usernewData = $db->runQuery("select * from users where user_id=".$post['userId']);
+                $messageText = $templateData[0]['email_body'];
+                $subject = $templateData[0]['email_subject'];
+
+                //userId
+
+                $messageText = str_replace("[NAME]", $usernewData[0]['first_name'].' '.$usernewData[0]['last_name'], $messageText);
+                $messageText = str_replace("[SITENAME]", SITE_NAME, $messageText);
+                $messageText = str_replace("[SITEURL]", APPLICATION_URL, $messageText);
+                $messageText = str_replace("[PROPERTYNO]", $post['propertyCode'], $messageText);
+               SendEmail($post['emailAddress'], $subject, $messageText);
             
 
             
             
             //code to save data in calendar table
-            /* $dataForm = array();
+			/*if($post['finalupdatecalendar']=='yes'){
+             $dataForm = array();
               $dataForm['property_id'] = $mySession->pptyId;
               $dataForm['date_from'] = date('Y-m-d',strtotime($mySession->arrivalDate));
               $dataForm['date_to'] = date('Y-m-d',strtotime($mySession->arrivalDate." + ".$mySession->noOfNights." day"));
               $dataForm['cal_status'] = '0';
-              save_calendar_stat($mySession->pptyId,$dataForm['date_from'],$dataForm['date_to']); */
+              save_calendar_stat($mySession->pptyId,$dataForm['date_from'],$dataForm['date_to']); 
+			}*/
+             if($post['finalupdatecalendar']=='yes'){
+                $updatecalendar=array();
+                $updatecalendar['property_id']=$post['propertyId'];
+                $updatecalendar['date_from']=date('Y-m-d', strtotime($dateFrom));
+                $updatecalendar['date_to']=date('Y-m-d', (strtotime($dateTo)-86400));
+                $updatecalendar['cal_status']='0';
+                 $db->save('cal_avail', $updatecalendar);
 
+
+            }
             //saving in the booking extra table
+
             foreach ($post['extras'] as $values) {
+                if(!empty($values)){
                 $extrasArr = $db->runQuery("select ename,eprice*exchange_rate as eprice,etype,stay_type from  " . EXTRAS . " 
 			                    inner join " . PROPERTY . " on " . PROPERTY . ".id = " . EXTRAS . ".property_id
 					    inner join " . CURRENCY . " on " . CURRENCY . ".currency_code = " . PROPERTY . ".currency_code
@@ -376,6 +427,7 @@ class BookingController extends AppController {
                 $dataForm['option_status'] = $extrasArr[0]['etype'];
                 $dataForm['stay_type'] = $extrasArr[0]['stay_type'];
                 $db->save(BOOKING_EXTRA, $dataForm);
+            }
             }
 
             $extrasArr = $db->runQuery("select ename,eprice*exchange_rate as eprice,etype,stay_type from  " . EXTRAS . " 
@@ -478,8 +530,10 @@ class BookingController extends AppController {
         $dateto = date('Y-m-d', strtotime($bookingyArr[0]['date_to']));
 
         $bookingycomplusoryArr = $db->runQuery("select * from " . BOOKING_EXTRA . " where option_status='1' and booking_id =" . $bookingId);
+		//echo "<pre>"; print_r($bookingyArr);
         $extraArr = $db->runQuery("select * from " . BOOKING_EXTRA . " where booking_id = " . $bookingId);
-
+		//echo "<pre>"; print_r($extraArr);
+		//die;
         $propertyArr = $db->runQuery("select id,propertycode from " . PROPERTY . " ");
 
         if ($this->getRequest()->isPost()) {
