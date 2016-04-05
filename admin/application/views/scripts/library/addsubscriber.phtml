@@ -1,8 +1,11 @@
+<script type="text/javascript" src="<?= JS_URL ?>main.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
 <div class="mws-panel grid_8">
     <div class="mws-panel-header">
-        <span class="mws-i-24 i-check"><?=$this->pageHeading?></span>
+        <span class="mws-i-24 i-check"><?= $this->pageHeading ?></span>
     </div>
-    
+
     <div class="mws-panel-body">
         <form name="myform" id="mws-validate" action="" method="post" novalidate="novalidate" class="mws-form">
             <div style="display:none;" class="mws-form-message error" id="mws-validate-error"></div>
@@ -10,32 +13,144 @@
                 <div class="mws-form-row">
                     <label>Subscriber Name :</label>
                     <div class="mws-form-item large">
-                        <?=$this->myform->subscriber_name?>
+                        <?= $this->myform->subscriber_name ?>
                     </div>
                 </div>
                 <div class="mws-form-row">
                     <label>Subscriber Url :</label>
                     <div class="mws-form-item large">
-                        <?=$this->myform->subscriber_url?>
+                        <?= $this->myform->subscriber_url ?>
                     </div>
                 </div>
                 <div class="mws-form-row">
                     <label>Subscriber API UserName :</label>
                     <div class="mws-form-item large">
-                        <?=$this->myform->subscriber_api_username?>
+                        <?= $this->myform->subscriber_api_username ?>
                     </div>
                 </div>
                 <div class="mws-form-row">
                     <label>Subscriber API Password :</label>
                     <div class="mws-form-item large">
-                        <?=$this->myform->subscriber_api_password?>
+                        <?= $this->myform->subscriber_api_password ?>
                     </div>
                 </div>
-            <div class="mws-button-row">
-                <input type="submit" value="Submit" class="mws-button red" />
-            </div>
+                <div class="mws-form-row">
+                    <label>Address:</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->subscriber_address_box1 ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Address Line 1:</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->subscriber_address_box2 ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Address Line 2:</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->subscriber_address_box3 ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Address Line 3:</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->subscriber_address_box4 ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Address Line 4:</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->subscriber_address_box5 ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Contact Name:</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->contact_name ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Contact Name 1:</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->contact_name1 ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Email Address:</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->email_address ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label >Email Address (additional):</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->email_address1 ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Telephone:</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->telephone ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Website:</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->website ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Customer Support:</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->customer_support; ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Customer Support (additional):</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->customer_support1; ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Customer Support (additional):</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->customer_support2; ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Customer Support (additional):</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->customer_support3; ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Customer Support (additional):</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->customer_support4; ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Additional Info</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->additional_info; ?>
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Dealatrip webpage</label>
+                    <div class="mws-form-item large">
+                        <?= $this->myform->dealatrip_page; ?>
+                    </div>
+                </div>
+                <div id="map_canvas" style = 'height:150px;width:805px;'></div>
+                <?php 
+                    echo $this->myform->latitude;
+                    echo $this->myform->longitude;
+                ?>
+                <div class="mws-button-row">
+                    <input type="submit" value="Submit" class="mws-button red" />
+                </div>
             </div>
         </form>
     </div>    	
-</div>
 </div>
