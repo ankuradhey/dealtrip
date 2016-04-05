@@ -1096,10 +1096,61 @@ class LibraryController extends AppController {
 
 
         if ($this->getRequest()->isPost()) {
-
-
+//            echo "<pre>"; print_r(get_class_methods($myform)); die;
             if ($myform->isValid($this->getRequest()->getPost())) {
                 $dataForm = $myform->getValues();
+                //address work
+                $dataForm['subscriber_address'][] = $dataForm['subscriber_address_box1'];
+                $dataForm['subscriber_address'][] = $dataForm['subscriber_address_box2'];
+                $dataForm['subscriber_address'][] = $dataForm['subscriber_address_box3'];
+                $dataForm['subscriber_address'][] = $dataForm['subscriber_address_box4'];
+                $dataForm['subscriber_address'][] = $dataForm['subscriber_address_box5'];
+                $dataForm['subscriber_address'] = implode(',',array_filter($dataForm['subscriber_address'], 'trim'));
+                unset($dataForm['subscriber_address_box1'],$dataForm['subscriber_address_box2'],$dataForm['subscriber_address_box3'],$dataForm['subscriber_address_box4'],$dataForm['subscriber_address_box5']);
+                
+                //contact names
+                $dataForm['contact_person'][] = $dataForm['contact_name'];
+                $dataForm['contact_person'][] = $dataForm['contact_name1'];
+                $dataForm['contact_person'] = implode(',',array_filter($dataForm['contact_person'], 'trim'));
+                unset($dataForm['contact_name'],$dataForm['contact_name1']);
+                
+                //email address
+                $dataForm['subscriber_email'][] = $dataForm['email_address'];
+                $dataForm['subscriber_email'][] = $dataForm['email_address1'];
+                $dataForm['subscriber_email'] = implode(',',array_filter($dataForm['subscriber_email'], 'trim'));
+                unset($dataForm['email_address'],$dataForm['email_address1']);
+                
+                //telephone
+                $dataForm['subscriber_telephone'] = $dataForm['telephone'];
+                unset($dataForm['telephone']);
+                
+                //website
+                $dataForm['subscriber_website'] = $dataForm['website'];
+                unset($dataForm['website']);
+                
+                //customer support
+                $dataForm['subscriber_customer_support'][] = $dataForm['customer_support'];
+                $dataForm['subscriber_customer_support'][] = $dataForm['customer_support1'];
+                $dataForm['subscriber_customer_support'][] = $dataForm['customer_support2'];
+                $dataForm['subscriber_customer_support'][] = $dataForm['customer_support3'];
+                $dataForm['subscriber_customer_support'][] = $dataForm['customer_support4'];
+                $dataForm['subscriber_customer_support'] = implode(',',array_filter($dataForm['subscriber_customer_support'], 'trim'));
+                unset($dataForm['customer_support'],$dataForm['customer_support1'],$dataForm['customer_support2'],$dataForm['customer_support3'],$dataForm['customer_support4']);
+                
+                //additional info
+                $dataForm['subscriber_additional_info'] = $dataForm['additional_info'];
+                unset($dataForm['additional_info']);
+                
+                //dealatrip web page
+                $dataForm['subscriber_dealatrip_webpage'] = $dataForm['dealatrip_page'];
+                unset($dataForm['dealatrip_page']);
+                
+                //lat lng
+                $dataForm['subscriber_lat_lng'][] = $dataForm['latitude'];
+                $dataForm['subscriber_lat_lng'][] = $dataForm['longitude'];
+                $dataForm['subscriber_lat_lng'] = implode(',',$dataForm['subscriber_lat_lng']);
+                unset($dataForm['latitude'],$dataForm['longitude']);
+                
                 $myObj = new Subscription();
                 $result = $myObj->saveSubscription($dataForm, $subscriber_id);
 
@@ -1111,6 +1162,7 @@ class LibraryController extends AppController {
                     $this->_redirect('library/subscriber');
                 }
             }
+        }else{
         }
 
         $this->view->myform = $myform;
